@@ -31,7 +31,10 @@ Extend `data/SCHEMA.md` and `scripts/validate.mjs`:
 - New `data/scores/eci.yaml`: score, source, retrieval date. Kept separate from curated
   facts; refreshed by the agent from Epoch's download.
 
-### 2. Backfill
+### 2. Backfill — done (2026-10-01)
+226 models, 31 lineage edges, 156 ECI scores. Every pre-existing entry was re-checked against
+first-party sources; see SCHEMA.md § Inclusion and § Source precedence for the rules applied.
+
 - 2018–2022 models (GPT-1/2/3, BERT, T5, Gopher, Chinchilla, PaLM, OPT, BLOOM, …), seeded
   from Epoch's notable-models dataset rather than typed by hand.
 - Chinese open labs; Hugging Face `base_model` edges among tracked models.
@@ -60,6 +63,10 @@ It opens one PR with a changelog and a source on every claim, and `validate.mjs`
 Rumor edges go in their own PR section so they can be skimmed separately.
 
 ## Open points
+- Lab-level distillation claims (OpenAI → DeepSeek, Jan 2025; Anthropic → DeepSeek/Moonshot/
+  MiniMax, Feb 2026) name no specific models, so the edge schema cannot hold them yet.
+- 14 lineage edges rest on Epoch AI's base-model field alone (`likely`); verify first-hand.
+- `site/index.html` loads `js/main.js` as a module, so the page is blank from `file://`.
 - Early/research labs (EleutherAI, BigScience, AI2) fall into "Other" for 2018–2022.
   Revisit if that lane gets crowded.
 - Time zone for the Friday schedule — confirm when creating the routine.

@@ -165,6 +165,49 @@ Source URLs rot — both the OpenAI and Anthropic deprecation pages changed host
 
 ---
 
+## Inclusion
+
+The chart is a public explainer, not a registry. A model gets a node when it is one of:
+
+- a flagship or size tier (Opus/Sonnet/Haiku, GPT/mini/nano, Pro/Flash/Flash-Lite) of a lab
+  with its own lane;
+- flagged as a frontier model by Epoch AI, or scored on the ECI;
+- an open-weight model that is the documented parent of another node;
+- historically significant before 2023 (GPT-1, BERT, T5, GPT-3, PaLM, Chinchilla, BLOOM, …).
+
+**One node per model, not per snapshot.** Dated snapshots (GPT-4o 2024-08-06, Gemini 2.5 Pro
+preview 05-06) fold into one node. Exception: a re-release under the same name that labs and
+users treat as a distinct model (Claude 3.5 Sonnet, Oct 2024) gets its own node.
+
+**Modes are not models.** "Pro", "Thinking" and "Heavy" settings of an existing model are
+mentioned in `notes`, not given nodes.
+
+## What `deprecated` and `retired` mean in practice
+
+- **Closed models:** `retired` is when the *last* snapshot shuts down on the lab's own API.
+  Earlier snapshot or alias shutdowns go in `notes`. Consumer-app removals (e.g. ChatGPT
+  dropping a model) are not retirements.
+- **Open-weight models never get `retired`.** The weights remain obtainable, so the model has
+  not gone. API shutdowns go in `notes`.
+- **"Not sooner than" is not a date.** Anthropic's deprecation table gives active models a
+  "not sooner than" retirement. That is a commitment, not a schedule. Record nothing until a
+  real retirement date is announced.
+- **Google's shutdown dates are "earliest possible".** A past Google shutdown date is `likely`,
+  not `confirmed`, unless another source states the model was actually shut down.
+
+## Source precedence
+
+1. First-party lifecycle pages (deprecation tables, API changelogs, release notes).
+2. The first-party announcement page, when the date appears on it.
+3. Hugging Face model cards (`base_model`, licence) for lineage and open weights.
+4. Epoch AI's model database: dates from it are `likely` until checked against (1) or (2).
+5. Reporting and aggregators: only with `likely`, `estimated` or `rumored`.
+
+arXiv submission dates are paper dates, often days after the announcement. Prefer the
+announcement.
+
+---
+
 ## Rules
 
 **Unknown is expressed by omitting the event.** Never write `date: null` or a placeholder.

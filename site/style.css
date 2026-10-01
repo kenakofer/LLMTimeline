@@ -24,6 +24,11 @@
   --lab-6: #008300;
   --lab-7: #4a3aa7;
   --lab-8: #e34948;
+  /* lanes 9-12: placeholders until the Phase 3 palette */
+  --lab-9: #8a5a44;
+  --lab-10: #0f8a9c;
+  --lab-11: #a347b8;
+  --lab-12: #6b7a8f;
 
   --legend-ink: #52514e;
 
@@ -50,6 +55,11 @@
     --lab-6: #008300;
     --lab-7: #9085e9;
     --lab-8: #e66767;
+  /* lanes 9-12: placeholders until the Phase 3 palette */
+  --lab-9: #8a5a44;
+  --lab-10: #0f8a9c;
+  --lab-11: #a347b8;
+  --lab-12: #6b7a8f;
 
     --legend-ink: #c3c2b7;
   }
@@ -74,6 +84,11 @@
   --lab-6: #008300;
   --lab-7: #9085e9;
   --lab-8: #e66767;
+  /* lanes 9-12: placeholders until the Phase 3 palette */
+  --lab-9: #8a5a44;
+  --lab-10: #0f8a9c;
+  --lab-11: #a347b8;
+  --lab-12: #6b7a8f;
 
   --legend-ink: #c3c2b7;
 }

@@ -1,15 +1,680 @@
 # Epoch Capabilities Index (ECI) scores — the capability axis.
 #
-# Imported from Epoch AI, not curated by hand. Kept apart from data/models/ so
-# that a re-import never touches lifecycle facts. See data/SCHEMA.md § Scores.
-#
-# source/retrieved are required once any score is present:
-#   source: <Epoch dataset URL>
-#   retrieved: YYYY-MM-DD
-#   scores:
-#     - model: <model id>
-#       eci: 150.2
-#       ci_low: 147.9      # optional
-#       ci_high: 152.6     # optional
+# Imported from Epoch AI, not curated by hand. Kept apart from data/models/ so a
+# re-import never touches lifecycle facts. See data/SCHEMA.md § Scores.
+# Where Epoch scores several snapshots of one model, the launch snapshot is used.
 
-scores: []
+source: https://epoch.ai/benchmarks/eci
+retrieved: 2026-10-01
+scores:
+  - model: gpt-3-5-turbo
+    eci: 113.38
+    ci_low: 105.34
+    ci_high: 118.24
+    note: "Epoch entry: GPT-3.5 Turbo (Jun 2023)"
+  - model: gpt-4
+    eci: 125.89
+    ci_low: 120.25
+    ci_high: 130.98
+    note: "Epoch entry: GPT-4 (Mar 2023)"
+  - model: gpt-4-turbo
+    eci: 126.47
+    ci_low: 120.97
+    ci_high: 128.95
+    note: "Epoch entry: GPT-4 Turbo (Nov 2023)"
+  - model: gpt-4o
+    eci: 128.97
+    ci_low: 124.22
+    ci_high: 131.54
+    note: "Epoch entry: GPT-4o (May 2024)"
+  - model: gpt-4o-mini
+    eci: 126.56
+    ci_low: 120.47
+    ci_high: 128.54
+  - model: o1-preview
+    eci: 134.78
+    ci_low: 131.13
+    ci_high: 138.01
+  - model: o1-mini
+    eci: 135.82
+    ci_low: 131.83
+    ci_high: 137.17
+  - model: o1
+    eci: 141.9
+    ci_low: 139.7
+    ci_high: 143.08
+  - model: o3-mini
+    eci: 140.34
+    ci_low: 137.44
+    ci_high: 141.85
+  - model: gpt-4-5
+    eci: 136.74
+    ci_low: 133.81
+    ci_high: 138.87
+  - model: gpt-4-1
+    eci: 136.78
+    ci_low: 133.64
+    ci_high: 138.38
+  - model: gpt-4-1-mini
+    eci: 135.0
+    ci_low: 131.24
+    ci_high: 136.63
+  - model: gpt-4-1-nano
+    eci: 129.62
+    ci_low: 123.23
+    ci_high: 131.97
+  - model: o3
+    eci: 146.86
+    ci_low: 144.89
+    ci_high: 148.62
+  - model: o4-mini
+    eci: 145.63
+    ci_low: 143.04
+    ci_high: 147.4
+  - model: gpt-oss-120b
+    eci: 139.95
+    ci_low: 135.29
+    ci_high: 142.26
+  - model: gpt-oss-20b
+    eci: 137.81
+    ci_low: 133.03
+    ci_high: 139.64
+  - model: gpt-5
+    eci: 150.0
+  - model: gpt-5-mini
+    eci: 145.51
+    ci_low: 143.64
+    ci_high: 146.99
+  - model: gpt-5-nano
+    eci: 139.38
+    ci_low: 134.94
+    ci_high: 141.66
+  - model: gpt-5-1
+    eci: 149.65
+    ci_low: 148.28
+    ci_high: 151.12
+  - model: gpt-5-2
+    eci: 153.49
+    ci_low: 151.7
+    ci_high: 155.37
+  - model: gpt-5-3-codex
+    eci: 156.82
+    ci_low: 153.5
+    ci_high: 160.81
+    note: "Epoch entry: GPT-5.3 Codex"
+  - model: gpt-5-4
+    eci: 156.91
+    ci_low: 154.91
+    ci_high: 159.1
+  - model: gpt-5-4-mini
+    eci: 148.83
+    ci_low: 147.06
+    ci_high: 150.46
+    note: "Epoch entry: GPT-5.4 Mini"
+  - model: gpt-5-4-nano
+    eci: 145.8
+    ci_low: 143.21
+    ci_high: 147.7
+    note: "Epoch entry: GPT-5.4 Nano"
+  - model: gpt-5-5
+    eci: 159.22
+    ci_low: 156.87
+    ci_high: 162.37
+  - model: gpt-5-6-sol
+    eci: 161.8
+    ci_low: 159.26
+    ci_high: 165.26
+  - model: gpt-5-6-terra
+    eci: 159.79
+    ci_low: 157.1
+    ci_high: 162.83
+  - model: gpt-5-6-luna
+    eci: 156.45
+    ci_low: 154.13
+    ci_high: 158.6
+  - model: gpt-6-astra
+    eci: 166.51
+    ci_low: 163.14
+    ci_high: 171.05
+  - model: claude-instant
+    eci: 120.29
+    ci_low: 112.12
+    ci_high: 122.92
+  - model: claude-2
+    eci: 120.14
+    ci_low: 113.54
+    ci_high: 123.99
+  - model: claude-2-1
+    eci: 119.28
+    ci_low: 112.07
+    ci_high: 121.85
+  - model: claude-3-haiku
+    eci: 118.36
+    ci_low: 110.53
+    ci_high: 121.19
+  - model: claude-3-sonnet
+    eci: 120.71
+    ci_low: 113.62
+    ci_high: 123.68
+  - model: claude-3-opus
+    eci: 126.91
+    ci_low: 121.96
+    ci_high: 129.53
+  - model: claude-3-5-sonnet-20240620
+    eci: 130.0
+  - model: claude-3-5-haiku
+    eci: 127.16
+    ci_low: 120.74
+    ci_high: 129.67
+  - model: claude-3-5-sonnet-20241022
+    eci: 133.54
+    ci_low: 129.21
+    ci_high: 137.49
+    note: "Epoch entry: Claude 3.5 Sonnet (October 2024)"
+  - model: claude-3-7-sonnet
+    eci: 141.16
+    ci_low: 138.68
+    ci_high: 142.85
+  - model: claude-opus-4
+    eci: 142.67
+    ci_low: 140.19
+    ci_high: 144.22
+  - model: claude-sonnet-4
+    eci: 141.69
+    ci_low: 139.19
+    ci_high: 142.94
+  - model: claude-opus-4-1
+    eci: 144.11
+    ci_low: 141.64
+    ci_high: 146.04
+  - model: claude-sonnet-4-5
+    eci: 146.84
+    ci_low: 145.34
+    ci_high: 148.51
+  - model: claude-haiku-4-5
+    eci: 142.42
+    ci_low: 139.54
+    ci_high: 144.3
+  - model: claude-opus-4-5
+    eci: 150.1
+    ci_low: 147.87
+    ci_high: 152.97
+  - model: claude-opus-4-6
+    eci: 155.31
+    ci_low: 153.43
+    ci_high: 157.25
+  - model: claude-sonnet-4-6
+    eci: 152.26
+    ci_low: 149.61
+    ci_high: 154.69
+  - model: claude-opus-4-7
+    eci: 156.35
+    ci_low: 154.37
+    ci_high: 158.39
+  - model: claude-opus-4-8
+    eci: 158.34
+    ci_low: 156.08
+    ci_high: 160.74
+  - model: claude-fable-5
+    eci: 162.22
+    ci_low: 159.61
+    ci_high: 166.11
+  - model: claude-sonnet-5
+    eci: 156.34
+    ci_low: 153.61
+    ci_high: 158.81
+  - model: claude-opus-5
+    eci: 162.94
+    ci_low: 160.2
+    ci_high: 166.7
+  - model: claude-fable-5-1
+    eci: 164.82
+    ci_low: 161.8
+    ci_high: 169.07
+  - model: claude-opus-5-5
+    eci: 167.35
+    ci_low: 164.0
+    ci_high: 172.0
+  - model: claude-sonnet-5-5
+    eci: 165.2
+    ci_low: 161.81
+    ci_high: 169.39
+  - model: palm-2
+    eci: 115.04
+    ci_low: 106.79
+    ci_high: 127.17
+    note: "Epoch entry: PaLM 2-L"
+  - model: gemini-1-0-pro
+    eci: 117.05
+    ci_low: 108.89
+    ci_high: 119.91
+  - model: gemma
+    eci: 112.01
+    ci_low: 103.39
+    ci_high: 116.52
+    note: "Epoch entry: Gemma 7B"
+  - model: gemini-1-5-pro
+    eci: 126.91
+    ci_low: 121.75
+    ci_high: 129.02
+    note: "Epoch entry: Gemini 1.5 Pro (May 2024)"
+  - model: gemini-1-5-flash
+    eci: 122.6
+    ci_low: 116.59
+    ci_high: 124.75
+    note: "Epoch entry: Gemini 1.5 Flash (May 2024)"
+  - model: gemma-2
+    eci: 122.09
+    ci_low: 115.16
+    ci_high: 124.21
+    note: "Epoch entry: Gemma 2 27B"
+  - model: gemini-2-0-flash
+    eci: 134.69
+    ci_low: 124.28
+    ci_high: 136.66
+    note: "Epoch entry: Gemini 2.0 Flash (Dec 2024)"
+  - model: gemini-2-0-pro
+    eci: 135.06
+    ci_low: 131.83
+    ci_high: 136.78
+  - model: gemma-3
+    eci: 130.04
+    ci_low: 124.11
+    ci_high: 132.24
+    note: "Epoch entry: Gemma 3 27B"
+  - model: gemini-2-5-pro
+    eci: 144.15
+    ci_low: 141.75
+    ci_high: 146.91
+    note: "Epoch entry: Gemini 2.5 Pro (Mar 2025)"
+  - model: gemini-2-5-flash
+    eci: 139.96
+    ci_low: 136.06
+    ci_high: 142.07
+    note: "Epoch entry: Gemini 2.5 Flash (Apr 2025)"
+  - model: gemini-2-5-flash-lite
+    eci: 133.94
+    ci_low: 129.76
+    ci_high: 136.25
+    note: "Epoch entry: Gemini 2.5 Flash-Lite (Jun 2025)"
+  - model: gemini-3-pro
+    eci: 152.95
+    ci_low: 150.6
+    ci_high: 155.17
+  - model: gemini-3-flash
+    eci: 151.82
+    ci_low: 150.39
+    ci_high: 153.73
+  - model: gemini-3-1-pro
+    eci: 154.84
+    ci_low: 152.58
+    ci_high: 157.34
+  - model: gemini-3-1-flash-lite
+    eci: 144.45
+    ci_low: 142.37
+    ci_high: 146.15
+  - model: gemma-4
+    eci: 142.75
+    ci_low: 140.27
+    ci_high: 144.94
+    note: "Epoch entry: Gemma 4 31B IT"
+  - model: gemini-3-5-flash
+    eci: 154.51
+    ci_low: 152.53
+    ci_high: 156.62
+  - model: gemini-3-5-flash-lite
+    eci: 145.11
+    ci_low: 142.46
+    ci_high: 146.69
+  - model: gemini-3-6-flash
+    eci: 154.32
+    ci_low: 152.62
+    ci_high: 156.28
+  - model: gemini-3-7-flash
+    eci: 157.44
+    ci_low: 155.41
+    ci_high: 160.06
+  - model: gemini-3-8-flash
+    eci: 156.93
+    ci_low: 154.64
+    ci_high: 160.42
+  - model: llama
+    eci: 110.19
+    ci_low: 101.49
+    ci_high: 114.51
+    note: "Epoch entry: LLaMA-65B"
+  - model: llama-2
+    eci: 113.81
+    ci_low: 105.73
+    ci_high: 117.38
+    note: "Epoch entry: Llama 2-70B"
+  - model: llama-3
+    eci: 122.94
+    ci_low: 116.88
+    ci_high: 125.82
+    note: "Epoch entry: Llama 3-70B"
+  - model: llama-3-1-405b
+    eci: 128.75
+    ci_low: 123.92
+    ci_high: 130.66
+    note: "Epoch entry: Llama 3.1-405B"
+  - model: llama-3-1-70b
+    eci: 125.93
+    ci_low: 121.02
+    ci_high: 128.09
+    note: "Epoch entry: Llama 3.1-70B"
+  - model: llama-3-1-8b
+    eci: 116.58
+    ci_low: 106.25
+    ci_high: 121.63
+    note: "Epoch entry: Llama 3.1-8B"
+  - model: llama-3-3-70b
+    eci: 127.33
+    ci_low: 122.53
+    ci_high: 129.5
+  - model: llama-4-scout
+    eci: 129.65
+    ci_low: 124.76
+    ci_high: 131.35
+  - model: llama-4-maverick
+    eci: 132.2
+    ci_low: 127.95
+    ci_high: 134.11
+  - model: muse-spark
+    eci: 152.09
+    ci_low: 149.77
+    ci_high: 155.11
+  - model: muse-spark-1-1
+    eci: 154.31
+    ci_low: 152.17
+    ci_high: 157.1
+  - model: muse-spark-1-2
+    eci: 154.99
+    ci_low: 152.8
+    ci_high: 157.47
+  - model: muse-spark-1-3
+    eci: 156.86
+    ci_low: 154.73
+    ci_high: 159.56
+  - model: deepseek-coder
+    eci: 96.35
+    ci_low: 83.73
+    ci_high: 103.29
+    note: "Epoch entry: DeepSeek Coder 33B"
+  - model: deepseek-llm
+    eci: 110.56
+    ci_low: 94.93
+    ci_high: 116.78
+    note: "Epoch entry: DeepSeek LLM 67B"
+  - model: deepseek-v2
+    eci: 124.77
+    ci_low: 119.04
+    ci_high: 127.81
+    note: "Epoch entry: DeepSeek-V2 (MoE-236B, May 2024)"
+  - model: deepseek-v3
+    eci: 132.34
+    ci_low: 127.49
+    ci_high: 135.52
+    note: "Epoch entry: DeepSeek-V3"
+  - model: deepseek-r1
+    eci: 138.97
+    ci_low: 136.2
+    ci_high: 140.39
+    note: "Epoch entry: DeepSeek-R1"
+  - model: deepseek-r1-distill-qwen-32b
+    eci: 137.44
+    ci_low: 130.65
+    ci_high: 138.72
+    note: "Epoch entry: DeepSeek-R1-Distill-Qwen-32B"
+  - model: deepseek-v3-1
+    eci: 139.92
+    ci_low: 136.05
+    ci_high: 143.34
+    note: "Epoch entry: DeepSeek-V3.1"
+  - model: deepseek-v3-2-exp
+    eci: 145.01
+    ci_low: 142.4
+    ci_high: 147.3
+    note: "Epoch entry: DeepSeek-V3.2-Exp"
+  - model: deepseek-v3-2
+    eci: 146.27
+    ci_low: 144.42
+    ci_high: 147.49
+    note: "Epoch entry: DeepSeek-V3.2"
+  - model: deepseek-v4
+    eci: 149.13
+    ci_low: 147.44
+    ci_high: 150.93
+    note: "Epoch entry: DeepSeek-V4-Pro"
+  - model: deepseek-v4-flash
+    eci: 146.09
+    ci_low: 143.61
+    ci_high: 147.91
+    note: "Epoch entry: DeepSeek-V4-Flash"
+  - model: deepseek-v4-1-flash
+    eci: 155.0
+    ci_low: 148.77
+    ci_high: 157.56
+  - model: mistral-7b
+    eci: 112.23
+    ci_low: 103.22
+    ci_high: 116.26
+    note: "Epoch entry: Mistral 7B v0.1"
+  - model: mixtral-8x7b
+    eci: 118.48
+    ci_low: 111.32
+    ci_high: 121.29
+  - model: mistral-large
+    eci: 122.02
+    ci_low: 114.6
+    ci_high: 125.03
+  - model: mixtral-8x22b
+    eci: 122.03
+    ci_low: 115.14
+    ci_high: 124.35
+  - model: mistral-nemo
+    eci: 118.7
+    ci_low: 111.27
+    ci_high: 121.49
+  - model: mistral-large-2
+    eci: 127.54
+    ci_low: 122.66
+    ci_high: 129.69
+    note: "Epoch entry: Mistral Large 2 (Jul 2024)"
+  - model: mistral-small-3
+    eci: 127.08
+    ci_low: 122.33
+    ci_high: 128.99
+  - model: mistral-medium-3
+    eci: 134.07
+    ci_low: 130.45
+    ci_high: 135.62
+  - model: magistral-small
+    eci: 133.19
+    ci_low: 128.86
+    ci_high: 134.44
+    note: "Epoch entry: Magistral Small 1.0"
+  - model: mistral-small-3-1
+    eci: 127.49
+    ci_low: 122.58
+    ci_high: 129.41
+  - model: mistral-medium-3-5
+    eci: 141.39
+    ci_low: 138.38
+    ci_high: 143.65
+  - model: grok-2
+    eci: 130.48
+    ci_low: 125.87
+    ci_high: 132.25
+    note: "Epoch entry: Grok-2 (Dec 2024)"
+  - model: grok-3
+    eci: 138.33
+    ci_low: 135.34
+    ci_high: 139.77
+  - model: grok-3-mini
+    eci: 140.35
+    ci_low: 137.66
+    ci_high: 142.15
+    note: "Epoch entry: Grok-3 mini"
+  - model: grok-4
+    eci: 146.45
+    ci_low: 144.65
+    ci_high: 148.19
+  - model: grok-4-fast
+    eci: 144.21
+    ci_low: 141.89
+    ci_high: 146.43
+  - model: grok-4-20
+    eci: 152.02
+    ci_low: 149.32
+    ci_high: 154.38
+  - model: grok-4-5
+    eci: 153.99
+    ci_low: 152.34
+    ci_high: 156.08
+  - model: grok-4-6
+    eci: 156.61
+    ci_low: 154.66
+    ci_high: 158.93
+  - model: qwen
+    eci: 113.05
+    ci_low: 104.06
+    ci_high: 117.66
+    note: "Epoch entry: Qwen-14B"
+  - model: qwen2
+    eci: 125.29
+    ci_low: 118.98
+    ci_high: 127.0
+    note: "Epoch entry: Qwen2-72B"
+  - model: qwen2-5-72b
+    eci: 129.0
+    ci_low: 123.78
+    ci_high: 130.71
+    note: "Epoch entry: Qwen2.5-72B"
+  - model: qwen2-5-32b
+    eci: 128.53
+    ci_low: 123.48
+    ci_high: 130.03
+    note: "Epoch entry: Qwen2.5-32B"
+  - model: qwen2-5-coder-32b
+    eci: 119.5
+    ci_low: 110.29
+    ci_high: 125.13
+    note: "Epoch entry: Qwen2.5-Coder-32B"
+  - model: qwen2-5-max
+    eci: 132.53
+    ci_low: 128.07
+    ci_high: 135.52
+  - model: qwq-32b
+    eci: 137.6
+    ci_low: 133.14
+    ci_high: 141.7
+  - model: qwen3-235b-a22b
+    eci: 139.35
+    ci_low: 135.22
+    ci_high: 140.8
+    note: "Epoch entry: Qwen3-235B-A22B"
+  - model: qwen3-max
+    eci: 142.36
+    ci_low: 140.03
+    ci_high: 144.61
+  - model: qwen3-5
+    eci: 146.66
+    ci_low: 144.82
+    ci_high: 148.18
+  - model: qwen3-6-plus
+    eci: 147.63
+    ci_low: 145.41
+    ci_high: 149.31
+    note: "Epoch entry: Qwen 3.6 Plus"
+  - model: qwen3-7-max
+    eci: 153.72
+    ci_low: 151.88
+    ci_high: 156.02
+  - model: qwen3-8-max
+    eci: 156.55
+    ci_low: 154.54
+    ci_high: 158.81
+    note: "Epoch entry: Qwen 3.8 Max"
+  - model: kimi-k2
+    eci: 140.13
+    ci_low: 137.05
+    ci_high: 142.33
+    note: "Epoch entry: Kimi K2 (Jul 2025)"
+  - model: kimi-k2-thinking
+    eci: 146.02
+    ci_low: 143.35
+    ci_high: 147.6
+  - model: kimi-k2-5
+    eci: 148.04
+    ci_low: 146.45
+    ci_high: 149.32
+  - model: kimi-k2-6
+    eci: 151.05
+    ci_low: 149.12
+    ci_high: 152.81
+  - model: kimi-k3
+    eci: 157.61
+    ci_low: 154.92
+    ci_high: 160.41
+  - model: glm-4-7
+    eci: 143.51
+    ci_low: 141.25
+    ci_high: 145.6
+  - model: glm-5
+    eci: 145.84
+    ci_low: 143.88
+    ci_high: 147.68
+  - model: glm-5-1
+    eci: 149.9
+    ci_low: 147.97
+    ci_high: 151.61
+  - model: glm-5-2
+    eci: 151.78
+    ci_low: 149.83
+    ci_high: 153.95
+  - model: glm-5-3
+    eci: 155.76
+    ci_low: 153.65
+    ci_high: 158.34
+  - model: minimax-m2-5
+    eci: 146.69
+    ci_low: 142.27
+    ci_high: 147.91
+  - model: minimax-m2-7
+    eci: 145.86
+    ci_low: 138.24
+    ci_high: 148.04
+  - model: minimax-m3
+    eci: 147.03
+    ci_low: 142.71
+    ci_high: 149.82
+  - model: falcon-180b
+    eci: 112.15
+    ci_low: 103.49
+    ci_high: 119.15
+    note: "Epoch entry: Falcon-180B"
+  - model: yi-34b
+    eci: 117.41
+    ci_low: 108.8
+    ci_high: 120.6
+  - model: command-r-plus
+    eci: 119.34
+    ci_low: 110.88
+    ci_high: 125.36
+  - model: amazon-nova-pro
+    eci: 123.8
+    ci_low: 108.77
+    ci_high: 126.63
+  - model: phi-4
+    eci: 130.43
+    ci_low: 124.77
+    ci_high: 131.99
+  - model: nemotron-3-ultra
+    eci: 146.19
+    ci_low: 143.9
+    ci_high: 148.11
+  - model: inkling
+    eci: 148.59
+    ci_low: 145.68
+    ci_high: 150.63

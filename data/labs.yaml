@@ -53,7 +53,35 @@ labs:
     country: US
     homepage: https://x.ai
 
+  - id: alibaba
+    name: Alibaba (Qwen)
+    color: lab-9
+    order: 8
+    country: CN
+    homepage: https://qwen.ai
+
+  - id: moonshot
+    name: Moonshot AI
+    color: lab-10
+    order: 9
+    country: CN
+    homepage: https://www.moonshot.ai
+
+  - id: zhipu
+    name: Zhipu AI (Z.ai)
+    color: lab-11
+    order: 10
+    country: CN
+    homepage: https://z.ai
+
+  - id: minimax
+    name: MiniMax
+    color: lab-12
+    order: 11
+    country: CN
+    homepage: https://www.minimax.io
+
   - id: other
     name: Other
     color: lab-8
-    order: 8
+    order: 12
