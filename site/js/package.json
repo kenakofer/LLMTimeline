@@ -1,0 +1,5 @@
+{
+  "type": "module",
+  "private": true,
+  "_comment": "Marks site/js/*.js as ES modules. The browser already treats them as modules via <script type=\"module\">; this file exists so Node-based tooling and tests resolve them the same way. No dependencies — the site ships no third-party code."
+}

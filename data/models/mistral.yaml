@@ -1,0 +1,68 @@
+# Mistral
+
+lab: mistral
+
+models:
+  - id: mistral-large
+    name: Mistral Large
+    family: mistral-large
+    context_window: 32000
+    events:
+      - type: announced
+        date: 2024-02-26
+        precision: day
+        confidence: confirmed
+        source: https://mistral.ai/news/mistral-large/
+      - type: available
+        date: 2024-02-26
+        precision: day
+        confidence: confirmed
+        source: https://mistral.ai/news/mistral-large/
+
+  - id: mistral-large-2
+    name: Mistral Large 2
+    family: mistral-large
+    params: 123B
+    context_window: 128000
+    open_weights: true
+    events:
+      - type: announced
+        date: 2024-07-24
+        precision: day
+        confidence: confirmed
+        source: https://mistral.ai/news/mistral-large-2407/
+      - type: available
+        date: 2024-07-24
+        precision: day
+        confidence: confirmed
+        source: https://mistral.ai/news/mistral-large-2407/
+
+  - id: mistral-medium-3
+    name: Mistral Medium 3
+    family: mistral-3
+    context_window: 128000
+    events:
+      - type: announced
+        date: 2025-05-07
+        precision: day
+        confidence: confirmed
+        source: https://mistral.ai/news/mistral-medium-3/
+      - type: available
+        date: 2025-05-07
+        precision: day
+        confidence: confirmed
+        source: https://mistral.ai/news/mistral-medium-3/
+
+  - id: mistral-large-3
+    name: Mistral Large 3
+    family: mistral-3
+    open_weights: true
+    events:
+      - type: available
+        date: 2025-12-02
+        precision: day
+        confidence: likely
+        basis: >
+          Reported release date; no first-party announcement post located during
+          curation. Should be firmed up against mistral.ai/news.
+        source: https://www.llm-releases.com/models

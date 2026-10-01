@@ -1,0 +1,99 @@
+# xAI
+#
+# xAI publishes no deprecation page and no consistent first-party release-date
+# index, so most dates here rest on secondary reporting and carry `likely`.
+
+lab: xai
+
+models:
+  - id: grok-1
+    name: Grok-1
+    family: grok-1
+    params: 314B
+    context_window: 8000
+    open_weights: true
+    events:
+      - type: announced
+        date: 2023-11-04
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/Grok_(chatbot)
+      - type: available
+        date: 2024-03-17
+        precision: day
+        confidence: confirmed
+        basis: >
+          Announced in November 2023; weights open-sourced on 17 March 2024.
+        source: https://en.wikipedia.org/wiki/Grok_(chatbot)
+
+  - id: grok-2
+    name: Grok-2
+    family: grok-2
+    context_window: 128000
+    events:
+      - type: announced
+        date: 2024-08-13
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/Grok_(chatbot)
+      - type: available
+        date: 2024-08-13
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/Grok_(chatbot)
+
+  - id: grok-3
+    name: Grok-3
+    family: grok-3
+    context_window: 1000000
+    tags: [frontier, reasoning]
+    events:
+      - type: announced
+        date: 2025-02-17
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/Grok_(chatbot)
+      - type: available
+        date: 2025-02-17
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/Grok_(chatbot)
+
+  - id: grok-4
+    name: Grok 4
+    family: grok-4
+    tags: [frontier, reasoning]
+    events:
+      - type: available
+        date: 2025-07-09
+        precision: day
+        confidence: likely
+        basis: >
+          Widely reported as released on 9 July 2025.
+        source: https://en.wikipedia.org/wiki/Grok_(chatbot)
+
+  - id: grok-4-5
+    name: Grok 4.5
+    family: grok-4
+    tags: [frontier, reasoning]
+    notes: |
+      xAI's first model built specifically for coding and agentic work. Preceded
+      by a private beta.
+    events:
+      - type: limited
+        date: 2026-05-15
+        precision: month
+        confidence: rumored
+        basis: >
+          Reported as being in private beta ahead of the public launch; the start
+          of the beta period is not documented, so this date is a rough estimate
+          from leak coverage and should be treated as weak.
+        bounds: { latest: 2026-07-08 }
+        source: https://www.cometapi.com/grok-4-5-leak-xai-s-1-5t-v9-model-in-private-beta/
+      - type: available
+        date: 2026-07-08
+        precision: day
+        confidence: likely
+        basis: >
+          Reported public launch date.
+        source: https://explainx.ai/blog/grok-4-5-public-launch-spacexai-july-2026

@@ -1,0 +1,6 @@
+# Inkscape autosave / crash-recovery files
+*.svg.[0-9]*.svg
+
+# OS cruft
+.DS_Store
+Thumbs.db

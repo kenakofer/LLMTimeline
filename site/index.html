@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Frontier LLM Timeline</title>
+<meta name="description" content="Lifecycle timeline of frontier large language models — internal, announced, available, deprecated and retired dates, each with a cited source.">
+<meta property="og:title" content="Frontier LLM Timeline">
+<meta property="og:description" content="When frontier LLMs appeared, shipped, and were retired — with sources and explicit uncertainty.">
+<meta property="og:type" content="website">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="wrap">
+
+  <header class="page-head">
+    <h1>Frontier Large Language Model Timeline</h1>
+    <p class="subtitle">
+      When frontier models appeared, became available, and were retired. Every date is
+      sourced; uncertain dates are drawn as uncertain rather than rounded into false precision.
+    </p>
+  </header>
+
+  <div class="controls">
+    <div class="filter-group">
+      <span class="filter-label">Labs</span>
+      <span id="lab-filter"></span>
+    </div>
+    <label class="filter-chip"><input type="checkbox" id="show-retired" checked> Show retired</label>
+    <span class="spacer"></span>
+    <span class="count" id="count"></span>
+    <button id="reset-zoom" type="button">Reset zoom</button>
+    <button type="button" data-view="chart" aria-pressed="true">Chart</button>
+    <button type="button" data-view="table" aria-pressed="false">Table</button>
+  </div>
+
+  <div id="chart-view">
+    <div class="legend" id="legend"></div>
+    <div class="chart-container" id="chart" role="list" aria-label="Model lifecycle timeline"></div>
+  </div>
+
+  <div id="table-view" hidden></div>
+
+  <footer class="page-foot">
+    <p class="foot-note">
+      <strong>On uncertainty.</strong> Public release and deprecation dates come from
+      first-party documentation and are usually exact. Internal dates are not: labs
+      describe the gap between internal and public availability only vaguely, and
+      independent evaluators such as METR work from attested <em>windows</em> rather than
+      dates. Where a model has no sourced internal date, the bar simply starts at the
+      first known event and a faded ellipsis marks the unknown period — its width carries
+      no meaning. Hover any segment to read the reasoning behind an estimated date.
+    </p>
+    <p class="foot-note">
+      Data lives in <code>data/</code> as YAML, one file per lab, with a source URL per
+      datapoint. Superseded the
+      <a href="../archive/drawing.png">original hand-drawn version</a> (2023–2025).
+    </p>
+    <p>
+      <a property="dct:title" rel="cc:attributionURL" href="https://kenan.schaefkofer.com/timeline">Frontier LLM Timeline</a>
+      by <a rel="cc:attributionURL dct:creator" property="cc:attributionName" href="https://kenan.schaefkofer.com">Kenan Schaefkofer</a>
+      is licensed under
+      <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank" rel="license noopener noreferrer">CC BY-NC-SA 4.0</a>.
+    </p>
+  </footer>
+
+</div>
+
+<!-- data.js sets window.TIMELINE_DATA so the page also works from file://,
+     where fetch() is blocked by CORS. main.js falls back to data.json. -->
+<script src="data.js"></script>
+<script type="module" src="js/main.js"></script>
+</body>
+</html>

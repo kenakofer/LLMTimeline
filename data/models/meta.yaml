@@ -1,0 +1,111 @@
+# Meta
+#
+# Llama weights are not retired once published, so bars run open-ended.
+# Llama 4 Behemoth is the dataset's clearest "announced but never shipped" case
+# and is deliberately kept: a bar that stops at `announced` is the honest record
+# of a model that was previewed, delayed, and abandoned.
+
+lab: meta
+
+models:
+  - id: llama-3-1-405b
+    name: Llama 3.1 405B
+    family: llama-3
+    params: 405B
+    context_window: 128000
+    open_weights: true
+    tags: [frontier]
+    events:
+      - type: announced
+        date: 2024-07-23
+        precision: day
+        confidence: confirmed
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+      - type: available
+        date: 2024-07-23
+        precision: day
+        confidence: confirmed
+        source: https://ai.meta.com/blog/meta-llama-3-1/
+
+  - id: llama-4-scout
+    name: Llama 4 Scout
+    family: llama-4
+    params: 109B (17B active)
+    context_window: 10000000
+    open_weights: true
+    events:
+      - type: announced
+        date: 2025-04-05
+        precision: day
+        confidence: confirmed
+        source: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
+      - type: available
+        date: 2025-04-05
+        precision: day
+        confidence: confirmed
+        source: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
+
+  - id: llama-4-maverick
+    name: Llama 4 Maverick
+    family: llama-4
+    params: 400B (17B active)
+    context_window: 1000000
+    open_weights: true
+    tags: [frontier]
+    events:
+      - type: announced
+        date: 2025-04-05
+        precision: day
+        confidence: confirmed
+        source: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
+      - type: available
+        date: 2025-04-05
+        precision: day
+        confidence: confirmed
+        source: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
+
+  - id: llama-4-behemoth
+    name: Llama 4 Behemoth
+    family: llama-4
+    params: ~2T
+    tags: [frontier, unreleased]
+    notes: |
+      Previewed at the Llama 4 launch as "still in training". Repeatedly delayed
+      through 2025 amid reported capability concerns and never publicly released.
+      This entry has no `available` event by design — the bar ends at the
+      announcement, which is the accurate record.
+    events:
+      - type: announced
+        date: 2025-04-05
+        precision: day
+        confidence: confirmed
+        basis: >
+          Announced alongside Scout and Maverick but described as still in
+          training, with no release date given. Subsequently delayed and, as of
+          July 2026, never publicly released.
+        source: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
+
+  - id: muse-spark
+    name: Muse Spark
+    family: muse
+    tags: [closed-weights]
+    notes: |
+      A closed-weight model from Meta Superintelligence Labs, marking a departure
+      from Meta's open-weight strategy. Described in contemporaneous commentary as
+      not frontier-class, but a step forward for Meta.
+    events:
+      - type: announced
+        date: 2026-04-08
+        precision: day
+        confidence: likely
+        basis: >
+          Reported launch date for Meta's pivot to a closed-weight model under
+          Meta Superintelligence Labs.
+        source: https://en.wikipedia.org/wiki/Llama_(language_model)
+      - type: available
+        date: 2026-04-08
+        precision: day
+        confidence: likely
+        basis: >
+          Reported as launched on the announcement date.
+        source: https://en.wikipedia.org/wiki/Llama_(language_model)

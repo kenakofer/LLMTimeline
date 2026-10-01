@@ -1,0 +1,221 @@
+# Google DeepMind
+#
+# The Gemini API deprecations page is unusually good: it lists release AND
+# shutdown dates in one table.
+#   https://ai.google.dev/gemini-api/docs/deprecations
+#
+# Important caveat, stated on that page: "the shutdown dates listed in the table
+# indicate the earliest possible dates on which a model might be retired". Those
+# are therefore recorded as `likely` with `bounds.earliest`, exactly as Anthropic's
+# "not sooner than" retirement floors are.
+
+lab: google
+
+models:
+  - id: gemini-1-5-pro
+    name: Gemini 1.5 Pro
+    family: gemini-1-5
+    context_window: 2000000
+    tags: [frontier]
+    events:
+      - type: announced
+        date: 2024-02-15
+        precision: day
+        confidence: confirmed
+        source: https://blog.google/technology/ai/google-gemini-next-generation-model-february-2024/
+      - type: available
+        date: 2024-05-14
+        precision: day
+        confidence: likely
+        basis: >
+          Announced in limited preview in February 2024; general availability at
+          Google I/O in May 2024.
+        source: https://blog.google/technology/ai/google-gemini-update-flash-ai-assistant-io-2024/
+
+  - id: gemini-2-0-flash
+    name: Gemini 2.0 Flash
+    family: gemini-2-0
+    api_name: gemini-2.0-flash-001
+    context_window: 1048576
+    events:
+      - type: announced
+        date: 2024-12-11
+        precision: day
+        confidence: confirmed
+        basis: >
+          Announced as an experimental model in December 2024; general
+          availability followed on 5 February 2025.
+        source: https://blog.google/technology/google-deepmind/google-gemini-ai-update-december-2024/
+      - type: available
+        date: 2025-02-05
+        precision: day
+        confidence: confirmed
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+      - type: retired
+        date: 2026-06-01
+        precision: day
+        confidence: likely
+        basis: >
+          Google publishes shutdown dates as "the earliest possible dates on which
+          a model might be retired", with advance notice before the exact date.
+        bounds: { earliest: 2026-06-01 }
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+
+  - id: gemini-2-0-flash-lite
+    name: Gemini 2.0 Flash-Lite
+    family: gemini-2-0
+    api_name: gemini-2.0-flash-lite-001
+    context_window: 1048576
+    events:
+      - type: available
+        date: 2025-02-25
+        precision: day
+        confidence: confirmed
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+      - type: retired
+        date: 2026-06-01
+        precision: day
+        confidence: likely
+        basis: >
+          Published as an earliest-possible shutdown date, not a scheduled retirement.
+        bounds: { earliest: 2026-06-01 }
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+
+  - id: gemini-2-5-pro
+    name: Gemini 2.5 Pro
+    family: gemini-2-5
+    api_name: gemini-2.5-pro
+    context_window: 1048576
+    tags: [frontier, reasoning]
+    notes: |
+      Went through three dated preview snapshots (03-25, 05-06, 06-05) before
+      general availability on 17 June 2025. The previews are not listed as
+      separate models here; the limited-access period they represent is recorded
+      as the `limited` event below.
+    events:
+      - type: limited
+        date: 2025-03-25
+        precision: day
+        confidence: confirmed
+        basis: >
+          First preview snapshot (gemini-2.5-pro-preview-03-25) released 25 March
+          2025; two further preview snapshots followed before general availability.
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+      - type: available
+        date: 2025-06-17
+        precision: day
+        confidence: confirmed
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+      - type: retired
+        date: 2026-10-16
+        precision: day
+        confidence: likely
+        basis: >
+          Published as an earliest-possible shutdown date, not a scheduled retirement.
+        bounds: { earliest: 2026-10-16 }
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+
+  - id: gemini-2-5-flash
+    name: Gemini 2.5 Flash
+    family: gemini-2-5
+    api_name: gemini-2.5-flash
+    context_window: 1048576
+    tags: [reasoning]
+    events:
+      - type: available
+        date: 2025-06-17
+        precision: day
+        confidence: confirmed
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+      - type: retired
+        date: 2026-10-16
+        precision: day
+        confidence: likely
+        basis: >
+          Published as an earliest-possible shutdown date, not a scheduled retirement.
+        bounds: { earliest: 2026-10-16 }
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+
+  - id: gemini-2-5-flash-lite
+    name: Gemini 2.5 Flash-Lite
+    family: gemini-2-5
+    api_name: gemini-2.5-flash-lite
+    context_window: 1048576
+    events:
+      - type: available
+        date: 2025-07-22
+        precision: day
+        confidence: confirmed
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+      - type: retired
+        date: 2026-10-16
+        precision: day
+        confidence: likely
+        basis: >
+          Published as an earliest-possible shutdown date, not a scheduled retirement.
+        bounds: { earliest: 2026-10-16 }
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+
+  - id: gemini-3-pro
+    name: Gemini 3 Pro
+    family: gemini-3
+    api_name: gemini-3-pro-preview
+    tags: [frontier, reasoning]
+    notes: |
+      Launched across Search, the Gemini app, AI Studio, Vertex AI, the Gemini CLI
+      and the Antigravity IDE. Deep Think shipped as a higher-intensity reasoning
+      mode for premium tiers.
+    events:
+      - type: announced
+        date: 2025-11-18
+        precision: day
+        confidence: confirmed
+        source: https://blog.google/products/gemini/gemini-3/
+      - type: available
+        date: 2025-11-18
+        precision: day
+        confidence: confirmed
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+      - type: retired
+        date: 2026-03-09
+        precision: day
+        confidence: confirmed
+        basis: >
+          The gemini-3-pro-preview endpoint was shut down on this date; the preview
+          snapshot was superseded rather than the model line ending.
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+
+  - id: gemini-3-1-pro
+    name: Gemini 3.1 Pro
+    family: gemini-3
+    tags: [frontier, reasoning]
+    events:
+      - type: available
+        date: 2026-02-26
+        precision: month
+        confidence: estimated
+        basis: >
+          Released as "Gemini 3.1 Pro Preview" in the Gemini 3 series. No
+          first-party announcement date located; the 3.1 line's other members
+          (gemini-3.1-flash-image-preview) are dated 26 February 2026 on the
+          deprecations page, so that date is used as a proxy.
+        bounds: { earliest: 2026-02-01, latest: 2026-03-03 }
+        source: https://ai.google.dev/gemini-api/docs/deprecations
+
+  - id: gemini-3-5-pro
+    name: Gemini 3.5 Pro
+    family: gemini-3-5
+    tags: [frontier, reasoning]
+    notes: |
+      Announced at Google I/O on 19 May 2026 but not released as of late July 2026.
+      Reporting has repeatedly pointed to a July 2026 target that has slipped. This
+      entry deliberately has no `available` event — the bar honestly ends at the
+      announcement.
+    events:
+      - type: announced
+        date: 2026-05-19
+        precision: day
+        confidence: confirmed
+        basis: >
+          Announced at Google I/O 2026. Still unreleased as of 25 July 2026.
+        source: https://blog.google/technology/ai/google-io-2026/

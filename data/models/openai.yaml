@@ -1,0 +1,413 @@
+# OpenAI
+#
+# Deprecation dates from the first-party deprecations page:
+#   https://developers.openai.com/api/docs/deprecations
+# That page announces a deprecation and a shutdown date together, so the
+# announcement date of the deprecation notice is recorded as `deprecated` and the
+# shutdown date as `retired`.
+#
+# Note the page moved host during 2026 (platform.openai.com -> developers.openai.com);
+# scripts/check-links.mjs exists because of exactly this.
+
+lab: openai
+
+models:
+  - id: gpt-3-5-turbo
+    name: GPT-3.5 Turbo
+    family: gpt-3-5
+    api_name: gpt-3.5-turbo-0125
+    context_window: 16000
+    events:
+      - type: announced
+        date: 2023-11-06
+        precision: day
+        confidence: confirmed
+        basis: >
+          The 0125 snapshot is dated January 2024; the 0613 snapshot it replaced was
+          deprecated on 6 November 2023, which is the first first-party date available
+          for this model line.
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: available
+        date: 2024-01-25
+        precision: day
+        confidence: likely
+        basis: >
+          Snapshot name encodes the date (0125). No separate announcement post for
+          this snapshot.
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: deprecated
+        date: 2026-04-22
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: retired
+        date: 2026-10-23
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+
+  - id: gpt-4
+    name: GPT-4
+    family: gpt-4
+    api_name: gpt-4-0613
+    context_window: 8000
+    tags: [frontier]
+    events:
+      - type: announced
+        date: 2023-03-14
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/gpt-4-research/
+      - type: available
+        date: 2023-03-14
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/gpt-4-research/
+      - type: deprecated
+        date: 2026-04-22
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: retired
+        date: 2026-10-23
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+
+  - id: gpt-4-turbo
+    name: GPT-4 Turbo
+    family: gpt-4
+    api_name: gpt-4-turbo
+    context_window: 128000
+    events:
+      - type: announced
+        date: 2023-11-06
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/new-models-and-developer-products-announced-at-devday/
+      - type: available
+        date: 2024-04-09
+        precision: day
+        confidence: likely
+        basis: >
+          Announced in preview at DevDay on 6 November 2023; general availability
+          followed in April 2024.
+        source: https://openai.com/index/new-models-and-developer-products-announced-at-devday/
+      - type: deprecated
+        date: 2026-04-22
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: retired
+        date: 2026-10-23
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+
+  - id: gpt-4o
+    name: GPT-4o
+    family: gpt-4o
+    api_name: gpt-4o
+    context_window: 128000
+    tags: [frontier, multimodal]
+    events:
+      - type: announced
+        date: 2024-05-13
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/hello-gpt-4o/
+      - type: available
+        date: 2024-05-13
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/hello-gpt-4o/
+      - type: deprecated
+        date: 2026-02-15
+        precision: month
+        confidence: likely
+        basis: >
+          Reported as deprecated in February 2026 and fully retired across ChatGPT
+          on 3 April 2026. The exact deprecation announcement date is not stated in
+          first-party documentation.
+        source: https://www.llm-releases.com/models
+      - type: retired
+        date: 2026-04-03
+        precision: day
+        confidence: likely
+        basis: >
+          Retirement across ChatGPT reported for 3 April 2026.
+        source: https://www.llm-releases.com/models
+
+  - id: o1
+    name: o1
+    family: o-series
+    api_name: o1-2024-12-17
+    context_window: 128000
+    tags: [frontier, reasoning]
+    notes: |
+      First of OpenAI's reasoning models to reach general availability.
+    events:
+      - type: announced
+        date: 2024-09-12
+        precision: day
+        confidence: confirmed
+        basis: >
+          Announced as o1-preview on 12 September 2024; the full o1 model followed
+          on 5 December 2024.
+        source: https://openai.com/index/introducing-openai-o1-preview/
+      - type: available
+        date: 2024-12-05
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/o1-and-new-tools-for-developers/
+      - type: deprecated
+        date: 2026-04-22
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: retired
+        date: 2026-10-23
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+
+  - id: o3-mini
+    name: o3-mini
+    family: o-series
+    api_name: o3-mini-2025-01-31
+    context_window: 200000
+    tags: [reasoning]
+    events:
+      - type: announced
+        date: 2025-01-31
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/openai-o3-mini/
+      - type: available
+        date: 2025-01-31
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/openai-o3-mini/
+      - type: deprecated
+        date: 2026-04-22
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: retired
+        date: 2026-10-23
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+
+  - id: gpt-4-1
+    name: GPT-4.1
+    family: gpt-4-1
+    api_name: gpt-4.1
+    context_window: 1000000
+    events:
+      - type: announced
+        date: 2025-04-14
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/gpt-4-1/
+      - type: available
+        date: 2025-04-14
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/gpt-4-1/
+
+  - id: o3
+    name: o3
+    family: o-series
+    api_name: o3-2025-04-16
+    context_window: 200000
+    tags: [frontier, reasoning]
+    events:
+      - type: announced
+        date: 2024-12-20
+        precision: day
+        confidence: confirmed
+        basis: >
+          Previewed publicly on 20 December 2024 but not released; general
+          availability followed on 16 April 2025.
+        source: https://openai.com/index/o3-o4-mini/
+      - type: available
+        date: 2025-04-16
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/o3-o4-mini/
+      - type: deprecated
+        date: 2026-06-11
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: retired
+        date: 2026-12-11
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+
+  - id: gpt-5
+    name: GPT-5
+    family: gpt-5
+    api_name: gpt-5-2025-08-07
+    context_window: 400000
+    tags: [frontier, reasoning]
+    events:
+      - type: announced
+        date: 2025-08-07
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/introducing-gpt-5/
+      - type: available
+        date: 2025-08-07
+        precision: day
+        confidence: confirmed
+        source: https://openai.com/index/introducing-gpt-5/
+      - type: deprecated
+        date: 2026-06-11
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: retired
+        date: 2026-12-11
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+
+  - id: gpt-5-pro
+    name: GPT-5 Pro
+    family: gpt-5
+    api_name: gpt-5-pro-2025-10-06
+    tags: [frontier, reasoning]
+    events:
+      - type: available
+        date: 2025-10-06
+        precision: day
+        confidence: likely
+        basis: >
+          Snapshot ID encodes the release date (2025-10-06). No separate
+          first-party announcement post identified.
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: deprecated
+        date: 2026-06-11
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: retired
+        date: 2026-12-11
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+
+  - id: gpt-5-1
+    name: GPT-5.1
+    family: gpt-5
+    context_window: 400000
+    tags: [frontier, reasoning]
+    events:
+      - type: announced
+        date: 2025-11-12
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/GPT-5.1
+      - type: available
+        date: 2025-11-12
+        precision: day
+        confidence: confirmed
+        basis: >
+          Additional variants followed on 19 November 2025.
+        source: https://en.wikipedia.org/wiki/GPT-5.1
+
+  - id: gpt-5-2
+    name: GPT-5.2
+    family: gpt-5
+    tags: [frontier, reasoning]
+    events:
+      - type: announced
+        date: 2025-12-11
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/GPT-5.2
+      - type: available
+        date: 2025-12-11
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/GPT-5.2
+      - type: deprecated
+        date: 2026-05-08
+        precision: day
+        confidence: confirmed
+        basis: >
+          The gpt-5.2-chat-latest alias was deprecated on this date.
+        source: https://developers.openai.com/api/docs/deprecations
+      - type: retired
+        date: 2026-08-10
+        precision: day
+        confidence: confirmed
+        source: https://developers.openai.com/api/docs/deprecations
+
+  - id: gpt-5-4
+    name: GPT-5.4
+    family: gpt-5
+    tags: [frontier, reasoning]
+    events:
+      - type: announced
+        date: 2026-03-05
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/GPT-5.4
+      - type: available
+        date: 2026-03-05
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/GPT-5.4
+
+  - id: gpt-5-5
+    name: GPT-5.5
+    family: gpt-5
+    tags: [frontier, reasoning]
+    events:
+      - type: announced
+        date: 2026-04-23
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/GPT-5.5
+      - type: available
+        date: 2026-04-23
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/GPT-5.5
+
+  # GPT-5.6 is the second clear instance of the limited -> general pattern that
+  # motivated the events[] schema: a restricted preview to named partners, then a
+  # public rollout two weeks later.
+  - id: gpt-5-6-sol
+    name: GPT-5.6 Sol
+    family: gpt-5-6
+    api_name: gpt-5.6-sol
+    tags: [frontier, reasoning]
+    notes: |
+      Flagship of the GPT-5.6 line, released alongside Terra and Luna. Described
+      by OpenAI as its best coding model, aimed at complex reasoning and agentic
+      workflows.
+    events:
+      - type: limited
+        date: 2026-06-26
+        precision: day
+        confidence: likely
+        basis: >
+          Released as a limited preview to a "small group of trusted partners",
+          reported as constrained by government restrictions, ahead of the public
+          rollout on 9 July 2026.
+        source: https://en.wikipedia.org/wiki/GPT-5.6
+      - type: announced
+        date: 2026-07-09
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/GPT-5.6
+      - type: available
+        date: 2026-07-09
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/GPT-5.6

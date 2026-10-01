@@ -1,0 +1,59 @@
+# Lab registry. `order` controls row grouping top-to-bottom in the chart.
+# `color` is a token resolved by the renderer's palette, not a literal hex value —
+# keeping hues out of the data files means the palette can be retuned for
+# light/dark mode without touching the dataset.
+
+labs:
+  - id: openai
+    name: OpenAI
+    color: lab-1
+    order: 1
+    country: US
+    homepage: https://openai.com
+
+  - id: anthropic
+    name: Anthropic
+    color: lab-2
+    order: 2
+    country: US
+    homepage: https://www.anthropic.com
+
+  - id: google
+    name: Google DeepMind
+    color: lab-3
+    order: 3
+    country: US
+    homepage: https://deepmind.google
+
+  - id: meta
+    name: Meta
+    color: lab-4
+    order: 4
+    country: US
+    homepage: https://ai.meta.com
+
+  - id: deepseek
+    name: DeepSeek
+    color: lab-5
+    order: 5
+    country: CN
+    homepage: https://www.deepseek.com
+
+  - id: mistral
+    name: Mistral
+    color: lab-6
+    order: 6
+    country: FR
+    homepage: https://mistral.ai
+
+  - id: xai
+    name: xAI
+    color: lab-7
+    order: 7
+    country: US
+    homepage: https://x.ai
+
+  - id: other
+    name: Other
+    color: lab-8
+    order: 8

@@ -1,0 +1,109 @@
+# DeepSeek
+#
+# DeepSeek publishes no deprecation page and generally does not retire open-weight
+# models — released weights stay available regardless of API status. Bars therefore
+# run open-ended by design, which is an accurate representation rather than missing
+# data.
+
+lab: deepseek
+
+models:
+  - id: deepseek-v2
+    name: DeepSeek V2
+    family: deepseek-v2
+    params: 236B (21B active)
+    context_window: 128000
+    open_weights: true
+    events:
+      - type: announced
+        date: 2024-05-06
+        precision: day
+        confidence: confirmed
+        source: https://api-docs.deepseek.com/updates/
+      - type: available
+        date: 2024-05-06
+        precision: day
+        confidence: confirmed
+        source: https://api-docs.deepseek.com/updates/
+
+  - id: deepseek-v3
+    name: DeepSeek V3
+    family: deepseek-v3
+    params: 671B (37B active)
+    context_window: 128000
+    open_weights: true
+    tags: [frontier]
+    events:
+      - type: announced
+        date: 2024-12-26
+        precision: day
+        confidence: confirmed
+        source: https://api-docs.deepseek.com/updates/
+      - type: available
+        date: 2024-12-26
+        precision: day
+        confidence: confirmed
+        source: https://api-docs.deepseek.com/updates/
+
+  - id: deepseek-r1
+    name: DeepSeek R1
+    family: deepseek-r1
+    params: 671B (37B active)
+    context_window: 128000
+    open_weights: true
+    tags: [frontier, reasoning]
+    notes: |
+      Open-weight reasoning model whose release prompted widespread reassessment
+      of the cost of frontier-level reasoning capability.
+    events:
+      - type: announced
+        date: 2025-01-20
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/DeepSeek_(chatbot)
+      - type: available
+        date: 2025-01-20
+        precision: day
+        confidence: confirmed
+        source: https://en.wikipedia.org/wiki/DeepSeek_(chatbot)
+
+  - id: deepseek-v3-1
+    name: DeepSeek V3.1
+    family: deepseek-v3
+    open_weights: true
+    events:
+      - type: available
+        date: 2025-08-15
+        precision: month
+        confidence: likely
+        basis: >
+          Released in August 2025; the change log does not give an exact day.
+        source: https://api-docs.deepseek.com/updates/
+
+  - id: deepseek-v3-2
+    name: DeepSeek V3.2
+    family: deepseek-v3
+    open_weights: true
+    events:
+      - type: available
+        date: 2025-12-01
+        precision: day
+        confidence: confirmed
+        source: https://api-docs.deepseek.com/updates/
+
+  - id: deepseek-v4
+    name: DeepSeek V4
+    family: deepseek-v4
+    open_weights: true
+    tags: [frontier]
+    notes: |
+      Released in two variants, V4-Pro and V4-Flash.
+    events:
+      - type: available
+        date: 2026-04-24
+        precision: day
+        confidence: likely
+        basis: >
+          Reported release date for the V4 line (V4-Pro and V4-Flash). No
+          first-party announcement post located.
+        source: https://www.bentoml.com/blog/the-complete-guide-to-deepseek-models-from-v3-to-r1-and-beyond
