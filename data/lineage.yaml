@@ -1,0 +1,35 @@
+# Lineage edges: where a model came from. See data/SCHEMA.md § Lineage.
+#
+# Every edge cites a source, including rumors — a dashed line still has to be
+# defensible. Edges point parent -> child.
+
+edges:
+  - from: deepseek-v3
+    to: deepseek-r1
+    type: finetune
+    confidence: confirmed
+    basis: >
+      Model card: "DeepSeek-R1-Zero & DeepSeek-R1 are trained based on
+      DeepSeek-V3-Base." The parent node is the V3 release; the shared base
+      checkpoint is not tracked separately.
+    source: https://huggingface.co/deepseek-ai/DeepSeek-R1
+
+  - from: deepseek-v3
+    to: deepseek-v3-1
+    type: finetune
+    confidence: confirmed
+    basis: >
+      Model card: V3.1 "is post-trained on the top of DeepSeek-V3.1-Base, which
+      is built upon the original V3 base checkpoint" via extended long-context
+      training.
+    source: https://huggingface.co/deepseek-ai/DeepSeek-V3.1
+
+  - from: deepseek-v3-1
+    to: deepseek-v3-2
+    type: finetune
+    confidence: likely
+    basis: >
+      Two-step chain through untracked intermediates. V3.2-Exp "builds upon
+      V3.1-Terminus" (a V3.1 update), and the V3.2 model card lists
+      DeepSeek-V3.2-Exp-Base as its base model.
+    source: https://huggingface.co/deepseek-ai/DeepSeek-V3.2-Exp

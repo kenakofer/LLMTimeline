@@ -1,0 +1,15 @@
+# Epoch Capabilities Index (ECI) scores — the capability axis.
+#
+# Imported from Epoch AI, not curated by hand. Kept apart from data/models/ so
+# that a re-import never touches lifecycle facts. See data/SCHEMA.md § Scores.
+#
+# source/retrieved are required once any score is present:
+#   source: <Epoch dataset URL>
+#   retrieved: YYYY-MM-DD
+#   scores:
+#     - model: <model id>
+#       eci: 150.2
+#       ci_low: 147.9      # optional
+#       ci_high: 152.6     # optional
+
+scores: []

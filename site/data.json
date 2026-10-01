@@ -1,5 +1,5 @@
 {
-  "schema_version": 1,
+  "schema_version": 2,
   "event_types": [
     "training_cutoff",
     "internal",
@@ -8,6 +8,13 @@
     "available",
     "deprecated",
     "retired"
+  ],
+  "edge_types": [
+    "finetune",
+    "distill",
+    "quantized",
+    "variant",
+    "influence"
   ],
   "domain": {
     "start": "2023-03-14",
@@ -2140,6 +2147,7 @@
       "context_window": 128000,
       "params": "671B (37B active)",
       "open_weights": true,
+      "hf_id": "deepseek-ai/DeepSeek-V3",
       "events": [
         {
           "type": "announced",
@@ -2169,6 +2177,7 @@
       "context_window": 128000,
       "params": "671B (37B active)",
       "open_weights": true,
+      "hf_id": "deepseek-ai/DeepSeek-R1",
       "notes": "Open-weight reasoning model whose release prompted widespread reassessment\nof the cost of frontier-level reasoning capability.",
       "events": [
         {
@@ -2193,6 +2202,7 @@
       "name": "DeepSeek V3.1",
       "family": "deepseek-v3",
       "open_weights": true,
+      "hf_id": "deepseek-ai/DeepSeek-V3.1",
       "events": [
         {
           "type": "available",
@@ -2210,6 +2220,7 @@
       "name": "DeepSeek V3.2",
       "family": "deepseek-v3",
       "open_weights": true,
+      "hf_id": "deepseek-ai/DeepSeek-V3.2",
       "events": [
         {
           "type": "available",
@@ -2457,5 +2468,38 @@
         }
       ]
     }
-  ]
+  ],
+  "lineage": [
+    {
+      "from": "deepseek-v3",
+      "to": "deepseek-r1",
+      "type": "finetune",
+      "confidence": "confirmed",
+      "basis": "Model card: \"DeepSeek-R1-Zero & DeepSeek-R1 are trained based on DeepSeek-V3-Base.\" The parent node is the V3 release; the shared base checkpoint is not tracked separately.",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-R1"
+    },
+    {
+      "from": "deepseek-v3",
+      "to": "deepseek-v3-1",
+      "type": "finetune",
+      "confidence": "confirmed",
+      "basis": "Model card: V3.1 \"is post-trained on the top of DeepSeek-V3.1-Base, which is built upon the original V3 base checkpoint\" via extended long-context training.",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V3.1"
+    },
+    {
+      "from": "deepseek-v3-1",
+      "to": "deepseek-v3-2",
+      "type": "finetune",
+      "confidence": "likely",
+      "basis": "Two-step chain through untracked intermediates. V3.2-Exp \"builds upon V3.1-Terminus\" (a V3.1 update), and the V3.2 model card lists DeepSeek-V3.2-Exp-Base as its base model.",
+      "source": "https://huggingface.co/deepseek-ai/DeepSeek-V3.2-Exp"
+    }
+  ],
+  "scores": {
+    "eci": {
+      "source": null,
+      "retrieved": null,
+      "values": []
+    }
+  }
 }

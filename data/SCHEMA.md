@@ -3,9 +3,10 @@
 This document is authoritative. `scripts/validate.mjs` enforces the mechanical parts;
 the judgement calls are described here and are the curator's responsibility.
 
-The dataset records **when frontier models existed and were available** — not how good they
-were, how much they cost, or how large they are. Those attributes are optional metadata.
-Lifecycle dates are the product.
+The dataset records **when frontier models existed and were available, and where they came
+from**. Lifecycle dates and lineage edges are the product. Size, modalities and licence are
+optional metadata. Capability scores are imported from an external source and kept in their
+own file (see [Scores](#scores)), never mixed into curated facts. Price is not recorded.
 
 ---
 
@@ -15,6 +16,8 @@ Lifecycle dates are the product.
 |---|---|
 | `data/labs.yaml` | Lab identity, display name, colour token, row order |
 | `data/models/<lab>.yaml` | Models for one lab |
+| `data/lineage.yaml` | Provenance edges between models |
+| `data/scores/eci.yaml` | Imported Epoch Capabilities Index scores |
 
 One file per lab keeps diffs small and lets separate curation passes touch separate files.
 
@@ -28,6 +31,7 @@ models:
   - id: claude-opus-4-1       # stable, kebab-case, never reused or renamed
     name: Claude Opus 4.1     # display name, as the lab writes it
     family: claude-4          # optional; groups related models
+    product_line: opus        # optional; sub-track within the lab's lane (kebab-case)
     api_name: claude-opus-4-1-20250805   # optional; exact API identifier
     tags: [frontier, reasoning]          # optional
     notes: |                             # optional prose for the detail panel
@@ -38,6 +42,12 @@ models:
 
 `id` is a permanent key. If a lab renames a model, keep the `id` and change `name`.
 
+Model fields are a closed set — the validator rejects unknown keys, so `license` (US spelling)
+or `modality` fails loudly instead of silently vanishing from the build.
+
+`product_line` is how same-lab succession is shown: Opus 4 → 4.1 → 4.5 sit on one sub-track
+and read as a sequence from position alone. Succession is **not** a lineage edge.
+
 ### Optional metadata
 
 Recorded only where it is cheap and reliable. Never blocks a model from being added.
@@ -46,6 +56,13 @@ Recorded only where it is cheap and reliable. Never blocks a model from being ad
     context_window: 200000    # tokens
     params: "671B (37B active)"   # free text; MoE makes a number misleading
     open_weights: true
+    licence: MIT              # free text; only meaningful with open_weights
+    hf_id: deepseek-ai/DeepSeek-V3   # Hugging Face repo; open-weight models only
+    epoch_id: DeepSeek-V3     # key in Epoch AI's datasets, for joining imports
+    org: EleutherAI           # real organisation; expected when lab is "other"
+    modalities:
+      input: [text, image]    # each from: text | image | audio | video
+      output: [text]
 ```
 
 ---
@@ -174,6 +191,71 @@ the vocabulary doesn't cover — investigate, don't force it.
 
 **Derived, not stored.** Model status (active/deprecated/retired) is computed from the latest
 event, never written as a field. Storing it invites drift.
+
+---
+
+## Lineage
+
+`data/lineage.yaml` holds directed edges, parent → child. An edge is a claim about where a
+model came from, so it carries the same `confidence` / `basis` / `source` fields as an event.
+
+```yaml
+edges:
+  - from: deepseek-v3
+    to: deepseek-r1
+    type: finetune
+    confidence: confirmed
+    basis: >
+      Model card: "DeepSeek-R1-Zero & DeepSeek-R1 are trained based on DeepSeek-V3-Base."
+    source: https://huggingface.co/deepseek-ai/DeepSeek-R1
+```
+
+### Edge types (closed set)
+
+| type | meaning |
+|---|---|
+| `finetune` | Child's weights start from the parent's: post-training, RL, continued pretraining. |
+| `distill` | Child trained on the parent's outputs or logits; weights not inherited. |
+| `quantized` | Reduced-precision copy of the parent's weights. |
+| `variant` | A configuration of the parent release — size, context length, mode. |
+| `influence` | Methods, data or architecture borrowed, usually across labs, without weight inheritance. |
+
+### Rules
+
+**Every edge cites a `source`** — including rumors. Unlike events, there is no
+`basis`-only exemption: a line on the chart is a stronger visual claim than a faded date.
+`rumored` and `estimated` edges render dashed and also need a `basis`.
+
+**Documented derivation only, plus cited influence.** Same-lab succession (Sonnet 4 → 4.5)
+is not an edge unless the lab documents weight inheritance; `product_line` covers it.
+
+**Collapse untracked intermediates.** When the real chain passes through checkpoints not in
+the dataset (V3.1-Terminus → V3.2-Exp → V3.2), draw one edge between tracked models, quote
+the chain in `basis`, and use `likely` rather than `confirmed`.
+
+**Acyclic.** The validator rejects cycles. A child first appearing before its parent is a
+warning — imprecise dates can cause it — and is worth checking.
+
+---
+
+## Scores
+
+`data/scores/eci.yaml` holds Epoch Capabilities Index scores for the capability view.
+Imported, not curated: a re-import replaces the file wholesale.
+
+```yaml
+source: https://epoch.ai/...    # dataset URL; required once any score is present
+retrieved: 2026-10-01           # required once any score is present
+scores:
+  - model: deepseek-v3          # model id
+    eci: 150.2
+    ci_low: 147.9               # optional
+    ci_high: 152.6              # optional
+    note: ...                   # optional
+```
+
+A model with no score is not an error — it sits in the "unscored" strip in capability view.
+Never hand-estimate a score into this file.
 
 ---
 

@@ -32,6 +32,7 @@ models:
     params: 671B (37B active)
     context_window: 128000
     open_weights: true
+    hf_id: deepseek-ai/DeepSeek-V3
     tags: [frontier]
     events:
       - type: announced
@@ -51,6 +52,7 @@ models:
     params: 671B (37B active)
     context_window: 128000
     open_weights: true
+    hf_id: deepseek-ai/DeepSeek-R1
     tags: [frontier, reasoning]
     notes: |
       Open-weight reasoning model whose release prompted widespread reassessment
@@ -71,6 +73,7 @@ models:
     name: DeepSeek V3.1
     family: deepseek-v3
     open_weights: true
+    hf_id: deepseek-ai/DeepSeek-V3.1
     events:
       - type: available
         date: 2025-08-15
@@ -84,6 +87,7 @@ models:
     name: DeepSeek V3.2
     family: deepseek-v3
     open_weights: true
+    hf_id: deepseek-ai/DeepSeek-V3.2
     events:
       - type: available
         date: 2025-12-01

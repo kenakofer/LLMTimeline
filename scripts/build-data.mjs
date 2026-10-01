@@ -11,16 +11,18 @@
 import { writeFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
-import { loadDataset, EVENT_TYPES } from './validate.mjs';
+import { loadDataset, EVENT_TYPES, EDGE_TYPES } from './validate.mjs';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = join(ROOT, 'site');
 
 const EVENT_KEYS = ['type', 'date', 'precision', 'confidence', 'basis', 'bounds', 'source'];
 const MODEL_KEYS = [
-  'id', 'lab', 'name', 'family', 'api_name', 'tags', 'context_window',
-  'params', 'open_weights', 'notes', 'events',
+  'id', 'lab', 'org', 'name', 'family', 'product_line', 'api_name', 'tags', 'modalities',
+  'context_window', 'params', 'open_weights', 'licence', 'hf_id', 'epoch_id', 'notes', 'events',
 ];
+const EDGE_KEYS = ['from', 'to', 'type', 'confidence', 'basis', 'source'];
+const SCORE_KEYS = ['model', 'eci', 'ci_low', 'ci_high', 'note'];
 const LIFECYCLE_RANK = Object.fromEntries(EVENT_TYPES.map((t, i) => [t, i]));
 
 /** Rebuild an object with keys in a fixed order, dropping empty values. */
@@ -55,7 +57,7 @@ function normaliseModel(model, labId) {
 }
 
 function build() {
-  const { labs, modelFiles } = loadDataset();
+  const { labs, modelFiles, lineage, scores } = loadDataset();
 
   const models = [];
   for (const { doc } of modelFiles) {
@@ -72,18 +74,33 @@ function build() {
   };
   models.sort((a, b) => (labOrder[a.lab] - labOrder[b.lab]) || firstDate(a).localeCompare(firstDate(b)) || a.id.localeCompare(b.id));
 
+  const edges = (lineage?.edges || [])
+    .map((e) => ordered(e, EDGE_KEYS))
+    .sort((a, b) => a.from.localeCompare(b.from) || a.to.localeCompare(b.to) || a.type.localeCompare(b.type));
+
+  const eci = {
+    source: scores?.source ?? null,
+    retrieved: scores?.retrieved ?? null,
+    values: (scores?.scores || [])
+      .map((s) => ordered(s, SCORE_KEYS))
+      .sort((a, b) => a.model.localeCompare(b.model)),
+  };
+
   const dated = models.flatMap((m) => m.events.map((e) => e.date));
   const payload = {
     // `generated` is deliberately omitted: a timestamp would make every rebuild
     // a diff, defeating the byte-identical check.
-    schema_version: 1,
+    schema_version: 2,
     event_types: EVENT_TYPES,
+    edge_types: EDGE_TYPES,
     domain: { start: dated.reduce((a, b) => (a < b ? a : b)), end: dated.reduce((a, b) => (a > b ? a : b)) },
     labs: labs
       .slice()
       .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
       .map((l) => ordered(l, ['id', 'name', 'color', 'order', 'country', 'homepage'])),
     models,
+    lineage: edges,
+    scores: { eci },
   };
 
   const json = JSON.stringify(payload, null, 2) + '\n';
@@ -95,7 +112,8 @@ function build() {
       'window.TIMELINE_DATA = ' + json.trimEnd() + ';\n'
   );
 
-  console.log(`✓ wrote site/data.json + site/data.js — ${models.length} models, ${payload.labs.length} labs`);
+  console.log(`✓ wrote site/data.json + site/data.js — ${models.length} models, ${payload.labs.length} labs, ` +
+    `${edges.length} edges, ${eci.values.length} ECI scores`);
   console.log(`  domain ${payload.domain.start} → ${payload.domain.end}`);
 }
 

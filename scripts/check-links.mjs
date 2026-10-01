@@ -15,17 +15,20 @@ const args = process.argv.slice(2);
 const timeout = Number(args[args.indexOf('--timeout') + 1]) || 10000;
 
 function collectUrls() {
-  const { modelFiles } = loadDataset();
+  const { modelFiles, lineage, scores } = loadDataset();
   const urls = new Map(); // url -> [where]
-  for (const { file, doc } of modelFiles) {
+  const add = (url, where) => {
+    if (!url) return;
+    if (!urls.has(url)) urls.set(url, []);
+    urls.get(url).push(where);
+  };
+  for (const { doc } of modelFiles) {
     for (const m of doc.models || []) {
-      for (const ev of m.events || []) {
-        if (!ev.source) continue;
-        if (!urls.has(ev.source)) urls.set(ev.source, []);
-        urls.get(ev.source).push(`${m.id}/${ev.type}`);
-      }
+      for (const ev of m.events || []) add(ev.source, `${m.id}/${ev.type}`);
     }
   }
+  for (const e of lineage?.edges || []) add(e.source, `lineage ${e.from}->${e.to}`);
+  add(scores?.source, 'scores/eci');
   return urls;
 }
 

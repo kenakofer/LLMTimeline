@@ -20,7 +20,7 @@ by a weekly agent that proposes changes as PRs.
 
 ## Phases
 
-### 1. Schema
+### 1. Schema — done
 Extend `data/SCHEMA.md` and `scripts/validate.mjs`:
 - Model fields: `product_line` (sub-track within a lane), `org`, `modalities` (in/out),
   `open_weights` / `licence`, `hf_id`, `epoch_id`.
