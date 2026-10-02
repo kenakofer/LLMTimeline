@@ -63,6 +63,9 @@ svg text { font-family: inherit; }
 .box.expected rect.body { fill-opacity: .18; stroke-opacity: .9; }
 .box .name { font-size: 11px; font-weight: 600; fill: var(--text-primary); transition: opacity .3s, transform .9s; }
 .box .meta { font-size: 9.5px; fill: var(--text-secondary); font-variant-numeric: tabular-nums; transition: opacity .3s; }
+.box .wm { fill: var(--text-primary); opacity: .09; transition: opacity .3s; }
+.box .wm text { font-weight: 800; letter-spacing: -.5px; }
+svg.cap .box .wm { opacity: 0; }
 .box .crown { fill: var(--text-primary); stroke: var(--surface-1); stroke-width: 1.4; paint-order: stroke; transition: opacity .3s; }
 .box .badge, .legend .badge { fill: none; stroke: var(--text-primary); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; transition: opacity .3s; }
 .legend .crown { fill: var(--text-primary); }
@@ -138,6 +141,7 @@ svg.focus .box.kin:not(.lit) { opacity: .5; }
   <div class="scroller"><svg id="chart"></svg></div>
 </div>
 <script src="../site/data.js"></script>
+<script src="logos/logos.js"></script>
 <script>
 const data = window.TIMELINE_DATA;
 const TODAY = '2026-10-01';
@@ -297,7 +301,8 @@ const gGlow = el('g', { class: 'bands-curved glow-layer' }, gCurved);
 { const f = el('filter', { id: 'band-blur', x: '-2%', y: '-40%', width: '104%', height: '180%' }, el('defs', {}, svg));
   el('feGaussianBlur', { stdDeviation: 22 }, f); }
 const laneLabel = (g, id, y, n, name) => {
-  el('rect', { x: 12, y: y + 10, width: 10, height: 10, rx: 2, class: 'lane-band', style: `fill: ${laneColor[id]}` }, g);
+  if (window.LAB_LOGOS?.[id]?.path) el('use', { href: '#logo-' + id, x: 10, y: y + 8, width: 14, height: 14, class: 'lane-band', style: `fill: ${laneColor[id]}` }, g);
+  else el('rect', { x: 12, y: y + 10, width: 10, height: 10, rx: 2, class: 'lane-band', style: `fill: ${laneColor[id]}` }, g);
   el('text', { x: 28, y: y + 19, class: 'lane-label' }, g).textContent = name;
   el('text', { x: 28, y: y + 34, class: 'lane-count' }, g).textContent = `${n} models`;
 };
@@ -367,6 +372,10 @@ const ICONS = {
   key: 'M4 4.5 m-2.5 0 a2.5 2.5 0 1 0 5 0 a2.5 2.5 0 1 0 -5 0 M6.2 5.8 L11 10.5 M9.2 8.7 L8 9.9 M10.5 10 L9.6 10.9',
 };
 for (const [id, d] of Object.entries(ICONS)) el('path', { d }, el('symbol', { id: 'i-' + id, viewBox: '0 0 12 12' }, defs));
+// lab logos (Simple Icons, 24x24) and a clip so the oversized watermark stays inside its card
+const LOGOS = window.LAB_LOGOS || {};
+for (const [lab, l] of Object.entries(LOGOS)) if (l.path) el('path', { d: l.path }, el('symbol', { id: 'logo-' + lab, viewBox: '0 0 24 24' }, defs));
+el('rect', { width: BOX_W, height: BOX_H, rx: 4 }, el('clipPath', { id: 'box-clip' }, defs));
 for (const [id, color] of [['arrow', 'var(--muted)'], ['arrow-cross', 'var(--text-primary)']]) {
   const mk = el('marker', { id, viewBox: '0 0 8 8', refX: 7, refY: 4, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, defs);
   el('path', { d: 'M0,0 L8,4 L0,8 z', style: `fill: ${color}` }, mk);
@@ -423,6 +432,13 @@ for (const p of Object.values(placed)) {
   const g = el('g', { class: cls, 'data-id': m.id, style: `--lab: ${laneColor[m.lab]}` }, gBoxes);
   p.g = g;
   const r = el('rect', { class: 'body', rx: 4 }, g); p.rect = r;
+  // watermark: the lab's mark, too big for the card, desaturated and cropped at the right edge
+  const logo = LOGOS[m.lab];
+  if (logo) {
+    const wm = el('g', { class: 'wm', 'clip-path': 'url(#box-clip)' }, g);
+    if (logo.path) el('use', { href: '#logo-' + m.lab, x: BOX_W - 36, y: -7, width: 48, height: 48 }, wm);
+    else el('text', { x: BOX_W + 3, y: BOX_H + 3, 'text-anchor': 'end', 'font-size': 26 }, wm).textContent = logo.text;
+  }
   el('text', { class: 'name', x: 7, y: 14 }, g).textContent = shortName(m);
   el('text', { class: 'meta', x: 7, y: 26 }, g).textContent = fmt(start(m)) + (expected ? ' · expected' : '');
   // a crown perched on the corner for a model that topped every earlier model at launch
