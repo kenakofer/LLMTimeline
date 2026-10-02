@@ -66,7 +66,8 @@ svg text { font-family: inherit; }
 .box .meter-bg { fill: var(--axis); opacity: .5; transition: opacity .3s; }
 .box .meter { fill: var(--lab); transition: opacity .3s; }
 
-.tail { stroke: var(--axis); stroke-width: 2; stroke-linecap: round; opacity: .7; transition: opacity .4s; }
+.tail { stroke: var(--axis); stroke-width: 2; stroke-linecap: round; opacity: 0; transition: opacity .4s; }
+svg.show-tails .tail { opacity: .7; }
 .tail.dep { stroke-dasharray: 3 3; }
 .tail.full { stroke: var(--text-secondary); opacity: 1; }
 .edge { fill: none; stroke: var(--muted); stroke-width: 1.5; transition: opacity .4s; }
@@ -86,7 +87,7 @@ svg text { font-family: inherit; }
 .axis-title { font-weight: 700; }
 
 /* capability mode */
-svg.cap .lane-band, svg.cap .lane-label, svg.cap .lane-count, svg.cap .tail { opacity: 0; }
+svg.cap .lane-band, svg.cap .lane-label, svg.cap .lane-count, svg.cap .tail, svg.cap.show-tails .tail { opacity: 0; }
 svg.cap .cap-only { opacity: 1; }
 svg.cap .box .meta, svg.cap .box .meter, svg.cap .box .meter-bg, svg.cap .box .star { opacity: 0; }
 svg.cap .box .name { opacity: 0; transform: translate(8px, -6px); font-size: 10.5px; }
@@ -97,7 +98,7 @@ svg.cap .edge { opacity: 0; }
 svg.cap .box.retired { opacity: .75; }
 
 /* hover: lineage focus */
-svg.focus .box, svg.focus .edge, svg.focus .tail { opacity: .15; }
+svg.focus .box, svg.focus .edge, svg.focus.show-tails .tail { opacity: .15; }
 svg.focus .box.lit, svg.focus .edge.lit { opacity: 1; }
 svg.focus .box.lit.self rect.body { stroke-width: 2.5; stroke: var(--text-primary); }
 svg.focus .tail.full { opacity: 1; }
@@ -112,11 +113,12 @@ svg.focus .box.retired:not(.lit), svg.focus .box.unscored:not(.lit) { opacity: .
   <p class="sub">Each box is a model, placed at its first public appearance; the bar along its bottom is its
     Epoch Capabilities Index (ECI) score, and ★ marks a model that topped every earlier model when it launched.
     Busy years get more horizontal room, so gridline spacing varies. Switch to <b>Capability</b> to lift every
-    model to its score. Hover any model to trace its lineage.</p>
+    model to its score. Arrows show documented lineage (fine-tuned or distilled from). Hover any model to trace its lineage and see its lifespan.</p>
   <div class="controls">
     <span>View</span>
     <button id="btn-lanes" aria-pressed="true">Lanes</button>
     <button id="btn-cap" aria-pressed="false">Capability</button>
+    <label style="margin-left:16px"><input type="checkbox" id="chk-tails"> Show lifespans</label>
   </div>
   <div class="legend" id="legend"></div>
   <div class="scroller"><svg id="chart"></svg></div>
@@ -260,11 +262,22 @@ const tailSegs = (p, clip) => {
   if (endX > depX + 2) segs.push({ x1: depX, x2: endX, y1: cy, y2: cy, class: 'tail dep' });
   return segs;
 };
+const defs = el('defs', {}, svg);
+for (const [id, color] of [['arrow', 'var(--muted)'], ['arrow-cross', 'var(--text-primary)']]) {
+  const mk = el('marker', { id, viewBox: '0 0 8 8', refX: 7, refY: 4, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, defs);
+  el('path', { d: 'M0,0 L8,4 L0,8 z', style: `fill: ${color}` }, mk);
+}
 const gTails = el('g', {}, svg), gEdges = el('g', {}, svg), gHover = el('g', {}, svg), gBoxes = el('g', {}, svg);
 for (const p of Object.values(placed)) for (const s of tailSegs(p, p.nextX - 6)) el('line', s, gTails);
 
 // edges: one path per layout, swapped with the view
 const lanePath = (a, b) => {
+  // same row with another box in between: arch over the row instead of running behind boxes
+  if (a.m.lab === b.m.lab && a.row === b.row && byRow[`${a.m.lab}|${a.row}`].some(p => p.x > a.x && p.x < b.x)) {
+    // run flat through the gap above the row: the lane padding for the top row, the row gap otherwise
+    const x1 = a.x + BOX_W - 14, x2 = b.x + 14, y = a.y, L = a.row === 0 ? LANE_PAD - 3 : ROW_GAP / 2;
+    return `M${x1},${y} Q${x1},${y - L} ${x1 + L},${y - L} H${x2 - L} Q${x2},${y - L} ${x2},${y}`;
+  }
   if (b.x - (a.x + BOX_W) >= 24) {
     const x1 = a.x + BOX_W, y1 = a.y + BOX_H / 2, x2 = b.x, y2 = b.y + BOX_H / 2, dx = Math.max(30, (x2 - x1) / 2);
     return `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`;
@@ -285,7 +298,7 @@ for (const e of data.lineage) {
   if (!a || !b) continue;
   (parents[e.to] ||= []).push(e.from); (children[e.from] ||= []).push(e.to);
   const cls = ['edge', a.m.lab !== b.m.lab ? 'cross' : '', e.confidence === 'confirmed' ? '' : 'soft'].join(' ');
-  const path = el('path', { d: lanePath(a, b), class: cls, 'data-from': e.from, 'data-to': e.to }, gEdges);
+  const path = el('path', { d: lanePath(a, b), class: cls, 'data-from': e.from, 'data-to': e.to, 'marker-end': `url(#${a.m.lab !== b.m.lab ? 'arrow-cross' : 'arrow'})` }, gEdges);
   path._lane = lanePath(a, b); path._cap = capPath(a, b);
   el('title', {}, path).textContent = `${a.m.name} → ${b.m.name} (${e.type}, ${e.confidence})`;
 }
@@ -341,6 +354,7 @@ function layout() {
 }
 document.getElementById('btn-lanes').onclick = () => { mode = 'lanes'; layout(); };
 document.getElementById('btn-cap').onclick = () => { mode = 'cap'; layout(); };
+document.getElementById('chk-tails').onchange = e => svg.classList.toggle('show-tails', e.target.checked);
 layout();
 
 // ── hover: ancestors + descendants ──
@@ -361,7 +375,8 @@ document.getElementById('legend').innerHTML =
   data.labs.filter(l => sizes[l.id]).map(l => `<span><svg width="12" height="12"><rect width="12" height="12" rx="2" style="fill:${laneColor[l.id]}"/></svg>${l.name}</span>`).join('') +
   `<span><svg width="40" height="8"><rect y="2" width="40" height="3" rx="1.5" fill="var(--axis)" opacity=".5"/><rect y="2" width="26" height="3" rx="1.5" fill="var(--text-secondary)"/></svg>ECI score</span>` +
   `<span>★ new frontier at launch</span>` +
-  `<span><svg width="30" height="10"><path d="M2 5H28" class="edge cross"/></svg>derived from another lab</span>` +
+  `<span><svg width="30" height="10"><path d="M2 5H24" class="edge"/><path d="M22 2L28 5L22 8z" fill="var(--muted)"/></svg>derived from (same lab)</span>` +
+  `<span><svg width="30" height="10"><path d="M2 5H24" class="edge cross"/><path d="M22 2L28 5L22 8z" fill="var(--text-primary)"/></svg>derived from another lab</span>` +
   `<span><svg width="30" height="10"><path d="M2 5H28" class="edge soft"/></svg>lineage not yet verified</span>`;
 
 // #model-id focuses a model; ?view=cap opens the capability view

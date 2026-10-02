@@ -140,6 +140,88 @@ edges:
       levels of safeguards."
     source: https://www.anthropic.com/claude-fable-and-mythos-5-1
 
+  - from: gemini-1-5-pro
+    to: gemini-1-5-flash
+    type: distill
+    confidence: confirmed
+    basis: >
+      "It's been trained by 1.5 Pro through a process called 'distillation'".
+    source: https://blog.google/innovation-and-ai/products/google-gemini-update-flash-ai-assistant-io-2024/
+
+  - from: gemini-2-5-pro
+    to: gemini-2-5-flash
+    type: distill
+    confidence: likely
+    basis: >
+      Gemini 2.5 report: "The smaller models in the Gemini 2.5 series — Flash size and
+      below — use distillation, as was done in the Gemini 1.5 series." The teacher is
+      not named; 2.5 Pro is the inferred teacher.
+    source: https://arxiv.org/abs/2507.06261
+
+  - from: llama-4-behemoth
+    to: llama-4-maverick
+    type: distill
+    confidence: confirmed
+    basis: >
+      "We codistilled the Llama 4 Maverick model from Llama 4 Behemoth as a teacher
+      model".
+    source: https://ai.meta.com/blog/llama-4-multimodal-intelligence/
+
+  - from: llama-3-1-405b
+    to: llama-3-1-70b
+    type: distill
+    confidence: confirmed
+    basis: >
+      "We also used the 405B parameter model to improve the post-training quality of our
+      smaller models."
+    source: https://ai.meta.com/blog/meta-llama-3-1/
+
+  - from: llama-3-1-405b
+    to: llama-3-1-8b
+    type: distill
+    confidence: confirmed
+    basis: >
+      "We also used the 405B parameter model to improve the post-training quality of our
+      smaller models."
+    source: https://ai.meta.com/blog/meta-llama-3-1/
+
+  - from: deepseek-v2
+    to: deepseek-v2-5
+    type: finetune
+    confidence: confirmed
+    basis: >
+      Model card: "DeepSeek-V2.5 is an upgraded version that combines DeepSeek-V2-Chat
+      and DeepSeek-Coder-V2-Instruct."
+    source: https://huggingface.co/deepseek-ai/DeepSeek-V2.5
+
+  - from: deepseek-coder-v2
+    to: deepseek-v2-5
+    type: finetune
+    confidence: confirmed
+    basis: >
+      Model card: "DeepSeek-V2.5 is an upgraded version that combines DeepSeek-V2-Chat
+      and DeepSeek-Coder-V2-Instruct."
+    source: https://huggingface.co/deepseek-ai/DeepSeek-V2.5
+
+  - from: kimi-k2
+    to: kimi-k2-5
+    type: finetune
+    confidence: confirmed
+    basis: >
+      Model card: "built through continual pretraining on approximately 15 trillion
+      mixed visual and text tokens atop Kimi-K2-Base."
+    source: https://huggingface.co/moonshotai/Kimi-K2.5
+
+  - from: mistral-small-3
+    to: mistral-small-3-1
+    type: finetune
+    confidence: likely
+    basis: >
+      "Building on Mistral Small 3, this new model comes with improved text performance,
+      multimodal understanding, and an expanded context window". Weight inheritance is
+      implied, not stated.
+    source: https://mistral.ai/news/mistral-small-3-1
+
   - from: text-davinci-002
     to: chatgpt
     type: finetune
