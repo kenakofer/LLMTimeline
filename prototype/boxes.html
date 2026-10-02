@@ -69,6 +69,11 @@ svg.cap .box .wm { opacity: 0; }
 .box .badge, .legend .badge { fill: none; stroke: var(--text-primary); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; transition: opacity .3s; }
 .box .meter-bg { fill: var(--axis); opacity: .5; transition: opacity .3s; }
 .box .meter { fill: var(--lab); transition: opacity .3s; }
+.box .date-edge { fill: var(--lab); transition: opacity .3s; }
+svg.cap .box .date-edge { opacity: 0; }
+.date-guide { stroke: var(--text-secondary); stroke-width: 1; stroke-dasharray: 2 3; }
+.date-guide-label { font-size: 11px; font-weight: 700; fill: var(--text-primary); font-variant-numeric: tabular-nums; }
+.date-guide-bg { fill: var(--surface-1); }
 
 .tail { stroke: var(--axis); stroke-width: 2; stroke-linecap: round; opacity: 0; transition: opacity .4s; }
 svg.show-tails .tail { opacity: .7; }
@@ -122,7 +127,7 @@ svg.focus .box.kin:not(.lit) { opacity: .5; }
 <body>
 <div class="viz-root">
   <h1>Prototype: one box per model, placed at release</h1>
-  <p class="sub">Each box is a model, placed at its first public appearance; the bar along its bottom is its
+  <p class="sub">Each box is a model; its left edge sits on the model's first public appearance; the bar along its bottom is its
     Epoch Capabilities Index (ECI) score, and a crown marks a model that topped every earlier model when it launched.
     Busy years get more horizontal room, so gridline spacing varies. Switch to <b>Capability</b> to lift every
     model to its score. Arrows show documented lineage (fine-tuned or distilled from). Hover any model to trace its lineage and see its lifespan; hovering lights up its lab's band.</p>
@@ -452,6 +457,7 @@ for (const p of Object.values(placed)) {
   p.g = g;
   const r = el('rect', { class: 'body', rx: 4 }, g); p.rect = r;
   // watermark: the lab's mark, too big for the card, desaturated and cropped at the right edge
+  el('rect', { class: 'date-edge', x: 0, y: 0, width: 3, height: BOX_H, 'clip-path': 'url(#box-clip)' }, g);
   const logo = LOGOS[m.lab];
   if (logo) {
     const wm = el('g', { class: 'wm', 'clip-path': 'url(#box-clip)' }, g);
@@ -460,7 +466,7 @@ for (const p of Object.values(placed)) {
   el('text', { class: 'name', x: 7, y: 14 }, g).textContent = shortName(m);
   el('text', { class: 'meta', x: 7, y: 26 }, g).textContent = fmt(start(m)) + (expected ? ' · expected' : '');
   // a crown perched on the corner for a model that topped every earlier model at launch
-  if (frontierSetters.has(m.id)) el('use', { href: '#crown-gold', class: 'crown', x: BOX_W - 15, y: -11, width: 21, height: 18, transform: `rotate(16 ${BOX_W - 4.5} -2)` }, g);
+  if (frontierSetters.has(m.id)) el('use', { href: '#crown-gold', class: 'crown', x: -6, y: -11, width: 21, height: 18, transform: 'rotate(-16 4.5 -2)' }, g);
   // status badges, right-aligned on the date line
   const has = t => m.events.some(e => e.type === t);
   const badges = [];
@@ -483,7 +489,7 @@ for (const p of Object.values(placed)) {
 }
 // shrink names that overflow the box
 for (const t of svg.querySelectorAll('.box .name')) {
-  const room = BOX_W - (t.parentNode.querySelector('.crown') ? 20 : 12);
+  const room = BOX_W - 12;
   let fs = 11;
   while (t.getComputedTextLength() > room && fs > 8.5) { fs -= 0.5; t.style.fontSize = fs + 'px'; }
   if (t.getComputedTextLength() > room) { let s = t.textContent; while (t.getComputedTextLength() > room - 2 && s.length) { s = s.slice(0, -1); t.textContent = s + '…'; } }
@@ -527,7 +533,17 @@ function focus(id) {
   for (const b of svg.querySelectorAll('.box')) b.classList.toggle('lit', lit.has(b.dataset.id)), b.classList.toggle('self', b.dataset.id === id), b.classList.toggle('kin', placed[b.dataset.id].m.lab === lab);
   for (const e of svg.querySelectorAll('.edge')) e.classList.toggle('lit', lit.has(e.dataset.from) && lit.has(e.dataset.to));
   gHover.replaceChildren();
-  if (mode === 'lanes') for (const s of tailSegs(placed[id], Infinity)) el('line', { ...s, class: s.class + ' full' }, gHover);
+  if (mode === 'lanes') {
+    for (const s of tailSegs(placed[id], Infinity)) el('line', { ...s, class: s.class + ' full' }, gHover);
+    const p = placed[id], d = start(p.m);
+    el('line', { x1: p.x, x2: p.x, y1: TOP - 6, y2: p.y, class: 'date-guide' }, gHover);
+    const label = `${MON[+d.slice(5, 7) - 1]} ${+d.slice(8, 10)}, ${d.slice(0, 4)}`;
+    const bg = el('rect', { y: TOP - 27, height: 17, rx: 3, class: 'date-guide-bg' }, gHover);
+    const t = el('text', { x: p.x, y: TOP - 14, 'text-anchor': 'middle', class: 'date-guide-label' }, gHover);
+    t.textContent = label;
+    const w = t.getComputedTextLength() + 10;
+    bg.setAttribute('x', p.x - w / 2); bg.setAttribute('width', w);
+  }
 }
 gBoxes.addEventListener('mouseover', e => { const g = e.target.closest('.box'); if (g) focus(g.dataset.id); });
 // lab glow: hovering a box or anywhere in a band lights that lab's band
@@ -543,6 +559,7 @@ gBoxes.addEventListener('mouseleave', () => { svg.classList.remove('focus'); gHo
 document.getElementById('legend').innerHTML =
   data.labs.filter(l => sizes[l.id]).map(l => `<span><svg width="12" height="12"><rect width="12" height="12" rx="2" style="fill:${laneColor[l.id]}"/></svg>${l.name}</span>`).join('') +
   `<span><svg width="40" height="8"><rect y="2" width="40" height="3" rx="1.5" fill="var(--axis)" opacity=".5"/><rect y="2" width="26" height="3" rx="1.5" fill="var(--text-secondary)"/></svg>ECI score</span>` +
+  `<span><svg width="26" height="14"><rect x="1" y="1" width="24" height="12" rx="3" fill="var(--box)" stroke="var(--border)"/><rect x="1" y="1" width="3" height="12" fill="var(--text-secondary)"/></svg>left edge = first public appearance</span>` +
   `<span><svg width="18" height="15" viewBox="0 0 24 20"><use href="#crown-gold"/></svg>new frontier at launch</span>` +
   `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-open" class="badge"/></svg>open weights</span>` +
   `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-key" class="badge"/></svg>not publicly available</span>` +
