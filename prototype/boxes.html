@@ -89,10 +89,10 @@ svg.show-tails .tail { opacity: .7; }
 /* band shape */
 .bands-curved { display: none; }
 svg.curved .bands-curved { display: inline; }
-svg.curved { --lane-tint: 11%; }
-:root[data-theme="dark"] svg.curved { --lane-tint: 14%; }
-@media (prefers-color-scheme: dark) { :root:where(:not([data-theme="light"])) svg.curved { --lane-tint: 14%; } }
-.band-edge { fill: none; stroke-width: 1.5; }
+.band-glow { opacity: 0; filter: url(#band-blur); pointer-events: none; transition: opacity .45s; }
+.band-glow.on { opacity: .2; }
+.band-hit { fill: transparent; pointer-events: all; }
+svg.cap .band-glow.on { opacity: 0; }
 svg.curved .bands-straight { display: none; }
 /* capability mode */
 svg.cap .lane-band, svg.cap .lane-label, svg.cap .lane-count, svg.cap .tail, svg.cap.show-tails .tail { opacity: 0; }
@@ -113,6 +113,7 @@ svg.focus .tail.full { opacity: 1; }
 svg.cap.focus .box.lit .name { opacity: 1; }
 svg.cap.focus .edge:not(.lit) { opacity: 0; }
 svg.focus .box.retired:not(.lit), svg.focus .box.unscored:not(.lit) { opacity: .15; }
+svg.focus .box.kin:not(.lit) { opacity: .5; }
 </style>
 </head>
 <body>
@@ -121,7 +122,7 @@ svg.focus .box.retired:not(.lit), svg.focus .box.unscored:not(.lit) { opacity: .
   <p class="sub">Each box is a model, placed at its first public appearance; the bar along its bottom is its
     Epoch Capabilities Index (ECI) score, and ★ marks a model that topped every earlier model when it launched.
     Busy years get more horizontal room, so gridline spacing varies. Switch to <b>Capability</b> to lift every
-    model to its score. Arrows show documented lineage (fine-tuned or distilled from). Hover any model to trace its lineage and see its lifespan.</p>
+    model to its score. Arrows show documented lineage (fine-tuned or distilled from). Hover any model to trace its lineage and see its lifespan; hovering lights up its lab's band.</p>
   <div class="controls">
     <span>View</span>
     <button id="btn-lanes" aria-pressed="true">Lanes</button>
@@ -290,6 +291,9 @@ svg.setAttribute('width', WIDTH); svg.setAttribute('height', HEIGHT);
 // lanes
 const laneFill = id => `fill: color-mix(in oklab, ${laneColor[id]} var(--lane-tint), var(--surface-1))`;
 const gStraight = el('g', { class: 'bands-straight' }, svg), gCurved = el('g', { class: 'bands-curved' }, svg);
+const gGlow = el('g', { class: 'bands-curved glow-layer' }, gCurved);
+{ const f = el('filter', { id: 'band-blur', x: '-2%', y: '-40%', width: '104%', height: '180%' }, el('defs', {}, svg));
+  el('feGaussianBlur', { stdDeviation: 22 }, f); }
 const laneLabel = (g, id, y, n, name) => {
   el('rect', { x: 12, y: y + 10, width: 10, height: 10, rx: 2, class: 'lane-band', style: `fill: ${laneColor[id]}` }, g);
   el('text', { x: 28, y: y + 19, class: 'lane-label' }, g).textContent = name;
@@ -304,9 +308,10 @@ laneMeta.forEach(L => {
   let d = `M0,${top[0]}`;
   for (let i = 1; i < NS_; i++) d += `L${i * STEP},${top[i].toFixed(1)}`;
   for (let i = NS_ - 1; i >= 0; i--) d += `L${i * STEP},${(top[i] + t[i]).toFixed(1)}`;
-  el('path', { d: d + 'Z', class: 'lane-band', style: laneFill(L.lab.id) }, gCurved);
-  let edge = `M0,${top[0]}`; for (let i = 1; i < NS_; i++) edge += `L${i * STEP},${top[i].toFixed(1)}`;
-  el('path', { d: edge, class: 'band-edge lane-band', style: `stroke: color-mix(in oklab, ${laneColor[L.lab.id]} 45%, var(--surface-1))` }, gCurved);
+  // the band is never drawn crisply: it appears as a heavily blurred glow while its lab is hovered,
+  // and an invisible copy catches the hover anywhere inside the band
+  el('path', { d: d + 'Z', class: 'band-glow', 'data-lab': L.lab.id, style: `fill: ${laneColor[L.lab.id]}` }, gGlow);
+  el('path', { d: d + 'Z', class: 'band-hit', 'data-lab': L.lab.id }, gCurved);
   laneLabel(gCurved, L.lab.id, top[0], L.n, L.lab.name);
 });
 // year gridlines + today
@@ -461,12 +466,20 @@ const walk = (id, map, out) => { for (const n of map[id] || []) if (!out.has(n))
 function focus(id) {
   const lit = new Set([id]); walk(id, parents, lit); walk(id, children, lit);
   svg.classList.add('focus');
-  for (const b of svg.querySelectorAll('.box')) b.classList.toggle('lit', lit.has(b.dataset.id)), b.classList.toggle('self', b.dataset.id === id);
+  const lab = placed[id].m.lab;
+  for (const b of svg.querySelectorAll('.box')) b.classList.toggle('lit', lit.has(b.dataset.id)), b.classList.toggle('self', b.dataset.id === id), b.classList.toggle('kin', placed[b.dataset.id].m.lab === lab);
   for (const e of svg.querySelectorAll('.edge')) e.classList.toggle('lit', lit.has(e.dataset.from) && lit.has(e.dataset.to));
   gHover.replaceChildren();
   if (mode === 'lanes') for (const s of tailSegs(placed[id], Infinity)) el('line', { ...s, class: s.class + ' full' }, gHover);
 }
 gBoxes.addEventListener('mouseover', e => { const g = e.target.closest('.box'); if (g) focus(g.dataset.id); });
+// lab glow: hovering a box or anywhere in a band lights that lab's band
+const glow = lab => { for (const g of gGlow.children) g.classList.toggle('on', g.dataset.lab === lab); };
+svg.addEventListener('mouseover', e => {
+  const box = e.target.closest('.box');
+  glow(box ? placed[box.dataset.id].m.lab : e.target.dataset?.lab ?? null);
+});
+svg.addEventListener('mouseleave', () => glow(null));
 gBoxes.addEventListener('mouseleave', () => { svg.classList.remove('focus'); gHover.replaceChildren(); });
 
 // legend
@@ -482,7 +495,7 @@ document.getElementById('legend').innerHTML =
 if (new URLSearchParams(location.search).get('view') === 'cap') { mode = 'cap'; layout(); }
 if (location.hash) {
   const id = decodeURIComponent(location.hash.slice(1));
-  if (placed[id]) { focus(id); placed[id].g.scrollIntoView({ inline: 'center', block: 'center' }); }
+  if (placed[id]) { focus(id); glow(placed[id].m.lab); placed[id].g.scrollIntoView({ inline: 'center', block: 'center' }); }
 }
 </script>
 </body>
