@@ -1,0 +1,265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>Prototype — model boxes on a stretched timeline</title>
+<style>
+.viz-root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface-1: #fcfcfb;
+  --lane-alt: #f4f3ef;
+  --text-primary: #0b0b0b;
+  --text-secondary: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11,11,11,0.16);
+  --box: #ffffff;
+  --open-fill: #cde2fb;      /* blue ramp step 100 */
+  --open-edge: #2a78d6;      /* categorical slot 1 */
+  --edge: #898781;
+  --edge-strong: #2a78d6;
+}
+@media (prefers-color-scheme: dark) {
+  :root:where(:not([data-theme="light"])) .viz-root {
+    color-scheme: dark;
+    --page: #0d0d0d; --surface-1: #1a1a19; --lane-alt: #20201f;
+    --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
+    --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.16);
+    --box: #262624; --open-fill: #104281; --open-edge: #3987e5;
+    --edge: #6f6e69; --edge-strong: #3987e5;
+  }
+}
+:root[data-theme="dark"] .viz-root {
+  color-scheme: dark;
+  --page: #0d0d0d; --surface-1: #1a1a19; --lane-alt: #20201f;
+  --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
+  --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.16);
+  --box: #262624; --open-fill: #104281; --open-edge: #3987e5;
+  --edge: #6f6e69; --edge-strong: #3987e5;
+}
+body { margin: 0; background: var(--page); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
+.viz-root { background: var(--page); color: var(--text-primary); padding: 16px 20px; }
+h1 { font-size: 18px; margin: 0 0 4px; }
+p.sub { margin: 0 0 12px; color: var(--text-secondary); font-size: 13px; max-width: 70ch; }
+.legend { display: flex; gap: 18px; font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
+.legend svg { vertical-align: middle; margin-right: 4px; }
+.scroller { overflow-x: auto; background: var(--surface-1); border: 1px solid var(--border); border-radius: 6px; }
+svg text { font-family: inherit; }
+.box rect.body { fill: var(--box); stroke: var(--border); stroke-width: 1; }
+.box.open rect.body { fill: var(--open-fill); stroke: var(--open-edge); }
+.box.retired { opacity: .55; }
+.box .name { font-size: 11px; font-weight: 600; fill: var(--text-primary); }
+.box .meta { font-size: 9.5px; fill: var(--text-secondary); font-variant-numeric: tabular-nums; }
+.tail { stroke: var(--axis); stroke-width: 2; stroke-linecap: round; opacity: .7; }
+.tail.full { stroke: var(--text-secondary); opacity: 1; }
+.tail.dep { stroke-dasharray: 3 3; }
+.edge { fill: none; stroke: var(--edge); stroke-width: 1.5; }
+.edge.cross { stroke: var(--edge-strong); }
+.edge.soft { stroke-dasharray: 4 3; }
+.lane-label { font-size: 12px; font-weight: 700; fill: var(--text-primary); }
+.lane-count { font-size: 10.5px; fill: var(--muted); }
+.year { font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.gridline { stroke: var(--grid); stroke-width: 1; }
+.today { stroke: var(--text-secondary); stroke-dasharray: 2 3; }
+/* hover: lineage focus */
+svg.focus .box, svg.focus .edge, svg.focus .tail { opacity: .15; }
+svg.focus .box.lit, svg.focus .edge.lit { opacity: 1; }
+svg.focus .box.lit.self rect.body { stroke-width: 2.5; }
+svg.focus .tail.full { opacity: 1; }
+</style>
+</head>
+<body>
+<div class="viz-root">
+  <h1>Prototype: one box per model, placed at release</h1>
+  <p class="sub">Each box is a model, placed at its first public appearance. Busy years get more horizontal room:
+    the time axis is stretched by release count, so gridline spacing varies. The thin line after a box is its
+    lifespan, which ends where the model was retired. Hover a box to trace where it came from and what came from it.</p>
+  <div class="legend">
+    <span><svg width="26" height="14"><rect x="1" y="1" width="24" height="12" rx="3" fill="var(--box)" stroke="var(--border)"/></svg>closed weights</span>
+    <span><svg width="26" height="14"><rect x="1" y="1" width="24" height="12" rx="3" fill="var(--open-fill)" stroke="var(--open-edge)"/></svg>open weights (also labelled “open”)</span>
+    <span><svg width="30" height="10"><line x1="2" y1="5" x2="28" y2="5" class="tail"/></svg>lifespan</span>
+    <span><svg width="30" height="10"><line x1="2" y1="5" x2="28" y2="5" class="tail dep"/></svg>deprecated</span>
+    <span><svg width="30" height="10"><path d="M2 5H28" class="edge"/></svg>derived from (same lab)</span>
+    <span><svg width="30" height="10"><path d="M2 5H28" class="edge cross"/></svg>derived from (another lab)</span>
+    <span><svg width="30" height="10"><path d="M2 5H28" class="edge soft"/></svg>not yet verified first-hand</span>
+  </div>
+  <div class="scroller"><svg id="chart"></svg></div>
+</div>
+<script src="../site/data.js"></script>
+<script>
+const data = window.TIMELINE_DATA;
+const TODAY = '2026-10-01';
+const BOX_W = 124, BOX_H = 34, ROW_GAP = 6, LANE_PAD = 10, LEFT = 150, TOP = 34;
+const NS = 'http://www.w3.org/2000/svg';
+const el = (tag, attrs = {}, parent) => {
+  const n = document.createElementNS(NS, tag);
+  for (const [k, v] of Object.entries(attrs)) n.setAttribute(k, v);
+  if (parent) parent.appendChild(n);
+  return n;
+};
+const ev = (m, ...types) => m.events.find(e => types.includes(e.type));
+const start = m => (ev(m, 'announced', 'limited', 'available') || m.events[0]).date;
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fmt = d => `${MON[+d.slice(5, 7) - 1]} ${d.slice(0, 4)}`;
+
+// ── stretched time: each quarter gets width proportional to its releases (with a floor) ──
+const q = d => `${d.slice(0, 4)}Q${Math.floor((+d.slice(5, 7) - 1) / 3) + 1}`;
+const counts = {};
+for (const m of data.models) counts[q(start(m))] = (counts[q(start(m))] || 0) + 1;
+const quarters = [];
+for (let y = 2018; y <= 2027; y++) for (let k = 1; k <= 4; k++) {
+  const key = `${y}Q${k}`;
+  if (`${y}-${String(k * 3 - 2).padStart(2, '0')}-01` > '2026-12-31') break;
+  quarters.push(key);
+}
+const qWidth = key => Math.max(26, (counts[key] || 0) * 30);
+const qStart = {}; let acc = LEFT + 10;
+for (const key of quarters) { qStart[key] = acc; acc += qWidth(key); }
+const WIDTH = acc + BOX_W + 40;
+const x = d => {
+  const key = q(d), y = +d.slice(0, 4), qi = +key.slice(-1);
+  const q0 = Date.UTC(y, (qi - 1) * 3, 1), q1 = Date.UTC(y, qi * 3, 1);
+  const t = Date.UTC(y, +d.slice(5, 7) - 1, +d.slice(8, 10));
+  return qStart[key] + ((t - q0) / (q1 - q0)) * qWidth(key);
+};
+
+// ── row packing per lane: keep a product line on its own row where possible ──
+const placed = {};
+let y0 = TOP;
+const laneMeta = [];
+for (const lab of data.labs) {
+  const models = data.models.filter(m => m.lab === lab.id).sort((a, b) => start(a).localeCompare(start(b)));
+  if (!models.length) continue;
+  const rows = []; // {end, pl}
+  for (const m of models) {
+    const bx = x(start(m));
+    let r = rows.findIndex(r => r.end <= bx && r.pl === m.product_line);
+    if (r < 0) r = rows.findIndex(r => r.end <= bx);
+    if (r < 0) { r = rows.length; rows.push({}); }
+    rows[r] = { end: bx + BOX_W + 6, pl: m.product_line };
+    placed[m.id] = { m, x: bx, row: r };
+  }
+  const h = LANE_PAD * 2 + rows.length * (BOX_H + ROW_GAP) - ROW_GAP;
+  laneMeta.push({ lab, y: y0, h, n: models.length, rows: rows.length });
+  for (const m of models) placed[m.id].y = y0 + LANE_PAD + placed[m.id].row * (BOX_H + ROW_GAP);
+  y0 += h;
+}
+const HEIGHT = y0 + 12;
+const svg = document.getElementById('chart');
+svg.setAttribute('width', WIDTH); svg.setAttribute('height', HEIGHT);
+
+// lanes
+laneMeta.forEach((L, i) => {
+  if (i % 2) el('rect', { x: 0, y: L.y, width: WIDTH, height: L.h, fill: 'var(--lane-alt)' }, svg);
+  el('text', { x: 12, y: L.y + 20, class: 'lane-label' }, svg).textContent = L.lab.name;
+  el('text', { x: 12, y: L.y + 35, class: 'lane-count' }, svg).textContent = `${L.n} models`;
+});
+// year gridlines
+for (let y = 2018; y <= 2026; y++) {
+  const gx = qStart[`${y}Q1`];
+  el('line', { x1: gx, x2: gx, y1: TOP - 8, y2: HEIGHT, class: 'gridline' }, svg);
+  el('text', { x: gx + 4, y: TOP - 14, class: 'year' }, svg).textContent = y;
+}
+const tx = x(TODAY);
+el('line', { x1: tx, x2: tx, y1: TOP - 8, y2: HEIGHT, class: 'today' }, svg);
+el('text', { x: tx + 4, y: TOP - 14, class: 'year' }, svg).textContent = 'today';
+
+// tails (lifespan) — drawn first so boxes sit on top
+const gTails = el('g', {}, svg), gEdges = el('g', {}, svg), gBoxes = el('g', {}, svg);
+// A tail stops at the next box in its row, so it never reads as connecting two models;
+// the full lifespan is drawn on hover.
+const rowKey = p => `${p.m.lab}|${p.row}`;
+const byRow = {};
+for (const p of Object.values(placed)) (byRow[rowKey(p)] ||= []).push(p);
+for (const list of Object.values(byRow)) list.sort((a, b) => a.x - b.x).forEach((p, i) => p.nextX = list[i + 1]?.x ?? Infinity);
+const tailSegs = (p, clip) => {
+  const ret = ev(p.m, 'retired'), dep = ev(p.m, 'deprecated');
+  const cy = p.y + BOX_H / 2, x0 = p.x + BOX_W;
+  const lim = v => Math.min(Math.max(x0, v), clip);
+  const endX = lim(x(ret ? ret.date : TODAY)), depX = dep ? lim(x(dep.date)) : endX;
+  const segs = [];
+  if (depX > x0 + 2) segs.push({ x1: x0, x2: depX, y1: cy, y2: cy, class: 'tail' });
+  if (endX > depX + 2) segs.push({ x1: depX, x2: endX, y1: cy, y2: cy, class: 'tail dep' });
+  return segs;
+};
+for (const p of Object.values(placed)) for (const s of tailSegs(p, p.nextX - 6)) el('line', s, gTails);
+const gHover = el('g', { class: 'hover-tail' }, svg);
+// edges
+const parents = {}, children = {};
+for (const e of data.lineage) {
+  const a = placed[e.from], b = placed[e.to];
+  if (!a || !b) continue;
+  (parents[e.to] ||= []).push(e.from); (children[e.from] ||= []).push(e.to);
+  let d;
+  if (b.x - (a.x + BOX_W) >= 24) {
+    // enough horizontal room: right side of parent -> left side of child
+    const x1 = a.x + BOX_W, y1 = a.y + BOX_H / 2, x2 = b.x, y2 = b.y + BOX_H / 2;
+    const dx = Math.max(30, (x2 - x1) / 2);
+    d = `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`;
+  } else {
+    // released close together (often the same day): run vertically, bottom -> top
+    const down = b.y > a.y;
+    const xm = Math.max(a.x, b.x) + Math.min(BOX_W, b.x + BOX_W - a.x) / 2 + (down ? 10 : -10);
+    const y1 = down ? a.y + BOX_H : a.y, y2 = down ? b.y : b.y + BOX_H;
+    const xa = Math.min(xm, a.x + BOX_W - 8), xb = Math.min(xm, b.x + BOX_W - 8);
+    const dy = (y2 - y1) / 2;
+    d = `M${xa},${y1} C${xa},${y1 + dy} ${xb},${y2 - dy} ${xb},${y2}`;
+  }
+  const cls = ['edge', a.m.lab !== b.m.lab ? 'cross' : '', e.confidence === 'confirmed' ? '' : 'soft'].join(' ');
+  const path = el('path', { d, class: cls, 'data-from': e.from, 'data-to': e.to }, gEdges);
+  el('title', {}, path).textContent = `${a.m.name} → ${b.m.name} (${e.type}, ${e.confidence})`;
+}
+// Inside its own lane the brand word is redundant ("Claude Opus 4.5" -> "Opus 4.5").
+// Kept when what remains would be a bare version number ("Claude 2", "Claude 3.5 Sonnet").
+const BRAND = { anthropic: 'Claude ', deepseek: 'DeepSeek ' };
+const shortName = m => {
+  const b = BRAND[m.lab];
+  if (!b || !m.name.startsWith(b)) return m.name;
+  const rest = m.name.slice(b.length);
+  return /^[A-Z][a-z]|^[RV]\d/.test(rest) && !/^(LLM|Coder|Instant)$/.test(rest) ? rest : m.name;
+};
+// boxes
+for (const p of Object.values(placed)) {
+  const m = p.m, ret = ev(m, 'retired');
+  const retired = ret && ret.date <= TODAY;
+  const g = el('g', { class: `box${m.open_weights ? ' open' : ''}${retired ? ' retired' : ''}`, transform: `translate(${p.x},${p.y})`, 'data-id': m.id }, gBoxes);
+  el('rect', { class: 'body', width: BOX_W, height: BOX_H, rx: 4 }, g);
+  const name = el('text', { class: 'name', x: 7, y: 14 }, g);
+  name.textContent = shortName(m);
+  const meta = el('text', { class: 'meta', x: 7, y: 27 }, g);
+  meta.textContent = fmt(start(m)) + (m.open_weights ? ' · open' : '') + (retired ? ' · retired' : '');
+  el('title', {}, g).textContent = `${m.name}\n${m.org ? m.org + '\n' : ''}` +
+    m.events.map(e => `${e.type}: ${e.date} (${e.confidence})`).join('\n');
+}
+// shrink names that overflow the box
+for (const t of svg.querySelectorAll('.box .name')) {
+  let fs = 11;
+  while (t.getComputedTextLength() > BOX_W - 12 && fs > 8.5) { fs -= 0.5; t.style.fontSize = fs + 'px'; }
+  if (t.getComputedTextLength() > BOX_W - 12) {
+    let s = t.textContent; while (t.getComputedTextLength() > BOX_W - 14 && s.length) { s = s.slice(0, -1); t.textContent = s + '…'; }
+  }
+}
+// hover: light up ancestors + descendants
+const walk = (id, map, out) => { for (const n of map[id] || []) if (!out.has(n)) { out.add(n); walk(n, map, out); } };
+gBoxes.addEventListener('mouseover', ev2 => {
+  const g = ev2.target.closest('.box'); if (!g) return;
+  const id = g.dataset.id, lit = new Set([id]);
+  walk(id, parents, lit); walk(id, children, lit);
+  svg.classList.add('focus');
+  for (const b of svg.querySelectorAll('.box')) b.classList.toggle('lit', lit.has(b.dataset.id)), b.classList.toggle('self', b.dataset.id === id);
+  for (const e of svg.querySelectorAll('.edge')) e.classList.toggle('lit', lit.has(e.dataset.from) && lit.has(e.dataset.to));
+  gHover.replaceChildren();
+  for (const s of tailSegs(placed[id], Infinity)) el('line', { ...s, class: s.class + ' full' }, gHover);
+  svg.appendChild(gHover); svg.appendChild(gBoxes);
+});
+gBoxes.addEventListener('mouseleave', () => { svg.classList.remove('focus'); gHover.replaceChildren(); });
+// #model-id in the URL opens with that model focused (handy for sharing and screenshots)
+if (location.hash) {
+  const g = svg.querySelector(`.box[data-id="${CSS.escape(location.hash.slice(1))}"]`);
+  if (g) { g.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })); g.scrollIntoView({ inline: 'center', block: 'center' }); }
+}
+</script>
+</body>
+</html>
