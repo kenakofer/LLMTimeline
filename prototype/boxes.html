@@ -86,6 +86,14 @@ svg.show-tails .tail { opacity: .7; }
 .frontier-label, .strip-label, .axis-title { font-size: 11px; fill: var(--text-secondary); }
 .axis-title { font-weight: 700; }
 
+/* band shape */
+.bands-curved { display: none; }
+svg.curved .bands-curved { display: inline; }
+svg.curved { --lane-tint: 11%; }
+:root[data-theme="dark"] svg.curved { --lane-tint: 14%; }
+@media (prefers-color-scheme: dark) { :root:where(:not([data-theme="light"])) svg.curved { --lane-tint: 14%; } }
+.band-edge { fill: none; stroke-width: 1.5; }
+svg.curved .bands-straight { display: none; }
 /* capability mode */
 svg.cap .lane-band, svg.cap .lane-label, svg.cap .lane-count, svg.cap .tail, svg.cap.show-tails .tail { opacity: 0; }
 svg.cap .cap-only { opacity: 1; }
@@ -118,6 +126,9 @@ svg.focus .box.retired:not(.lit), svg.focus .box.unscored:not(.lit) { opacity: .
     <span>View</span>
     <button id="btn-lanes" aria-pressed="true">Lanes</button>
     <button id="btn-cap" aria-pressed="false">Capability</button>
+    <span style="margin-left:16px">Bands</span>
+    <button id="btn-straight" aria-pressed="false">Straight</button>
+    <button id="btn-curved" aria-pressed="true">Curved</button>
     <label style="margin-left:16px"><input type="checkbox" id="chk-tails"> Show lifespans</label>
   </div>
   <div class="legend" id="legend"></div>
@@ -221,6 +232,46 @@ for (const lab of data.labs) {
   y0 += h;
 }
 const HEIGHT = y0 + 12;
+for (const p of Object.values(placed)) p.ys = p.y;
+
+// ── curved bands: each band's top is the actual bottom of the band above ──
+// Sample x every STEP px. Within a band, boxes float up as far as the free space allows
+// (row 0 first, so product lines keep priority and follow the curve). The band's bottom
+// hugs its boxes and pinches to a ribbon between busy periods; smoothing = dilate by R then
+// blur within R, so the curve never cuts into a box.
+const STEP = 4, R = +(new URLSearchParams(location.search).get('r') || 120), RIBBON = 10, LABEL_T = 42;
+const NS_ = Math.ceil(WIDTH / STEP) + 1;
+const xi = v => Math.max(0, Math.min(NS_ - 1, Math.round(v / STEP)));
+const smooth = a => {
+  const r = Math.round(R / STEP), d = new Float64Array(NS_);
+  for (let i = 0; i < NS_; i++) { let m = -Infinity; for (let k = Math.max(0, i - r); k <= Math.min(NS_ - 1, i + r); k++) m = Math.max(m, a[k]); d[i] = m; }
+  // two box blurs of radius r/2: total support r, so the result stays >= the input
+  const blur = (src, h) => { const o = new Float64Array(NS_);
+    for (let i = 0; i < NS_; i++) { let s = 0, n = 0; for (let k = Math.max(0, i - h); k <= Math.min(NS_ - 1, i + h); k++) { s += src[k]; n++; } o[i] = s / n; } return o; };
+  return blur(blur(d, r >> 1), r >> 1);
+};
+const curve = { top: {}, t: {}, bottom: null };
+{
+  let upper = new Float64Array(NS_).fill(TOP);
+  for (const L of laneMeta) {
+    const id = L.lab.id;
+    const sky = upper.map(v => v + LANE_PAD);
+    const raw = upper.map(v => v + RIBBON);
+    for (let i = 0; i <= xi(LEFT); i++) raw[i] = upper[i] + LABEL_T;     // room for the label
+    const mine = Object.values(placed).filter(p => p.m.lab === id).sort((a, b) => a.row - b.row || a.x - b.x);
+    for (const p of mine) {
+      const i0 = xi(p.x), i1 = xi(p.x + BOX_W);
+      let y = -Infinity; for (let i = i0; i <= i1; i++) y = Math.max(y, sky[i]);
+      p.yc = y;
+      for (let i = i0; i <= i1; i++) { sky[i] = y + BOX_H + ROW_GAP; raw[i] = Math.max(raw[i], y + BOX_H + LANE_PAD); }
+    }
+    const bottom = smooth(raw);
+    curve.top[id] = upper; curve.t[id] = bottom.map((v, i) => v - upper[i]);
+    upper = bottom;
+  }
+  curve.bottom = upper;
+}
+const HEIGHT_CURVED = Math.ceil(Math.max(...curve.bottom)) + 12;
 
 // ── capability layout: y from ECI; unscored models in a strip at the bottom ──
 const CAP_TOP = TOP + 24, STRIP_H = 64, CAP_BOTTOM = HEIGHT - STRIP_H - 24;
@@ -237,13 +288,26 @@ const svg = document.getElementById('chart');
 svg.setAttribute('width', WIDTH); svg.setAttribute('height', HEIGHT);
 
 // lanes
+const laneFill = id => `fill: color-mix(in oklab, ${laneColor[id]} var(--lane-tint), var(--surface-1))`;
+const gStraight = el('g', { class: 'bands-straight' }, svg), gCurved = el('g', { class: 'bands-curved' }, svg);
+const laneLabel = (g, id, y, n, name) => {
+  el('rect', { x: 12, y: y + 10, width: 10, height: 10, rx: 2, class: 'lane-band', style: `fill: ${laneColor[id]}` }, g);
+  el('text', { x: 28, y: y + 19, class: 'lane-label' }, g).textContent = name;
+  el('text', { x: 28, y: y + 34, class: 'lane-count' }, g).textContent = `${n} models`;
+};
 laneMeta.forEach(L => {
-  el('rect', { x: 0, y: L.y, width: WIDTH, height: L.h, class: 'lane-band',
-    style: `fill: color-mix(in oklab, ${laneColor[L.lab.id]} var(--lane-tint), var(--surface-1))` }, svg);
-  el('line', { x1: 0, x2: WIDTH, y1: L.y, y2: L.y, class: 'gridline lane-band' }, svg);
-  el('rect', { x: 12, y: L.y + 10, width: 10, height: 10, rx: 2, class: 'lane-band', style: `fill: ${laneColor[L.lab.id]}` }, svg);
-  el('text', { x: 28, y: L.y + 19, class: 'lane-label' }, svg).textContent = L.lab.name;
-  el('text', { x: 28, y: L.y + 34, class: 'lane-count' }, svg).textContent = `${L.n} models`;
+  el('rect', { x: 0, y: L.y, width: WIDTH, height: L.h, class: 'lane-band', style: laneFill(L.lab.id) }, gStraight);
+  el('line', { x1: 0, x2: WIDTH, y1: L.y, y2: L.y, class: 'gridline lane-band' }, gStraight);
+  laneLabel(gStraight, L.lab.id, L.y, L.n, L.lab.name);
+  // curved: a filled ribbon between this lane's top and bottom curves
+  const top = curve.top[L.lab.id], t = curve.t[L.lab.id];
+  let d = `M0,${top[0]}`;
+  for (let i = 1; i < NS_; i++) d += `L${i * STEP},${top[i].toFixed(1)}`;
+  for (let i = NS_ - 1; i >= 0; i--) d += `L${i * STEP},${(top[i] + t[i]).toFixed(1)}`;
+  el('path', { d: d + 'Z', class: 'lane-band', style: laneFill(L.lab.id) }, gCurved);
+  let edge = `M0,${top[0]}`; for (let i = 1; i < NS_; i++) edge += `L${i * STEP},${top[i].toFixed(1)}`;
+  el('path', { d: edge, class: 'band-edge lane-band', style: `stroke: color-mix(in oklab, ${laneColor[L.lab.id]} 45%, var(--surface-1))` }, gCurved);
+  laneLabel(gCurved, L.lab.id, top[0], L.n, L.lab.name);
 });
 // year gridlines + today
 for (let y = 2018; y <= 2026; y++) {
@@ -294,7 +358,7 @@ for (const [id, color] of [['arrow', 'var(--muted)'], ['arrow-cross', 'var(--tex
   el('path', { d: 'M0,0 L8,4 L0,8 z', style: `fill: ${color}` }, mk);
 }
 const gTails = el('g', {}, svg), gEdges = el('g', {}, svg), gHover = el('g', {}, svg), gBoxes = el('g', {}, svg);
-for (const p of Object.values(placed)) for (const s of tailSegs(p, p.nextX - 6)) el('line', s, gTails);
+const drawTails = () => { gTails.replaceChildren(); for (const p of Object.values(placed)) for (const s of tailSegs(p, p.nextX - 6)) el('line', s, gTails); };
 
 // edges: one path per layout, swapped with the view
 const lanePath = (a, b) => {
@@ -325,7 +389,7 @@ for (const e of data.lineage) {
   (parents[e.to] ||= []).push(e.from); (children[e.from] ||= []).push(e.to);
   const cls = ['edge', a.m.lab !== b.m.lab ? 'cross' : '', e.confidence === 'confirmed' ? '' : 'soft'].join(' ');
   const path = el('path', { d: lanePath(a, b), class: cls, 'data-from': e.from, 'data-to': e.to, 'marker-end': `url(#${a.m.lab !== b.m.lab ? 'arrow-cross' : 'arrow'})` }, gEdges);
-  path._lane = lanePath(a, b); path._cap = capPath(a, b);
+  path._a = a; path._b = b; path._cap = capPath(a, b);
   el('title', {}, path).textContent = `${a.m.name} → ${b.m.name} (${e.type}, ${e.confidence})`;
 }
 
@@ -366,20 +430,29 @@ for (const t of svg.querySelectorAll('.box .name')) {
 
 // ── view switching ──
 let mode = 'lanes';
+let bands = new URLSearchParams(location.search).get('bands') === 'straight' ? 'straight' : 'curved';
 function layout() {
+  for (const p of Object.values(placed)) p.y = bands === 'curved' ? p.yc : p.ys;
+  drawTails();
+  svg.setAttribute('height', mode === 'cap' || bands === 'straight' ? HEIGHT : HEIGHT_CURVED);
+  svg.classList.toggle('curved', bands === 'curved');
+  document.getElementById('btn-straight').setAttribute('aria-pressed', bands === 'straight');
+  document.getElementById('btn-curved').setAttribute('aria-pressed', bands === 'curved');
   for (const p of Object.values(placed)) {
     const cap = mode === 'cap';
     p.g.style.transform = cap ? `translate(${p.cx - DOT / 2}px, ${p.cy - DOT / 2}px)` : `translate(${p.x}px, ${p.y}px)`;
     Object.assign(p.rect.style, cap ? { width: DOT + 'px', height: DOT + 'px', rx: DOT / 2 + 'px', ry: DOT / 2 + 'px' }
                                     : { width: BOX_W + 'px', height: BOX_H + 'px', rx: '4px', ry: '4px' });
   }
-  for (const e of gEdges.querySelectorAll('.edge')) e.setAttribute('d', mode === 'cap' ? e._cap : e._lane);
+  for (const e of gEdges.querySelectorAll('.edge')) e.setAttribute('d', mode === 'cap' ? e._cap : lanePath(e._a, e._b));
   svg.classList.toggle('cap', mode === 'cap');
   document.getElementById('btn-lanes').setAttribute('aria-pressed', mode === 'lanes');
   document.getElementById('btn-cap').setAttribute('aria-pressed', mode === 'cap');
 }
 document.getElementById('btn-lanes').onclick = () => { mode = 'lanes'; layout(); };
 document.getElementById('btn-cap').onclick = () => { mode = 'cap'; layout(); };
+document.getElementById('btn-straight').onclick = () => { bands = 'straight'; layout(); };
+document.getElementById('btn-curved').onclick = () => { bands = 'curved'; layout(); };
 document.getElementById('chk-tails').onchange = e => svg.classList.toggle('show-tails', e.target.checked);
 layout();
 
