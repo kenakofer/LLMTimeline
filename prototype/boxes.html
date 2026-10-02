@@ -161,7 +161,9 @@ const counts = {};
 for (const m of data.models) counts[q(start(m))] = (counts[q(start(m))] || 0) + 1;
 const quarters = [];
 for (let y = 2018; y <= 2026; y++) for (let k = 1; k <= 4; k++) quarters.push(`${y}Q${k}`);
-const qWidth = key => Math.max(26, (counts[key] || 0) * 30);
+// pixels of time axis per release in a quarter: lower = narrower chart, more rows
+const PX_PER_RELEASE = +(new URLSearchParams(location.search).get('px') || 14);
+const qWidth = key => Math.max(PX_PER_RELEASE, (counts[key] || 0) * PX_PER_RELEASE);
 const qStart = {}; let acc = LEFT + 10;
 for (const key of quarters) { qStart[key] = acc; acc += qWidth(key); }
 const WIDTH = acc + BOX_W + 40;
@@ -180,13 +182,37 @@ const laneMeta = [];
 for (const lab of data.labs) {
   const models = data.models.filter(m => m.lab === lab.id).sort((a, b) => start(a).localeCompare(start(b)));
   if (!models.length) continue;
-  const rows = [];
-  for (const m of models) {
-    const bx = x(start(m));
-    let r = rows.findIndex(r => r.end <= bx && r.pl === m.product_line);
-    if (r < 0) r = rows.findIndex(r => r.end <= bx);
-    if (r < 0) { r = rows.length; rows.push({}); }
-    rows[r] = { end: bx + BOX_W + 6, pl: m.product_line };
+  // Product lines with 3+ models lease a home row for the span they are active (first to last
+  // release), so succession reads left to right; lines that don't overlap in time share a row.
+  // Everything else (small lines, and boxes that collide inside their own line) fills the gaps.
+  const GAP = 6;
+  const lines = {};
+  for (const m of models) (lines[m.product_line] ||= []).push(m);
+  const rows = [];                      // each row: list of occupied [x0, x1) intervals
+  const free = (r, x0, x1) => rows[r].every(([a, b]) => x1 <= a || x0 >= b);
+  const take = (r, x0, x1) => rows[r].push([x0, x1]);
+  const leftovers = [];
+  const homeLines = Object.values(lines).filter(l => l.length >= 3)
+    .sort((a, b) => start(a[0]).localeCompare(start(b[0])));
+  for (const line of homeLines) {
+    const x0 = x(start(line[0])), x1 = x(start(line[line.length - 1])) + BOX_W + GAP;
+    let r = rows.findIndex((_, i) => free(i, x0, x1));
+    if (r < 0) { r = rows.length; rows.push([]); }
+    let end = -Infinity;
+    for (const m of line) {
+      const bx = x(start(m));
+      if (bx >= end) { placed[m.id] = { m, x: bx, row: r }; end = bx + BOX_W + GAP; }
+      else leftovers.push(m);
+    }
+    take(r, x0, x1);
+  }
+  for (const line of Object.values(lines)) if (line.length < 3) leftovers.push(...line);
+  leftovers.sort((a, b) => start(a).localeCompare(start(b)));
+  for (const m of leftovers) {
+    const bx = x(start(m)), x1 = bx + BOX_W + GAP;
+    let r = rows.findIndex((_, i) => free(i, bx, x1));
+    if (r < 0) { r = rows.length; rows.push([]); }
+    take(r, bx, x1);
     placed[m.id] = { m, x: bx, row: r };
   }
   const h = LANE_PAD * 2 + rows.length * (BOX_H + ROW_GAP) - ROW_GAP;
