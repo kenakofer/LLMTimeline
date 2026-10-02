@@ -221,6 +221,14 @@ models:
         basis: >
           Date from Epoch AI's model database; not found verbatim on the linked page.
         source: https://epoch.ai/data/ai-models
+      - type: available
+        date: 2022-11-28
+        precision: day
+        confidence: likely
+        basis: >
+          Served in the OpenAI API until its 4 January 2024 shutdown; availability from
+          the release date given by Epoch AI.
+        source: https://developers.openai.com/api/docs/deprecations
       - type: deprecated
         date: 2023-07-06
         precision: day

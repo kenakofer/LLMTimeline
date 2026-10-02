@@ -363,6 +363,14 @@
           "source": "https://epoch.ai/data/ai-models"
         },
         {
+          "type": "available",
+          "date": "2022-11-28",
+          "precision": "day",
+          "confidence": "likely",
+          "basis": "Served in the OpenAI API until its 4 January 2024 shutdown; availability from the release date given by Epoch AI.",
+          "source": "https://developers.openai.com/api/docs/deprecations"
+        },
+        {
           "type": "deprecated",
           "date": "2023-07-06",
           "precision": "day",
@@ -2900,6 +2908,14 @@
           "confidence": "likely",
           "basis": "Date from Epoch AI's model database; not found verbatim on the linked page.",
           "source": "https://storage.googleapis.com/deepmind-media/gemini/gemini_1_report.pdf"
+        },
+        {
+          "type": "available",
+          "date": "2024-02-08",
+          "precision": "day",
+          "confidence": "confirmed",
+          "basis": "Bard was renamed Gemini and Ultra 1.0 became available in the paid Gemini Advanced tier.",
+          "source": "https://blog.google/products/gemini/bard-gemini-advanced-app/"
         }
       ]
     },
@@ -2914,12 +2930,28 @@
       "notes": "Announced as a limited preview in February 2024; the ECI score is for the May 2024 release.",
       "events": [
         {
+          "type": "limited",
+          "date": "2024-02-15",
+          "precision": "day",
+          "confidence": "likely",
+          "basis": "Announced as a limited preview for developers and enterprise customers in AI Studio and Vertex AI.",
+          "source": "https://blog.google/technology/ai/google-gemini-next-generation-model-february-2024/"
+        },
+        {
           "type": "announced",
           "date": "2024-02-15",
           "precision": "day",
           "confidence": "likely",
           "basis": "Date from Epoch AI's model database; not found verbatim on the linked page.",
           "source": "https://storage.googleapis.com/deepmind-media/gemini/gemini_v1_5_report.pdf"
+        },
+        {
+          "type": "available",
+          "date": "2024-04-09",
+          "precision": "day",
+          "confidence": "confirmed",
+          "basis": "Public preview in the Gemini API in 180+ countries.",
+          "source": "https://developers.googleblog.com/2024/04/gemini-15-pro-in-public-preview-with-new-features.html"
         }
       ]
     },

@@ -62,7 +62,9 @@ svg text { font-family: inherit; }
 .box.retired { opacity: .5; }
 .box .name { font-size: 11px; font-weight: 600; fill: var(--text-primary); transition: opacity .3s, transform .9s; }
 .box .meta { font-size: 9.5px; fill: var(--text-secondary); font-variant-numeric: tabular-nums; transition: opacity .3s; }
-.box .star { font-size: 11px; fill: var(--text-primary); transition: opacity .3s; }
+.box .crown { fill: var(--text-primary); stroke: var(--surface-1); stroke-width: 1.4; paint-order: stroke; transition: opacity .3s; }
+.box .badge, .legend .badge { fill: none; stroke: var(--text-primary); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; transition: opacity .3s; }
+.legend .crown { fill: var(--text-primary); }
 .box .meter-bg { fill: var(--axis); opacity: .5; transition: opacity .3s; }
 .box .meter { fill: var(--lab); transition: opacity .3s; }
 
@@ -97,7 +99,7 @@ svg.curved .bands-straight { display: none; }
 /* capability mode */
 svg.cap .lane-band, svg.cap .lane-label, svg.cap .lane-count, svg.cap .tail, svg.cap.show-tails .tail { opacity: 0; }
 svg.cap .cap-only { opacity: 1; }
-svg.cap .box .meta, svg.cap .box .meter, svg.cap .box .meter-bg, svg.cap .box .star { opacity: 0; }
+svg.cap .box .meta, svg.cap .box .meter, svg.cap .box .meter-bg, svg.cap .box .crown, svg.cap .box .badge { opacity: 0; }
 svg.cap .box .name { opacity: 0; transform: translate(8px, -6px); font-size: 10.5px; }
 svg.cap .box.frontier-setter .name { opacity: 1; }
 svg.cap .box rect.body { fill: var(--lab); stroke: var(--surface-1); stroke-width: 2; }
@@ -120,7 +122,7 @@ svg.focus .box.kin:not(.lit) { opacity: .5; }
 <div class="viz-root">
   <h1>Prototype: one box per model, placed at release</h1>
   <p class="sub">Each box is a model, placed at its first public appearance; the bar along its bottom is its
-    Epoch Capabilities Index (ECI) score, and ★ marks a model that topped every earlier model when it launched.
+    Epoch Capabilities Index (ECI) score, and a crown marks a model that topped every earlier model when it launched.
     Busy years get more horizontal room, so gridline spacing varies. Switch to <b>Capability</b> to lift every
     model to its score. Arrows show documented lineage (fine-tuned or distilled from). Hover any model to trace its lineage and see its lifespan; hovering lights up its lab's band.</p>
   <div class="controls">
@@ -358,6 +360,13 @@ const tailSegs = (p, clip) => {
   return segs;
 };
 const defs = el('defs', {}, svg);
+const ICONS = {
+  crown: 'M1.5 9.5 L1 3.5 L4 6 L6 2 L8 6 L11 3.5 L10.5 9.5 Z M1.5 10.8 H10.5',
+  open: 'M3 6 H9.5 V11 H2.5 V6 Z M4.5 6 V4 A2.3 2.3 0 0 1 9 3.4',
+  key: 'M4 4.5 m-2.5 0 a2.5 2.5 0 1 0 5 0 a2.5 2.5 0 1 0 -5 0 M6.2 5.8 L11 10.5 M9.2 8.7 L8 9.9 M10.5 10 L9.6 10.9',
+  hourglass: 'M3 1.5 H9 M3 10.5 H9 M3.6 1.5 C3.6 4.5 6 5 6 6 C6 7 3.6 7.5 3.6 10.5 M8.4 1.5 C8.4 4.5 6 5 6 6 C6 7 8.4 7.5 8.4 10.5',
+};
+for (const [id, d] of Object.entries(ICONS)) el('path', { d }, el('symbol', { id: 'i-' + id, viewBox: '0 0 12 12' }, defs));
 for (const [id, color] of [['arrow', 'var(--muted)'], ['arrow-cross', 'var(--text-primary)']]) {
   const mk = el('marker', { id, viewBox: '0 0 8 8', refX: 7, refY: 4, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, defs);
   el('path', { d: 'M0,0 L8,4 L0,8 z', style: `fill: ${color}` }, mk);
@@ -414,19 +423,30 @@ for (const p of Object.values(placed)) {
   p.g = g;
   const r = el('rect', { class: 'body', rx: 4 }, g); p.rect = r;
   el('text', { class: 'name', x: 7, y: 14 }, g).textContent = shortName(m);
-  el('text', { class: 'meta', x: 7, y: 26 }, g).textContent = fmt(start(m)) + (m.open_weights ? ' · open' : '') + (retired ? ' · retired' : '');
-  if (frontierSetters.has(m.id)) el('text', { class: 'star', x: BOX_W - 15, y: 14 }, g).textContent = '★';
+  el('text', { class: 'meta', x: 7, y: 26 }, g).textContent = fmt(start(m)) + (retired ? ' · retired' : '');
+  // a crown perched on the corner for a model that topped every earlier model at launch
+  if (frontierSetters.has(m.id)) el('use', { href: '#i-crown', class: 'crown', x: BOX_W - 14, y: -9, width: 17, height: 17, transform: `rotate(16 ${BOX_W - 5.5} -0.5)` }, g);
+  // status badges, right-aligned on the date line
+  const has = t => m.events.some(e => e.type === t);
+  const badges = [];
+  if (m.open_weights) badges.push('open');
+  if (has('limited') && !has('available')) badges.push('key');
+  if (!has('limited') && !has('available')) badges.push('hourglass');
+  badges.forEach((b, i) => el('use', { href: '#i-' + b, class: 'badge', x: BOX_W - 18 - i * 14, y: 17, width: 11, height: 11 }, g));
   if (score != null) {
     el('rect', { class: 'meter-bg', x: 7, y: BOX_H - 6, width: METER_W, height: 3, rx: 1.5 }, g);
     el('rect', { class: 'meter', x: 7, y: BOX_H - 6, width: Math.max(2, METER_W * (score - ECI_MIN) / (ECI_MAX - ECI_MIN)), height: 3, rx: 1.5 }, g);
   }
   el('title', {}, g).textContent = `${m.name}${m.org ? ' — ' + m.org : ''}\n` +
     (score != null ? `ECI ${score}${frontierSetters.has(m.id) ? ' — new frontier at launch' : ''}\n` : 'No ECI score\n') +
+    (m.open_weights ? 'Open weights\n' : '') +
+    (m.events.some(e => e.type === 'limited') && !m.events.some(e => e.type === 'available') ? 'Limited access only — never generally available\n' : '') +
+    (!m.events.some(e => e.type === 'limited' || e.type === 'available') ? 'Announced, never publicly released\n' : '') +
     m.events.map(e => `${e.type}: ${e.date} (${e.confidence})`).join('\n');
 }
 // shrink names that overflow the box
 for (const t of svg.querySelectorAll('.box .name')) {
-  const room = BOX_W - (t.parentNode.querySelector('.star') ? 26 : 12);
+  const room = BOX_W - (t.parentNode.querySelector('.crown') ? 20 : 12);
   let fs = 11;
   while (t.getComputedTextLength() > room && fs > 8.5) { fs -= 0.5; t.style.fontSize = fs + 'px'; }
   if (t.getComputedTextLength() > room) { let s = t.textContent; while (t.getComputedTextLength() > room - 2 && s.length) { s = s.slice(0, -1); t.textContent = s + '…'; } }
@@ -486,7 +506,10 @@ gBoxes.addEventListener('mouseleave', () => { svg.classList.remove('focus'); gHo
 document.getElementById('legend').innerHTML =
   data.labs.filter(l => sizes[l.id]).map(l => `<span><svg width="12" height="12"><rect width="12" height="12" rx="2" style="fill:${laneColor[l.id]}"/></svg>${l.name}</span>`).join('') +
   `<span><svg width="40" height="8"><rect y="2" width="40" height="3" rx="1.5" fill="var(--axis)" opacity=".5"/><rect y="2" width="26" height="3" rx="1.5" fill="var(--text-secondary)"/></svg>ECI score</span>` +
-  `<span>★ new frontier at launch</span>` +
+  `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-crown" class="crown"/></svg>new frontier at launch</span>` +
+  `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-open" class="badge"/></svg>open weights</span>` +
+  `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-key" class="badge"/></svg>limited access only</span>` +
+  `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-hourglass" class="badge"/></svg>announced, never released</span>` +
   `<span><svg width="30" height="10"><path d="M2 5H24" class="edge"/><path d="M22 2L28 5L22 8z" fill="var(--muted)"/></svg>derived from (same lab)</span>` +
   `<span><svg width="30" height="10"><path d="M2 5H24" class="edge cross"/><path d="M22 2L28 5L22 8z" fill="var(--text-primary)"/></svg>derived from another lab</span>` +
   `<span><svg width="30" height="10"><path d="M2 5H28" class="edge soft"/></svg>lineage not yet verified</span>`;
