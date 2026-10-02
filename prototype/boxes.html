@@ -8,7 +8,6 @@
   color-scheme: light;
   --page: #f9f9f7;
   --surface-1: #fcfcfb;
-  --lane-alt: #f4f3ef;
   --text-primary: #0b0b0b;
   --text-secondary: #52514e;
   --muted: #898781;
@@ -16,82 +15,116 @@
   --axis: #c3c2b7;
   --border: rgba(11,11,11,0.16);
   --box: #ffffff;
-  --open-fill: #cde2fb;      /* blue ramp step 100 */
-  --open-edge: #2a78d6;      /* categorical slot 1 */
-  --edge: #898781;
-  --edge-strong: #2a78d6;
+  --neutral: #898781;
+  /* lane hues: categorical slots 1-8, fixed order (light steps) */
+  --s1: #2a78d6; --s2: #eb6834; --s3: #1baf7a; --s4: #eda100;
+  --s5: #e87ba4; --s6: #008300; --s7: #4a3aa7; --s8: #e34948;
+  --tint: 16%; --lane-tint: 5%;
 }
 @media (prefers-color-scheme: dark) {
   :root:where(:not([data-theme="light"])) .viz-root {
     color-scheme: dark;
-    --page: #0d0d0d; --surface-1: #1a1a19; --lane-alt: #20201f;
+    --page: #0d0d0d; --surface-1: #1a1a19;
     --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
     --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.16);
-    --box: #262624; --open-fill: #104281; --open-edge: #3987e5;
-    --edge: #6f6e69; --edge-strong: #3987e5;
+    --box: #232322; --neutral: #898781;
+    --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+    --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+    --tint: 24%; --lane-tint: 7%;
   }
 }
 :root[data-theme="dark"] .viz-root {
   color-scheme: dark;
-  --page: #0d0d0d; --surface-1: #1a1a19; --lane-alt: #20201f;
+  --page: #0d0d0d; --surface-1: #1a1a19;
   --text-primary: #ffffff; --text-secondary: #c3c2b7; --muted: #898781;
   --grid: #2c2c2a; --axis: #383835; --border: rgba(255,255,255,0.16);
-  --box: #262624; --open-fill: #104281; --open-edge: #3987e5;
-  --edge: #6f6e69; --edge-strong: #3987e5;
+  --box: #232322; --neutral: #898781;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500;
+  --s5: #d55181; --s6: #008300; --s7: #9085e9; --s8: #e66767;
+  --tint: 24%; --lane-tint: 7%;
 }
 body { margin: 0; background: var(--page); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
 .viz-root { background: var(--page); color: var(--text-primary); padding: 16px 20px; }
 h1 { font-size: 18px; margin: 0 0 4px; }
-p.sub { margin: 0 0 12px; color: var(--text-secondary); font-size: 13px; max-width: 70ch; }
-.legend { display: flex; gap: 18px; font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
+p.sub { margin: 0 0 12px; color: var(--text-secondary); font-size: 13px; max-width: 78ch; }
+.controls { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; font-size: 12px; color: var(--text-secondary); }
+.controls button { font: inherit; color: var(--text-primary); background: var(--surface-1); border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; cursor: pointer; }
+.controls button[aria-pressed="true"] { font-weight: 700; border-color: var(--text-secondary); }
+.legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
 .legend svg { vertical-align: middle; margin-right: 4px; }
 .scroller { overflow-x: auto; background: var(--surface-1); border: 1px solid var(--border); border-radius: 6px; }
 svg text { font-family: inherit; }
-.box rect.body { fill: var(--box); stroke: var(--border); stroke-width: 1; }
-.box.open rect.body { fill: var(--open-fill); stroke: var(--open-edge); }
-.box.retired { opacity: .55; }
-.box .name { font-size: 11px; font-weight: 600; fill: var(--text-primary); }
-.box .meta { font-size: 9.5px; fill: var(--text-secondary); font-variant-numeric: tabular-nums; }
-.tail { stroke: var(--axis); stroke-width: 2; stroke-linecap: round; opacity: .7; }
-.tail.full { stroke: var(--text-secondary); opacity: 1; }
+
+/* boxes */
+.box { transition: transform .9s cubic-bezier(.5,0,.2,1), opacity .4s; }
+.box rect.body { fill: color-mix(in oklab, var(--lab) var(--tint), var(--box)); stroke: color-mix(in oklab, var(--lab) 70%, var(--box)); stroke-width: 1;
+  transition: width .9s cubic-bezier(.5,0,.2,1), height .9s cubic-bezier(.5,0,.2,1), rx .9s, ry .9s; }
+.box.retired { opacity: .5; }
+.box .name { font-size: 11px; font-weight: 600; fill: var(--text-primary); transition: opacity .3s, transform .9s; }
+.box .meta { font-size: 9.5px; fill: var(--text-secondary); font-variant-numeric: tabular-nums; transition: opacity .3s; }
+.box .star { font-size: 11px; fill: var(--text-primary); transition: opacity .3s; }
+.box .meter-bg { fill: var(--axis); opacity: .5; transition: opacity .3s; }
+.box .meter { fill: var(--lab); transition: opacity .3s; }
+
+.tail { stroke: var(--axis); stroke-width: 2; stroke-linecap: round; opacity: .7; transition: opacity .4s; }
 .tail.dep { stroke-dasharray: 3 3; }
-.edge { fill: none; stroke: var(--edge); stroke-width: 1.5; }
-.edge.cross { stroke: var(--edge-strong); }
+.tail.full { stroke: var(--text-secondary); opacity: 1; }
+.edge { fill: none; stroke: var(--muted); stroke-width: 1.5; transition: opacity .4s; }
+.edge.cross { stroke: var(--text-primary); }
 .edge.soft { stroke-dasharray: 4 3; }
-.lane-label { font-size: 12px; font-weight: 700; fill: var(--text-primary); }
-.lane-count { font-size: 10.5px; fill: var(--muted); }
+.lane-band { transition: opacity .6s; }
+.lane-label { font-size: 12px; font-weight: 700; fill: var(--text-primary); transition: opacity .6s; }
+.lane-count { font-size: 10.5px; fill: var(--muted); transition: opacity .6s; }
 .year { font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
 .gridline { stroke: var(--grid); stroke-width: 1; }
 .today { stroke: var(--text-secondary); stroke-dasharray: 2 3; }
+.cap-only { opacity: 0; pointer-events: none; transition: opacity .6s; }
+.eci-tick { font-size: 10.5px; fill: var(--muted); font-variant-numeric: tabular-nums; }
+.frontier-area { fill: var(--text-primary); opacity: .06; stroke: none; }
+.frontier { fill: none; stroke: var(--text-primary); stroke-width: 2; stroke-linejoin: round; }
+.frontier-label, .strip-label, .axis-title { font-size: 11px; fill: var(--text-secondary); }
+.axis-title { font-weight: 700; }
+
+/* capability mode */
+svg.cap .lane-band, svg.cap .lane-label, svg.cap .lane-count, svg.cap .tail { opacity: 0; }
+svg.cap .cap-only { opacity: 1; }
+svg.cap .box .meta, svg.cap .box .meter, svg.cap .box .meter-bg, svg.cap .box .star { opacity: 0; }
+svg.cap .box .name { opacity: 0; transform: translate(8px, -6px); font-size: 10.5px; }
+svg.cap .box.frontier-setter .name { opacity: 1; }
+svg.cap .box rect.body { fill: var(--lab); stroke: var(--surface-1); stroke-width: 2; }
+svg.cap .box.unscored { opacity: .45; }
+svg.cap .edge { opacity: 0; }
+svg.cap .box.retired { opacity: .75; }
+
 /* hover: lineage focus */
 svg.focus .box, svg.focus .edge, svg.focus .tail { opacity: .15; }
 svg.focus .box.lit, svg.focus .edge.lit { opacity: 1; }
-svg.focus .box.lit.self rect.body { stroke-width: 2.5; }
+svg.focus .box.lit.self rect.body { stroke-width: 2.5; stroke: var(--text-primary); }
 svg.focus .tail.full { opacity: 1; }
+svg.cap.focus .box.lit .name { opacity: 1; }
+svg.cap.focus .edge:not(.lit) { opacity: 0; }
 </style>
 </head>
 <body>
 <div class="viz-root">
   <h1>Prototype: one box per model, placed at release</h1>
-  <p class="sub">Each box is a model, placed at its first public appearance. Busy years get more horizontal room:
-    the time axis is stretched by release count, so gridline spacing varies. The thin line after a box is its
-    lifespan, which ends where the model was retired. Hover a box to trace where it came from and what came from it.</p>
-  <div class="legend">
-    <span><svg width="26" height="14"><rect x="1" y="1" width="24" height="12" rx="3" fill="var(--box)" stroke="var(--border)"/></svg>closed weights</span>
-    <span><svg width="26" height="14"><rect x="1" y="1" width="24" height="12" rx="3" fill="var(--open-fill)" stroke="var(--open-edge)"/></svg>open weights (also labelled “open”)</span>
-    <span><svg width="30" height="10"><line x1="2" y1="5" x2="28" y2="5" class="tail"/></svg>lifespan</span>
-    <span><svg width="30" height="10"><line x1="2" y1="5" x2="28" y2="5" class="tail dep"/></svg>deprecated</span>
-    <span><svg width="30" height="10"><path d="M2 5H28" class="edge"/></svg>derived from (same lab)</span>
-    <span><svg width="30" height="10"><path d="M2 5H28" class="edge cross"/></svg>derived from (another lab)</span>
-    <span><svg width="30" height="10"><path d="M2 5H28" class="edge soft"/></svg>not yet verified first-hand</span>
+  <p class="sub">Each box is a model, placed at its first public appearance; the bar along its bottom is its
+    Epoch Capabilities Index (ECI) score, and ★ marks a model that topped every earlier model when it launched.
+    Busy years get more horizontal room, so gridline spacing varies. Switch to <b>Capability</b> to lift every
+    model to its score. Hover any model to trace its lineage.</p>
+  <div class="controls">
+    <span>View</span>
+    <button id="btn-lanes" aria-pressed="true">Lanes</button>
+    <button id="btn-cap" aria-pressed="false">Capability</button>
   </div>
+  <div class="legend" id="legend"></div>
   <div class="scroller"><svg id="chart"></svg></div>
 </div>
 <script src="../site/data.js"></script>
 <script>
 const data = window.TIMELINE_DATA;
 const TODAY = '2026-10-01';
-const BOX_W = 124, BOX_H = 34, ROW_GAP = 6, LANE_PAD = 10, LEFT = 150, TOP = 34;
+const BOX_W = 124, BOX_H = 34, ROW_GAP = 6, LANE_PAD = 10, LEFT = 150, TOP = 34, DOT = 13;
 const NS = 'http://www.w3.org/2000/svg';
 const el = (tag, attrs = {}, parent) => {
   const n = document.createElementNS(NS, tag);
@@ -104,35 +137,47 @@ const start = m => (ev(m, 'announced', 'limited', 'available') || m.events[0]).d
 const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
 const fmt = d => `${MON[+d.slice(5, 7) - 1]} ${d.slice(0, 4)}`;
 
-// ── stretched time: each quarter gets width proportional to its releases (with a floor) ──
+// ── lane colour: the eight largest lanes get categorical slots in lane order; the rest are neutral ──
+const sizes = {}; for (const m of data.models) sizes[m.lab] = (sizes[m.lab] || 0) + 1;
+const colored = new Set(data.labs.filter(l => l.id !== 'other').sort((a, b) => sizes[b.id] - sizes[a.id]).slice(0, 8).map(l => l.id));
+const laneColor = {}; let slot = 1;
+for (const l of data.labs) laneColor[l.id] = colored.has(l.id) ? `var(--s${slot++})` : 'var(--neutral)';
+
+// ── ECI and frontier-setters ──
+const eci = Object.fromEntries((data.scores?.eci?.values || []).map(s => [s.model, s.eci]));
+const frontierSetters = new Set(); const frontierPts = [];
+{ let best = -Infinity;
+  for (const m of data.models.filter(m => eci[m.id] != null).sort((a, b) => start(a).localeCompare(start(b)))) {
+    if (eci[m.id] > best) { best = eci[m.id]; frontierSetters.add(m.id); frontierPts.push([start(m), best, m]); }
+  } }
+const ECI_MIN = 90, ECI_MAX = 170;
+
+// ── stretched time: each quarter's width is proportional to its releases (with a floor) ──
 const q = d => `${d.slice(0, 4)}Q${Math.floor((+d.slice(5, 7) - 1) / 3) + 1}`;
 const counts = {};
 for (const m of data.models) counts[q(start(m))] = (counts[q(start(m))] || 0) + 1;
 const quarters = [];
-for (let y = 2018; y <= 2027; y++) for (let k = 1; k <= 4; k++) {
-  const key = `${y}Q${k}`;
-  if (`${y}-${String(k * 3 - 2).padStart(2, '0')}-01` > '2026-12-31') break;
-  quarters.push(key);
-}
+for (let y = 2018; y <= 2026; y++) for (let k = 1; k <= 4; k++) quarters.push(`${y}Q${k}`);
 const qWidth = key => Math.max(26, (counts[key] || 0) * 30);
 const qStart = {}; let acc = LEFT + 10;
 for (const key of quarters) { qStart[key] = acc; acc += qWidth(key); }
 const WIDTH = acc + BOX_W + 40;
 const x = d => {
   const key = q(d), y = +d.slice(0, 4), qi = +key.slice(-1);
+  if (!(key in qStart)) return acc;
   const q0 = Date.UTC(y, (qi - 1) * 3, 1), q1 = Date.UTC(y, qi * 3, 1);
   const t = Date.UTC(y, +d.slice(5, 7) - 1, +d.slice(8, 10));
   return qStart[key] + ((t - q0) / (q1 - q0)) * qWidth(key);
 };
 
-// ── row packing per lane: keep a product line on its own row where possible ──
+// ── lane layout: row packing per lane, keeping a product line on its own row where possible ──
 const placed = {};
 let y0 = TOP;
 const laneMeta = [];
 for (const lab of data.labs) {
   const models = data.models.filter(m => m.lab === lab.id).sort((a, b) => start(a).localeCompare(start(b)));
   if (!models.length) continue;
-  const rows = []; // {end, pl}
+  const rows = [];
   for (const m of models) {
     const bx = x(start(m));
     let r = rows.findIndex(r => r.end <= bx && r.pl === m.product_line);
@@ -142,21 +187,36 @@ for (const lab of data.labs) {
     placed[m.id] = { m, x: bx, row: r };
   }
   const h = LANE_PAD * 2 + rows.length * (BOX_H + ROW_GAP) - ROW_GAP;
-  laneMeta.push({ lab, y: y0, h, n: models.length, rows: rows.length });
+  laneMeta.push({ lab, y: y0, h, n: models.length });
   for (const m of models) placed[m.id].y = y0 + LANE_PAD + placed[m.id].row * (BOX_H + ROW_GAP);
   y0 += h;
 }
 const HEIGHT = y0 + 12;
+
+// ── capability layout: y from ECI; unscored models in a strip at the bottom ──
+const CAP_TOP = TOP + 24, STRIP_H = 64, CAP_BOTTOM = HEIGHT - STRIP_H - 24;
+const yEci = v => CAP_BOTTOM - (v - ECI_MIN) / (ECI_MAX - ECI_MIN) * (CAP_BOTTOM - CAP_TOP);
+{ const stripRows = [];
+  for (const p of Object.values(placed).sort((a, b) => a.x - b.x)) {
+    const cx = x(start(p.m));
+    if (eci[p.m.id] != null) { p.cx = cx; p.cy = yEci(eci[p.m.id]); continue; }
+    let r = stripRows.findIndex(e => e <= cx); if (r < 0) { r = stripRows.length; stripRows.push(0); }
+    stripRows[r] = cx + DOT + 2; p.cx = cx; p.cy = HEIGHT - STRIP_H + 8 + (r % 4) * (DOT + 3);
+  } }
+
 const svg = document.getElementById('chart');
 svg.setAttribute('width', WIDTH); svg.setAttribute('height', HEIGHT);
 
 // lanes
-laneMeta.forEach((L, i) => {
-  if (i % 2) el('rect', { x: 0, y: L.y, width: WIDTH, height: L.h, fill: 'var(--lane-alt)' }, svg);
-  el('text', { x: 12, y: L.y + 20, class: 'lane-label' }, svg).textContent = L.lab.name;
-  el('text', { x: 12, y: L.y + 35, class: 'lane-count' }, svg).textContent = `${L.n} models`;
+laneMeta.forEach(L => {
+  el('rect', { x: 0, y: L.y, width: WIDTH, height: L.h, class: 'lane-band',
+    style: `fill: color-mix(in oklab, ${laneColor[L.lab.id]} var(--lane-tint), var(--surface-1))` }, svg);
+  el('line', { x1: 0, x2: WIDTH, y1: L.y, y2: L.y, class: 'gridline lane-band' }, svg);
+  el('rect', { x: 12, y: L.y + 10, width: 10, height: 10, rx: 2, class: 'lane-band', style: `fill: ${laneColor[L.lab.id]}` }, svg);
+  el('text', { x: 28, y: L.y + 19, class: 'lane-label' }, svg).textContent = L.lab.name;
+  el('text', { x: 28, y: L.y + 34, class: 'lane-count' }, svg).textContent = `${L.n} models`;
 });
-// year gridlines
+// year gridlines + today
 for (let y = 2018; y <= 2026; y++) {
   const gx = qStart[`${y}Q1`];
   el('line', { x1: gx, x2: gx, y1: TOP - 8, y2: HEIGHT, class: 'gridline' }, svg);
@@ -166,13 +226,28 @@ const tx = x(TODAY);
 el('line', { x1: tx, x2: tx, y1: TOP - 8, y2: HEIGHT, class: 'today' }, svg);
 el('text', { x: tx + 4, y: TOP - 14, class: 'year' }, svg).textContent = 'today';
 
-// tails (lifespan) — drawn first so boxes sit on top
-const gTails = el('g', {}, svg), gEdges = el('g', {}, svg), gBoxes = el('g', {}, svg);
-// A tail stops at the next box in its row, so it never reads as connecting two models;
-// the full lifespan is drawn on hover.
-const rowKey = p => `${p.m.lab}|${p.row}`;
+// capability-mode furniture
+const gCap = el('g', { class: 'cap-only' }, svg);
+for (let v = ECI_MIN; v <= ECI_MAX; v += 10) {
+  el('line', { x1: LEFT, x2: WIDTH, y1: yEci(v), y2: yEci(v), class: 'gridline' }, gCap);
+  el('text', { x: LEFT - 8, y: yEci(v) + 4, 'text-anchor': 'end', class: 'eci-tick' }, gCap).textContent = v;
+}
+el('text', { x: 12, y: CAP_TOP - 6, class: 'axis-title' }, gCap).textContent = 'ECI score';
+el('line', { x1: 0, x2: WIDTH, y1: HEIGHT - STRIP_H - 6, y2: HEIGHT - STRIP_H - 6, class: 'gridline' }, gCap);
+el('text', { x: 12, y: HEIGHT - STRIP_H + 10, class: 'strip-label' }, gCap).textContent = 'Not scored on ECI';
+el('text', { x: 12, y: HEIGHT - STRIP_H + 24, class: 'strip-label' }, gCap).textContent = '(ECI starts in 2023)';
+{ let d = '';
+  frontierPts.forEach(([dt, v], i) => { const px = x(dt), py = yEci(v); d += i ? `H${px}V${py}` : `M${px},${py}`; });
+  d += `H${tx}`;
+  el('path', { d: d + `V${CAP_BOTTOM}H${x(frontierPts[0][0])}Z`, class: 'frontier-area' }, gCap);
+  el('path', { d, class: 'frontier' }, gCap);
+  const last = frontierPts[frontierPts.length - 1];
+  el('text', { x: tx + 6, y: yEci(last[1]) + 4, class: 'frontier-label' }, gCap).textContent = 'frontier';
+}
+
+// tails: stop at the next box in the row; the full lifespan shows on hover
 const byRow = {};
-for (const p of Object.values(placed)) (byRow[rowKey(p)] ||= []).push(p);
+for (const p of Object.values(placed)) (byRow[`${p.m.lab}|${p.row}`] ||= []).push(p);
 for (const list of Object.values(byRow)) list.sort((a, b) => a.x - b.x).forEach((p, i) => p.nextX = list[i + 1]?.x ?? Infinity);
 const tailSegs = (p, clip) => {
   const ret = ev(p.m, 'retired'), dep = ev(p.m, 'deprecated');
@@ -184,35 +259,37 @@ const tailSegs = (p, clip) => {
   if (endX > depX + 2) segs.push({ x1: depX, x2: endX, y1: cy, y2: cy, class: 'tail dep' });
   return segs;
 };
+const gTails = el('g', {}, svg), gEdges = el('g', {}, svg), gHover = el('g', {}, svg), gBoxes = el('g', {}, svg);
 for (const p of Object.values(placed)) for (const s of tailSegs(p, p.nextX - 6)) el('line', s, gTails);
-const gHover = el('g', { class: 'hover-tail' }, svg);
-// edges
+
+// edges: one path per layout, swapped with the view
+const lanePath = (a, b) => {
+  if (b.x - (a.x + BOX_W) >= 24) {
+    const x1 = a.x + BOX_W, y1 = a.y + BOX_H / 2, x2 = b.x, y2 = b.y + BOX_H / 2, dx = Math.max(30, (x2 - x1) / 2);
+    return `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`;
+  }
+  const down = b.y > a.y;
+  const xm = Math.max(a.x, b.x) + Math.min(BOX_W, b.x + BOX_W - a.x) / 2 + (down ? 10 : -10);
+  const y1 = down ? a.y + BOX_H : a.y, y2 = down ? b.y : b.y + BOX_H;
+  const xa = Math.min(xm, a.x + BOX_W - 8), xb = Math.min(xm, b.x + BOX_W - 8), dy = (y2 - y1) / 2;
+  return `M${xa},${y1} C${xa},${y1 + dy} ${xb},${y2 - dy} ${xb},${y2}`;
+};
+const capPath = (a, b) => {
+  const x1 = a.cx, y1 = a.cy, x2 = b.cx, y2 = b.cy, dx = Math.max(12, (x2 - x1) / 2);
+  return `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`;
+};
 const parents = {}, children = {};
 for (const e of data.lineage) {
   const a = placed[e.from], b = placed[e.to];
   if (!a || !b) continue;
   (parents[e.to] ||= []).push(e.from); (children[e.from] ||= []).push(e.to);
-  let d;
-  if (b.x - (a.x + BOX_W) >= 24) {
-    // enough horizontal room: right side of parent -> left side of child
-    const x1 = a.x + BOX_W, y1 = a.y + BOX_H / 2, x2 = b.x, y2 = b.y + BOX_H / 2;
-    const dx = Math.max(30, (x2 - x1) / 2);
-    d = `M${x1},${y1} C${x1 + dx},${y1} ${x2 - dx},${y2} ${x2},${y2}`;
-  } else {
-    // released close together (often the same day): run vertically, bottom -> top
-    const down = b.y > a.y;
-    const xm = Math.max(a.x, b.x) + Math.min(BOX_W, b.x + BOX_W - a.x) / 2 + (down ? 10 : -10);
-    const y1 = down ? a.y + BOX_H : a.y, y2 = down ? b.y : b.y + BOX_H;
-    const xa = Math.min(xm, a.x + BOX_W - 8), xb = Math.min(xm, b.x + BOX_W - 8);
-    const dy = (y2 - y1) / 2;
-    d = `M${xa},${y1} C${xa},${y1 + dy} ${xb},${y2 - dy} ${xb},${y2}`;
-  }
   const cls = ['edge', a.m.lab !== b.m.lab ? 'cross' : '', e.confidence === 'confirmed' ? '' : 'soft'].join(' ');
-  const path = el('path', { d, class: cls, 'data-from': e.from, 'data-to': e.to }, gEdges);
+  const path = el('path', { d: lanePath(a, b), class: cls, 'data-from': e.from, 'data-to': e.to }, gEdges);
+  path._lane = lanePath(a, b); path._cap = capPath(a, b);
   el('title', {}, path).textContent = `${a.m.name} → ${b.m.name} (${e.type}, ${e.confidence})`;
 }
-// Inside its own lane the brand word is redundant ("Claude Opus 4.5" -> "Opus 4.5").
-// Kept when what remains would be a bare version number ("Claude 2", "Claude 3.5 Sonnet").
+
+// boxes
 const BRAND = { anthropic: 'Claude ', deepseek: 'DeepSeek ' };
 const shortName = m => {
   const b = BRAND[m.lab];
@@ -220,45 +297,77 @@ const shortName = m => {
   const rest = m.name.slice(b.length);
   return /^[A-Z][a-z]|^[RV]\d/.test(rest) && !/^(LLM|Coder|Instant)$/.test(rest) ? rest : m.name;
 };
-// boxes
+const METER_W = BOX_W - 14;
 for (const p of Object.values(placed)) {
-  const m = p.m, ret = ev(m, 'retired');
-  const retired = ret && ret.date <= TODAY;
-  const g = el('g', { class: `box${m.open_weights ? ' open' : ''}${retired ? ' retired' : ''}`, transform: `translate(${p.x},${p.y})`, 'data-id': m.id }, gBoxes);
-  el('rect', { class: 'body', width: BOX_W, height: BOX_H, rx: 4 }, g);
-  const name = el('text', { class: 'name', x: 7, y: 14 }, g);
-  name.textContent = shortName(m);
-  const meta = el('text', { class: 'meta', x: 7, y: 27 }, g);
-  meta.textContent = fmt(start(m)) + (m.open_weights ? ' · open' : '') + (retired ? ' · retired' : '');
-  el('title', {}, g).textContent = `${m.name}\n${m.org ? m.org + '\n' : ''}` +
+  const m = p.m, ret = ev(m, 'retired'), retired = ret && ret.date <= TODAY, score = eci[m.id];
+  const cls = ['box', retired ? 'retired' : '', score == null ? 'unscored' : '', frontierSetters.has(m.id) ? 'frontier-setter' : ''].join(' ');
+  const g = el('g', { class: cls, 'data-id': m.id, style: `--lab: ${laneColor[m.lab]}` }, gBoxes);
+  p.g = g;
+  const r = el('rect', { class: 'body', rx: 4 }, g); p.rect = r;
+  el('text', { class: 'name', x: 7, y: 14 }, g).textContent = shortName(m);
+  el('text', { class: 'meta', x: 7, y: 26 }, g).textContent = fmt(start(m)) + (m.open_weights ? ' · open' : '') + (retired ? ' · retired' : '');
+  if (frontierSetters.has(m.id)) el('text', { class: 'star', x: BOX_W - 15, y: 14 }, g).textContent = '★';
+  if (score != null) {
+    el('rect', { class: 'meter-bg', x: 7, y: BOX_H - 6, width: METER_W, height: 3, rx: 1.5 }, g);
+    el('rect', { class: 'meter', x: 7, y: BOX_H - 6, width: Math.max(2, METER_W * (score - ECI_MIN) / (ECI_MAX - ECI_MIN)), height: 3, rx: 1.5 }, g);
+  }
+  el('title', {}, g).textContent = `${m.name}${m.org ? ' — ' + m.org : ''}\n` +
+    (score != null ? `ECI ${score}${frontierSetters.has(m.id) ? ' — new frontier at launch' : ''}\n` : 'No ECI score\n') +
     m.events.map(e => `${e.type}: ${e.date} (${e.confidence})`).join('\n');
 }
 // shrink names that overflow the box
 for (const t of svg.querySelectorAll('.box .name')) {
+  const room = BOX_W - (t.parentNode.querySelector('.star') ? 26 : 12);
   let fs = 11;
-  while (t.getComputedTextLength() > BOX_W - 12 && fs > 8.5) { fs -= 0.5; t.style.fontSize = fs + 'px'; }
-  if (t.getComputedTextLength() > BOX_W - 12) {
-    let s = t.textContent; while (t.getComputedTextLength() > BOX_W - 14 && s.length) { s = s.slice(0, -1); t.textContent = s + '…'; }
-  }
+  while (t.getComputedTextLength() > room && fs > 8.5) { fs -= 0.5; t.style.fontSize = fs + 'px'; }
+  if (t.getComputedTextLength() > room) { let s = t.textContent; while (t.getComputedTextLength() > room - 2 && s.length) { s = s.slice(0, -1); t.textContent = s + '…'; } }
+  t.dataset.fs = t.style.fontSize;
 }
-// hover: light up ancestors + descendants
+
+// ── view switching ──
+let mode = 'lanes';
+function layout() {
+  for (const p of Object.values(placed)) {
+    const cap = mode === 'cap';
+    p.g.style.transform = cap ? `translate(${p.cx - DOT / 2}px, ${p.cy - DOT / 2}px)` : `translate(${p.x}px, ${p.y}px)`;
+    Object.assign(p.rect.style, cap ? { width: DOT + 'px', height: DOT + 'px', rx: DOT / 2 + 'px', ry: DOT / 2 + 'px' }
+                                    : { width: BOX_W + 'px', height: BOX_H + 'px', rx: '4px', ry: '4px' });
+  }
+  for (const e of gEdges.querySelectorAll('.edge')) e.setAttribute('d', mode === 'cap' ? e._cap : e._lane);
+  svg.classList.toggle('cap', mode === 'cap');
+  document.getElementById('btn-lanes').setAttribute('aria-pressed', mode === 'lanes');
+  document.getElementById('btn-cap').setAttribute('aria-pressed', mode === 'cap');
+}
+document.getElementById('btn-lanes').onclick = () => { mode = 'lanes'; layout(); };
+document.getElementById('btn-cap').onclick = () => { mode = 'cap'; layout(); };
+layout();
+
+// ── hover: ancestors + descendants ──
 const walk = (id, map, out) => { for (const n of map[id] || []) if (!out.has(n)) { out.add(n); walk(n, map, out); } };
-gBoxes.addEventListener('mouseover', ev2 => {
-  const g = ev2.target.closest('.box'); if (!g) return;
-  const id = g.dataset.id, lit = new Set([id]);
-  walk(id, parents, lit); walk(id, children, lit);
+function focus(id) {
+  const lit = new Set([id]); walk(id, parents, lit); walk(id, children, lit);
   svg.classList.add('focus');
   for (const b of svg.querySelectorAll('.box')) b.classList.toggle('lit', lit.has(b.dataset.id)), b.classList.toggle('self', b.dataset.id === id);
   for (const e of svg.querySelectorAll('.edge')) e.classList.toggle('lit', lit.has(e.dataset.from) && lit.has(e.dataset.to));
   gHover.replaceChildren();
-  for (const s of tailSegs(placed[id], Infinity)) el('line', { ...s, class: s.class + ' full' }, gHover);
-  svg.appendChild(gHover); svg.appendChild(gBoxes);
-});
+  if (mode === 'lanes') for (const s of tailSegs(placed[id], Infinity)) el('line', { ...s, class: s.class + ' full' }, gHover);
+}
+gBoxes.addEventListener('mouseover', e => { const g = e.target.closest('.box'); if (g) focus(g.dataset.id); });
 gBoxes.addEventListener('mouseleave', () => { svg.classList.remove('focus'); gHover.replaceChildren(); });
-// #model-id in the URL opens with that model focused (handy for sharing and screenshots)
+
+// legend
+document.getElementById('legend').innerHTML =
+  data.labs.filter(l => sizes[l.id]).map(l => `<span><svg width="12" height="12"><rect width="12" height="12" rx="2" style="fill:${laneColor[l.id]}"/></svg>${l.name}</span>`).join('') +
+  `<span><svg width="40" height="8"><rect y="2" width="40" height="3" rx="1.5" fill="var(--axis)" opacity=".5"/><rect y="2" width="26" height="3" rx="1.5" fill="var(--text-secondary)"/></svg>ECI score</span>` +
+  `<span>★ new frontier at launch</span>` +
+  `<span><svg width="30" height="10"><path d="M2 5H28" class="edge cross"/></svg>derived from another lab</span>` +
+  `<span><svg width="30" height="10"><path d="M2 5H28" class="edge soft"/></svg>lineage not yet verified</span>`;
+
+// #model-id focuses a model; ?view=cap opens the capability view
+if (new URLSearchParams(location.search).get('view') === 'cap') { mode = 'cap'; layout(); }
 if (location.hash) {
-  const g = svg.querySelector(`.box[data-id="${CSS.escape(location.hash.slice(1))}"]`);
-  if (g) { g.dispatchEvent(new MouseEvent('mouseover', { bubbles: true })); g.scrollIntoView({ inline: 'center', block: 'center' }); }
+  const id = decodeURIComponent(location.hash.slice(1));
+  if (placed[id]) { focus(id); placed[id].g.scrollIntoView({ inline: 'center', block: 'center' }); }
 }
 </script>
 </body>
