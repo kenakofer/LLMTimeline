@@ -59,7 +59,6 @@ svg text { font-family: inherit; }
 .box { transition: transform .9s cubic-bezier(.5,0,.2,1), opacity .4s; }
 .box rect.body { fill: color-mix(in oklab, var(--lab) var(--tint), var(--box)); stroke: color-mix(in oklab, var(--lab) 70%, var(--box)); stroke-width: 1;
   transition: width .9s cubic-bezier(.5,0,.2,1), height .9s cubic-bezier(.5,0,.2,1), rx .9s, ry .9s; }
-.box.retired { opacity: .5; }
 /* expected: announced and credibly coming, not out yet — outline and text at full strength, see-through fill */
 .box.expected rect.body { fill-opacity: .18; stroke-opacity: .9; }
 .box .name { font-size: 11px; font-weight: 600; fill: var(--text-primary); transition: opacity .3s, transform .9s; }
@@ -107,7 +106,6 @@ svg.cap .box.frontier-setter .name { opacity: 1; }
 svg.cap .box rect.body { fill: var(--lab); stroke: var(--surface-1); stroke-width: 2; }
 svg.cap .box.unscored { opacity: .45; }
 svg.cap .edge { opacity: 0; }
-svg.cap .box.retired { opacity: .75; }
 
 /* hover: lineage focus */
 svg.focus .box, svg.focus .edge, svg.focus.show-tails .tail { opacity: .15; }
@@ -365,6 +363,7 @@ const defs = el('defs', {}, svg);
 const ICONS = {
   crown: 'M1.5 9.5 L1 3.5 L4 6 L6 2 L8 6 L11 3.5 L10.5 9.5 Z M1.5 10.8 H10.5',
   open: 'M3 6 H9.5 V11 H2.5 V6 Z M4.5 6 V4 A2.3 2.3 0 0 1 9 3.4',
+  tombstone: 'M3 11 V5 A3 3 0 0 1 9 5 V11 Z M1.5 11 H10.5 M6 5.2 V8.6 M4.6 6.5 H7.4',
   key: 'M4 4.5 m-2.5 0 a2.5 2.5 0 1 0 5 0 a2.5 2.5 0 1 0 -5 0 M6.2 5.8 L11 10.5 M9.2 8.7 L8 9.9 M10.5 10 L9.6 10.9',
 };
 for (const [id, d] of Object.entries(ICONS)) el('path', { d }, el('symbol', { id: 'i-' + id, viewBox: '0 0 12 12' }, defs));
@@ -425,7 +424,7 @@ for (const p of Object.values(placed)) {
   p.g = g;
   const r = el('rect', { class: 'body', rx: 4 }, g); p.rect = r;
   el('text', { class: 'name', x: 7, y: 14 }, g).textContent = shortName(m);
-  el('text', { class: 'meta', x: 7, y: 26 }, g).textContent = fmt(start(m)) + (retired ? ' · retired' : '') + (expected ? ' · expected' : '');
+  el('text', { class: 'meta', x: 7, y: 26 }, g).textContent = fmt(start(m)) + (expected ? ' · expected' : '');
   // a crown perched on the corner for a model that topped every earlier model at launch
   if (frontierSetters.has(m.id)) el('use', { href: '#i-crown', class: 'crown', x: BOX_W - 14, y: -9, width: 17, height: 17, transform: `rotate(16 ${BOX_W - 5.5} -0.5)` }, g);
   // status badges, right-aligned on the date line
@@ -433,12 +432,14 @@ for (const p of Object.values(placed)) {
   const badges = [];
   if (m.open_weights) badges.push('open');
   if (!has('available') && !expected) badges.push('key');
+  if (retired) badges.push('tombstone');
   badges.forEach((b, i) => el('use', { href: '#i-' + b, class: 'badge', x: BOX_W - 18 - i * 14, y: 17, width: 11, height: 11 }, g));
   if (score != null) {
     el('rect', { class: 'meter-bg', x: 7, y: BOX_H - 6, width: METER_W, height: 3, rx: 1.5 }, g);
     el('rect', { class: 'meter', x: 7, y: BOX_H - 6, width: Math.max(2, METER_W * (score - ECI_MIN) / (ECI_MAX - ECI_MIN)), height: 3, rx: 1.5 }, g);
   }
   el('title', {}, g).textContent = `${m.name}${m.org ? ' — ' + m.org : ''}\n` +
+    (retired ? `Retired ${ret.date}\n` : '') +
     (score != null ? `ECI ${score}${frontierSetters.has(m.id) ? ' — new frontier at launch' : ''}\n` : 'No ECI score\n') +
     (m.open_weights ? 'Open weights\n' : '') +
     ((m.tags || []).includes('expected') ? 'Announced; release expected\n' :
@@ -511,6 +512,7 @@ document.getElementById('legend').innerHTML =
   `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-crown" class="crown"/></svg>new frontier at launch</span>` +
   `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-open" class="badge"/></svg>open weights</span>` +
   `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-key" class="badge"/></svg>not publicly available</span>` +
+  `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-tombstone" class="badge"/></svg>retired</span>` +
   `<span><svg width="26" height="14"><rect x="1" y="1" width="24" height="12" rx="3" fill="var(--s3)" fill-opacity=".18" stroke="var(--s3)"/></svg>expected soon</span>` +
   `<span><svg width="30" height="10"><path d="M2 5H24" class="edge"/><path d="M22 2L28 5L22 8z" fill="var(--muted)"/></svg>derived from (same lab)</span>` +
   `<span><svg width="30" height="10"><path d="M2 5H24" class="edge cross"/><path d="M22 2L28 5L22 8z" fill="var(--text-primary)"/></svg>derived from another lab</span>` +
