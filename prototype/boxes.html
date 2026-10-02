@@ -65,9 +65,8 @@ svg text { font-family: inherit; }
 .box .meta { font-size: 9.5px; fill: var(--text-secondary); font-variant-numeric: tabular-nums; transition: opacity .3s; }
 .box .wm { fill: var(--text-primary); opacity: .09; transition: opacity .3s; }
 svg.cap .box .wm { opacity: 0; }
-.box .crown { fill: var(--text-primary); stroke: var(--surface-1); stroke-width: 1.4; paint-order: stroke; transition: opacity .3s; }
+.box .crown { transition: opacity .3s; filter: drop-shadow(0 1px 1px rgba(0,0,0,.45)); }
 .box .badge, .legend .badge { fill: none; stroke: var(--text-primary); stroke-width: 1.3; stroke-linecap: round; stroke-linejoin: round; transition: opacity .3s; }
-.legend .crown { fill: var(--text-primary); }
 .box .meter-bg { fill: var(--axis); opacity: .5; transition: opacity .3s; }
 .box .meter { fill: var(--lab); transition: opacity .3s; }
 
@@ -375,6 +374,27 @@ for (const [id, d] of Object.entries(ICONS)) el('path', { d }, el('symbol', { id
 const LOGOS = window.LAB_LOGOS || {};
 for (const [lab, l] of Object.entries(LOGOS)) el('path', { d: l.path, 'fill-rule': l.fillRule }, el('symbol', { id: 'logo-' + lab, viewBox: '0 0 24 24' }, defs));
 el('rect', { width: BOX_W, height: BOX_H, rx: 4 }, el('clipPath', { id: 'box-clip' }, defs));
+// the frontier crown: gold body, pearl-tipped points, jewelled band
+defs.insertAdjacentHTML('beforeend', `
+  <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#fff1a8"/><stop offset=".45" stop-color="#f2c14e"/><stop offset="1" stop-color="#b8860b"/>
+  </linearGradient>
+  <linearGradient id="gold-band" x1="0" y1="0" x2="0" y2="1">
+    <stop offset="0" stop-color="#f5cf5e"/><stop offset="1" stop-color="#9a6f08"/>
+  </linearGradient>
+  <symbol id="crown-gold" viewBox="0 0 24 20">
+    <path d="M3.2 15 L2 6 L7.6 10.2 L12 2.6 L16.4 10.2 L22 6 L20.8 15 Z" fill="url(#gold)" stroke="#7a5200" stroke-width=".8" stroke-linejoin="round"/>
+    <rect x="2.8" y="14.6" width="18.4" height="3.8" rx="1" fill="url(#gold-band)" stroke="#7a5200" stroke-width=".8"/>
+    <circle cx="2" cy="6" r="1.6" fill="#fffaf0" stroke="#7a5200" stroke-width=".6"/>
+    <circle cx="12" cy="2.6" r="1.7" fill="#fffaf0" stroke="#7a5200" stroke-width=".6"/>
+    <circle cx="22" cy="6" r="1.6" fill="#fffaf0" stroke="#7a5200" stroke-width=".6"/>
+    <path d="M12 8.6 L13.4 11 L12 13.2 L10.6 11 Z" fill="#d0263b" stroke="#6e0d18" stroke-width=".5"/>
+    <circle cx="12" cy="16.5" r="1.35" fill="#d0263b" stroke="#6e0d18" stroke-width=".5"/>
+    <circle cx="7.3" cy="16.5" r="1.05" fill="#2f6fdc" stroke="#123a80" stroke-width=".5"/>
+    <circle cx="16.7" cy="16.5" r="1.05" fill="#18a058" stroke="#0a5a30" stroke-width=".5"/>
+    <circle cx="11.5" cy="10.4" r=".45" fill="#fff" opacity=".8"/>
+    <circle cx="11.6" cy="16" r=".4" fill="#fff" opacity=".8"/>
+  </symbol>`);
 for (const [id, color] of [['arrow', 'var(--muted)'], ['arrow-cross', 'var(--text-primary)']]) {
   const mk = el('marker', { id, viewBox: '0 0 8 8', refX: 7, refY: 4, markerWidth: 7, markerHeight: 7, orient: 'auto-start-reverse' }, defs);
   el('path', { d: 'M0,0 L8,4 L0,8 z', style: `fill: ${color}` }, mk);
@@ -440,7 +460,7 @@ for (const p of Object.values(placed)) {
   el('text', { class: 'name', x: 7, y: 14 }, g).textContent = shortName(m);
   el('text', { class: 'meta', x: 7, y: 26 }, g).textContent = fmt(start(m)) + (expected ? ' · expected' : '');
   // a crown perched on the corner for a model that topped every earlier model at launch
-  if (frontierSetters.has(m.id)) el('use', { href: '#i-crown', class: 'crown', x: BOX_W - 14, y: -9, width: 17, height: 17, transform: `rotate(16 ${BOX_W - 5.5} -0.5)` }, g);
+  if (frontierSetters.has(m.id)) el('use', { href: '#crown-gold', class: 'crown', x: BOX_W - 15, y: -11, width: 21, height: 18, transform: `rotate(16 ${BOX_W - 4.5} -2)` }, g);
   // status badges, right-aligned on the date line
   const has = t => m.events.some(e => e.type === t);
   const badges = [];
@@ -523,7 +543,7 @@ gBoxes.addEventListener('mouseleave', () => { svg.classList.remove('focus'); gHo
 document.getElementById('legend').innerHTML =
   data.labs.filter(l => sizes[l.id]).map(l => `<span><svg width="12" height="12"><rect width="12" height="12" rx="2" style="fill:${laneColor[l.id]}"/></svg>${l.name}</span>`).join('') +
   `<span><svg width="40" height="8"><rect y="2" width="40" height="3" rx="1.5" fill="var(--axis)" opacity=".5"/><rect y="2" width="26" height="3" rx="1.5" fill="var(--text-secondary)"/></svg>ECI score</span>` +
-  `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-crown" class="crown"/></svg>new frontier at launch</span>` +
+  `<span><svg width="18" height="15" viewBox="0 0 24 20"><use href="#crown-gold"/></svg>new frontier at launch</span>` +
   `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-open" class="badge"/></svg>open weights</span>` +
   `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-key" class="badge"/></svg>not publicly available</span>` +
   `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-tombstone" class="badge"/></svg>retired</span>` +
