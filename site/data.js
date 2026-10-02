@@ -3435,8 +3435,11 @@ window.TIMELINE_DATA = {
       "name": "Gemini 3.5 Pro",
       "family": "gemini-3-5",
       "product_line": "gemini-pro",
+      "tags": [
+        "expected"
+      ],
       "open_weights": false,
-      "notes": "Announced with the Gemini 3.5 series at Google I/O on 19 May 2026. Reported release targets in June and July 2026 slipped, and it was not on the Gemini API as of 1 October 2026, so the entry has no availability event.",
+      "notes": "Announced with the Gemini 3.5 series at Google I/O on 19 May 2026, with release promised for June 2026. Reported targets in June and July slipped, and it was not on the Gemini API as of 1 October 2026; still expected, since Google has shipped the rest of the 3.5 series.",
       "events": [
         {
           "type": "announced",

@@ -165,6 +165,17 @@ Source URLs rot — both the OpenAI and Anthropic deprecation pages changed host
 
 ---
 
+## Tags
+
+Free-form, with one reserved value:
+
+- **`expected`** — announced, not yet available, and credibly expected to ship soon (e.g. the
+  lab gave a release window and has shipped the rest of the series). `notes` must say why. The
+  validator rejects it once an `available` event exists; remove the tag when the model ships or
+  when the expectation lapses. The chart draws expected models as translucent boxes.
+
+---
+
 ## Inclusion
 
 The chart is a public explainer, not a registry. A model gets a node when it is one of:

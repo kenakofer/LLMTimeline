@@ -324,6 +324,13 @@ function validateModel(file, model, labId, globalIds) {
     err(f, `${model.id}: training_cutoff (${cutoff.date}) is after "${first.type}" (${first.date})`);
   }
 
+  // `expected` means "announced, not out yet": it must not coexist with an availability event,
+  // and its notes must say why release is expected.
+  if (Array.isArray(model.tags) && model.tags.includes('expected')) {
+    if (seenTypes.has('available')) err(f, `${model.id}: tagged "expected" but already has an "available" event — drop the tag`);
+    if (!model.notes) err(f, `${model.id}: tagged "expected" without notes explaining why release is expected`);
+  }
+
   // A retired model that was never deprecated is legal but unusual.
   if (seenTypes.has('retired') && !seenTypes.has('deprecated')) {
     const retired = events.find((e) => e.type === 'retired');
