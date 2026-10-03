@@ -289,8 +289,11 @@ const curve = { top: {}, t: {}, bottom: null };
     const sky = upper.map(v => v + LANE_PAD);
     const raw = upper.map(v => v + RIBBON);
     { // the founding pill is an obstacle like a card: the band opens for it and cards go below it
+      // sit no higher than the lowest point of the band above between the pill and the lab's first
+      // model, so the band runs level into its models instead of diving under a neighbour's bulge
       const P = pills[id], i0 = xi(P.x), i1 = xi(P.x + P.w);
-      let y = -Infinity; for (let i = i0; i <= i1; i++) y = Math.max(y, sky[i]);
+      const firstX = Math.min(...Object.values(placed).filter(p => p.m.lab === id).map(p => p.x));
+      let y = -Infinity; for (let i = i0; i <= Math.max(i1, xi(firstX + BOX_W)); i++) y = Math.max(y, sky[i]);
       P.y = y;
       for (let i = i0; i <= i1; i++) { sky[i] = y + PILL_H + ROW_GAP; raw[i] = Math.max(raw[i], y + PILL_H + LANE_PAD); }
     }
