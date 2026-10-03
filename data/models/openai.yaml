@@ -68,6 +68,7 @@ models:
     params: 175B
     open_weights: false
     epoch_id: GPT-3 175B (davinci)
+    tags: [frontier]
     events:
       - type: announced
         date: 2020-05-28
@@ -180,6 +181,7 @@ models:
     product_line: gpt-3-5
     open_weights: false
     epoch_id: GPT-3.5 (davinci-002)
+    tags: [frontier]
     events:
       - type: announced
         date: 2022-03-15
@@ -304,6 +306,7 @@ models:
     params: 1.8T
     open_weights: false
     epoch_id: GPT-4 (Mar 2023)
+    tags: [frontier]
     events:
       - type: announced
         date: 2023-03-14
@@ -342,6 +345,7 @@ models:
     product_line: gpt
     open_weights: false
     epoch_id: GPT-4 Turbo (Nov 2023)
+    tags: [frontier]
     events:
       - type: announced
         date: 2023-11-06
@@ -381,6 +385,7 @@ models:
     product_line: gpt
     open_weights: false
     epoch_id: GPT-4o
+    tags: [frontier]
     notes: >
       The original gpt-4o-2024-05-13 snapshot shuts down 23 October 2026 and the
       chatgpt-4o-latest alias was removed 17 February 2026, but later gpt-4o snapshots
@@ -565,6 +570,7 @@ models:
     product_line: gpt
     open_weights: false
     epoch_id: GPT-4.5
+    tags: [frontier]
     events:
       - type: announced
         date: 2025-02-27
@@ -1156,6 +1162,7 @@ models:
     product_line: gpt-astra
     open_weights: false
     epoch_id: GPT-6 Astra
+    tags: [frontier]
     events:
       - type: announced
         date: 2026-09-03

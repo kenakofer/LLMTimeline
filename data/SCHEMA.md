@@ -167,7 +167,11 @@ Source URLs rot — both the OpenAI and Anthropic deprecation pages changed host
 
 ## Tags
 
-Free-form, with one reserved value:
+Free-form, with two reserved values:
+
+- **`frontier`** — imported from Epoch AI's "Frontier model" flag. Not curated by hand; it is
+  regenerated from Epoch's dataset. The chart uses it to size models that have no ECI score
+  (mostly pre-2023).
 
 - **`expected`** — announced, not yet available, and credibly expected to ship soon (e.g. the
   lab gave a release window and has shipped the rest of the series). `notes` must say why. The

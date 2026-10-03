@@ -78,6 +78,7 @@ models:
     product_line: claude
     open_weights: false
     epoch_id: Claude 2
+    tags: [frontier]
     events:
       - type: announced
         date: 2023-07-11
@@ -204,6 +205,7 @@ models:
     product_line: opus
     open_weights: false
     epoch_id: Claude 3 Opus
+    tags: [frontier]
     events:
       - type: announced
         date: 2024-03-04
@@ -237,6 +239,7 @@ models:
     product_line: sonnet
     open_weights: false
     epoch_id: Claude 3.5 Sonnet
+    tags: [frontier]
     events:
       - type: announced
         date: 2024-06-20

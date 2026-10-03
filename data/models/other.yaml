@@ -44,6 +44,7 @@ models:
     params: 530B
     open_weights: false
     epoch_id: Megatron-Turing NLG 530B
+    tags: [frontier]
     events:
       - type: announced
         date: 2021-10-11
@@ -60,6 +61,7 @@ models:
     params: 178B
     open_weights: false
     epoch_id: Jurassic-1-Jumbo
+    tags: [frontier]
     events:
       - type: announced
         date: 2021-08-11
@@ -137,6 +139,7 @@ models:
     open_weights: true
     hf_id: tiiuae/falcon-180B
     epoch_id: Falcon-180B
+    tags: [frontier]
     events:
       - type: announced
         date: 2023-09-06
@@ -211,6 +214,7 @@ models:
     open_weights: true
     hf_id: nvidia/Nemotron-4-340B-Base
     epoch_id: Nemotron-4 340B
+    tags: [frontier]
     events:
       - type: announced
         date: 2024-06-14

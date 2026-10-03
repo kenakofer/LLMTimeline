@@ -19,6 +19,7 @@ models:
     licence: mit
     hf_id: FacebookAI/roberta-large
     epoch_id: RoBERTa Large
+    tags: [frontier]
     events:
       - type: announced
         date: 2019-07-15
@@ -188,6 +189,7 @@ models:
     licence: llama3.1
     hf_id: meta-llama/Llama-3.1-405B
     epoch_id: Llama 3.1-405B
+    tags: [frontier]
     events:
       - type: announced
         date: 2024-07-23
@@ -330,6 +332,7 @@ models:
     params: 2T
     open_weights: false
     epoch_id: Llama 4 Behemoth (preview)
+    tags: [frontier]
     notes: >
       Previewed at the Llama 4 launch as still in training; not released.
     events:

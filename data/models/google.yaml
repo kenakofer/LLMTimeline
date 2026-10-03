@@ -43,6 +43,7 @@ models:
     licence: apache-2.0
     hf_id: google-t5/t5-11b
     epoch_id: T5-11B
+    tags: [frontier]
     events:
       - type: announced
         date: 2019-10-23
@@ -65,6 +66,7 @@ models:
     params: 2.6B
     open_weights: false
     epoch_id: Meena
+    tags: [frontier]
     events:
       - type: announced
         date: 2020-01-28
@@ -83,6 +85,7 @@ models:
     licence: apache-2.0
     hf_id: google/switch-c-2048
     epoch_id: Switch
+    tags: [frontier]
     events:
       - type: announced
         date: 2021-01-11
@@ -105,6 +108,7 @@ models:
     params: 280B
     open_weights: false
     epoch_id: Gopher (280B)
+    tags: [frontier]
     events:
       - type: announced
         date: 2021-12-08
@@ -147,6 +151,7 @@ models:
     params: 540B
     open_weights: false
     epoch_id: PaLM (540B)
+    tags: [frontier]
     events:
       - type: announced
         date: 2022-04-04
@@ -187,6 +192,7 @@ models:
     params: 540B
     open_weights: false
     epoch_id: Flan-PaLM 540B
+    tags: [frontier]
     events:
       - type: announced
         date: 2022-10-20
@@ -200,6 +206,7 @@ models:
     params: 340B
     open_weights: false
     epoch_id: PaLM 2
+    tags: [frontier]
     events:
       - type: announced
         date: 2023-05-10
@@ -223,6 +230,7 @@ models:
     product_line: gemini-ultra
     open_weights: false
     epoch_id: Gemini 1.0 Ultra
+    tags: [frontier]
     events:
       - type: announced
         date: 2023-12-06
@@ -293,6 +301,7 @@ models:
     product_line: gemini-pro
     open_weights: false
     epoch_id: Gemini 1.5 Pro
+    tags: [frontier]
     notes: >
       Announced as a limited preview in February 2024; the ECI score is for the May 2024
       release.

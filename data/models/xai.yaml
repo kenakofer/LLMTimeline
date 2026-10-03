@@ -66,6 +66,7 @@ models:
     product_line: grok
     open_weights: false
     epoch_id: Grok-2
+    tags: [frontier]
     events:
       - type: announced
         date: 2024-08-13
@@ -90,6 +91,7 @@ models:
     params: 3T
     open_weights: false
     epoch_id: Grok 3
+    tags: [frontier]
     events:
       - type: announced
         date: 2025-02-17
@@ -134,6 +136,7 @@ models:
     params: 3T
     open_weights: false
     epoch_id: Grok 4
+    tags: [frontier]
     events:
       - type: announced
         date: 2025-07-09

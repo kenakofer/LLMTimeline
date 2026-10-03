@@ -183,6 +183,9 @@ window.TIMELINE_DATA = {
       "name": "GPT-3",
       "family": "gpt-3",
       "product_line": "gpt",
+      "tags": [
+        "frontier"
+      ],
       "params": "175B",
       "open_weights": false,
       "epoch_id": "GPT-3 175B (davinci)",
@@ -312,6 +315,9 @@ window.TIMELINE_DATA = {
       "name": "GPT-3.5 (text-davinci-002)",
       "family": "gpt-3-5",
       "product_line": "gpt-3-5",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "GPT-3.5 (davinci-002)",
       "events": [
@@ -463,6 +469,9 @@ window.TIMELINE_DATA = {
       "name": "GPT-4",
       "family": "gpt-4",
       "product_line": "gpt",
+      "tags": [
+        "frontier"
+      ],
       "params": "1.8T",
       "open_weights": false,
       "epoch_id": "GPT-4 (Mar 2023)",
@@ -507,6 +516,9 @@ window.TIMELINE_DATA = {
       "name": "GPT-4 Turbo",
       "family": "gpt-4",
       "product_line": "gpt",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "GPT-4 Turbo (Nov 2023)",
       "events": [
@@ -550,6 +562,9 @@ window.TIMELINE_DATA = {
       "name": "GPT-4o",
       "family": "gpt-4o",
       "product_line": "gpt",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "GPT-4o",
       "notes": "The original gpt-4o-2024-05-13 snapshot shuts down 23 October 2026 and the chatgpt-4o-latest alias was removed 17 February 2026, but later gpt-4o snapshots had no announced shutdown as of 1 October 2026.",
@@ -811,6 +826,9 @@ window.TIMELINE_DATA = {
       "name": "GPT-4.5",
       "family": "gpt-4-5",
       "product_line": "gpt",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "GPT-4.5",
       "events": [
@@ -1481,6 +1499,9 @@ window.TIMELINE_DATA = {
       "name": "GPT-6 Astra",
       "family": "gpt-6",
       "product_line": "gpt-astra",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "GPT-6 Astra",
       "events": [
@@ -1629,6 +1650,9 @@ window.TIMELINE_DATA = {
       "name": "Claude 2",
       "family": "claude-2",
       "product_line": "claude",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "Claude 2",
       "events": [
@@ -1790,6 +1814,9 @@ window.TIMELINE_DATA = {
       "name": "Claude 3 Opus",
       "family": "claude-3",
       "product_line": "opus",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "Claude 3 Opus",
       "events": [
@@ -1872,6 +1899,9 @@ window.TIMELINE_DATA = {
       "name": "Claude 3.5 Sonnet",
       "family": "claude-3-5",
       "product_line": "sonnet",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "Claude 3.5 Sonnet",
       "events": [
@@ -2643,6 +2673,9 @@ window.TIMELINE_DATA = {
       "org": "Google Research",
       "name": "T5",
       "product_line": "t5",
+      "tags": [
+        "frontier"
+      ],
       "params": "11B",
       "open_weights": true,
       "licence": "apache-2.0",
@@ -2672,6 +2705,9 @@ window.TIMELINE_DATA = {
       "org": "Google Brain",
       "name": "Meena",
       "product_line": "lamda",
+      "tags": [
+        "frontier"
+      ],
       "params": "2.6B",
       "open_weights": false,
       "epoch_id": "Meena",
@@ -2692,6 +2728,9 @@ window.TIMELINE_DATA = {
       "org": "Google Brain",
       "name": "Switch Transformer",
       "product_line": "t5",
+      "tags": [
+        "frontier"
+      ],
       "params": "1.6T",
       "open_weights": true,
       "licence": "apache-2.0",
@@ -2721,6 +2760,9 @@ window.TIMELINE_DATA = {
       "org": "DeepMind",
       "name": "Gopher",
       "product_line": "deepmind-lm",
+      "tags": [
+        "frontier"
+      ],
       "params": "280B",
       "open_weights": false,
       "epoch_id": "Gopher (280B)",
@@ -2778,6 +2820,9 @@ window.TIMELINE_DATA = {
       "org": "Google Research",
       "name": "PaLM",
       "product_line": "palm",
+      "tags": [
+        "frontier"
+      ],
       "params": "540B",
       "open_weights": false,
       "epoch_id": "PaLM (540B)",
@@ -2798,6 +2843,9 @@ window.TIMELINE_DATA = {
       "org": "Google Research",
       "name": "Flan-PaLM",
       "product_line": "palm",
+      "tags": [
+        "frontier"
+      ],
       "params": "540B",
       "open_weights": false,
       "epoch_id": "Flan-PaLM 540B",
@@ -2845,6 +2893,9 @@ window.TIMELINE_DATA = {
       "lab": "google",
       "name": "PaLM 2",
       "product_line": "palm",
+      "tags": [
+        "frontier"
+      ],
       "params": "340B",
       "open_weights": false,
       "epoch_id": "PaLM 2",
@@ -2900,6 +2951,9 @@ window.TIMELINE_DATA = {
       "name": "Gemini 1.0 Ultra",
       "family": "gemini-1",
       "product_line": "gemini-ultra",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "Gemini 1.0 Ultra",
       "events": [
@@ -2927,6 +2981,9 @@ window.TIMELINE_DATA = {
       "name": "Gemini 1.5 Pro",
       "family": "gemini-1-5",
       "product_line": "gemini-pro",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "Gemini 1.5 Pro",
       "notes": "Announced as a limited preview in February 2024; the ECI score is for the May 2024 release.",
@@ -3583,6 +3640,9 @@ window.TIMELINE_DATA = {
       "org": "Facebook AI",
       "name": "RoBERTa",
       "product_line": "roberta",
+      "tags": [
+        "frontier"
+      ],
       "params": "355M",
       "open_weights": true,
       "licence": "mit",
@@ -3783,6 +3843,9 @@ window.TIMELINE_DATA = {
       "name": "Llama 3.1 405B",
       "family": "llama-3",
       "product_line": "llama",
+      "tags": [
+        "frontier"
+      ],
       "params": "405B",
       "open_weights": true,
       "licence": "llama3.1",
@@ -3900,6 +3963,9 @@ window.TIMELINE_DATA = {
       "name": "Llama 4 Behemoth",
       "family": "llama-4",
       "product_line": "llama",
+      "tags": [
+        "frontier"
+      ],
       "params": "2T",
       "open_weights": false,
       "epoch_id": "Llama 4 Behemoth (preview)",
@@ -5104,6 +5170,9 @@ window.TIMELINE_DATA = {
       "name": "Grok-2",
       "family": "grok-2",
       "product_line": "grok",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "Grok-2",
       "events": [
@@ -5131,6 +5200,9 @@ window.TIMELINE_DATA = {
       "name": "Grok 3",
       "family": "grok-3",
       "product_line": "grok",
+      "tags": [
+        "frontier"
+      ],
       "params": "3T",
       "open_weights": false,
       "epoch_id": "Grok 3",
@@ -5185,6 +5257,9 @@ window.TIMELINE_DATA = {
       "name": "Grok 4",
       "family": "grok-4",
       "product_line": "grok",
+      "tags": [
+        "frontier"
+      ],
       "params": "3T",
       "open_weights": false,
       "epoch_id": "Grok 4",
@@ -6019,6 +6094,9 @@ window.TIMELINE_DATA = {
       "name": "GLM-4",
       "family": "glm-4",
       "product_line": "glm",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "GLM-4 (0116)",
       "events": [
@@ -6046,6 +6124,9 @@ window.TIMELINE_DATA = {
       "name": "GLM-4-Plus",
       "family": "glm-4",
       "product_line": "glm",
+      "tags": [
+        "frontier"
+      ],
       "open_weights": false,
       "epoch_id": "GLM-4-Plus",
       "events": [
@@ -6536,6 +6617,9 @@ window.TIMELINE_DATA = {
       "org": "AI21 Labs",
       "name": "Jurassic-1 Jumbo",
       "product_line": "ai21",
+      "tags": [
+        "frontier"
+      ],
       "params": "178B",
       "open_weights": false,
       "epoch_id": "Jurassic-1-Jumbo",
@@ -6564,6 +6648,9 @@ window.TIMELINE_DATA = {
       "org": "Microsoft, Nvidia",
       "name": "Megatron-Turing NLG 530B",
       "product_line": "nvidia",
+      "tags": [
+        "frontier"
+      ],
       "params": "530B",
       "open_weights": false,
       "epoch_id": "Megatron-Turing NLG 530B",
@@ -6644,6 +6731,9 @@ window.TIMELINE_DATA = {
       "org": "Technology Innovation Institute",
       "name": "Falcon 180B",
       "product_line": "tii",
+      "tags": [
+        "frontier"
+      ],
       "params": "180B",
       "open_weights": true,
       "hf_id": "tiiuae/falcon-180B",
@@ -6732,6 +6822,9 @@ window.TIMELINE_DATA = {
       "org": "Nvidia",
       "name": "Nemotron-4 340B",
       "product_line": "nvidia",
+      "tags": [
+        "frontier"
+      ],
       "params": "340B",
       "open_weights": true,
       "hf_id": "nvidia/Nemotron-4-340B-Base",
