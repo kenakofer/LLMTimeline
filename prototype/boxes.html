@@ -50,7 +50,7 @@ p.sub { margin: 0 0 12px; color: var(--text-secondary); font-size: 13px; max-wid
 .controls { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; font-size: 12px; color: var(--text-secondary); }
 .controls button { font: inherit; color: var(--text-primary); background: var(--surface-1); border: 1px solid var(--border); border-radius: 6px; padding: 5px 12px; cursor: pointer; }
 .controls button[aria-pressed="true"] { font-weight: 700; border-color: var(--text-secondary); }
-.legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); margin-bottom: 10px; align-items: center; flex-wrap: wrap; }
+.legend { display: flex; gap: 16px; font-size: 12px; color: var(--text-secondary); margin-left: auto; align-items: center; flex-wrap: wrap; }
 .legend svg { vertical-align: middle; margin-right: 4px; }
 .scroller { overflow-x: auto; background: var(--surface-1); border: 1px solid var(--border); border-radius: 6px; }
 svg text { font-family: inherit; }
@@ -129,16 +129,13 @@ svg.focus .box.kin:not(.lit) { opacity: .5; }
 <body>
 <div class="viz-root">
   <h1>Prototype: one box per model, placed at release</h1>
-  <p class="sub">Each box is a model; its left edge sits on the model's first public appearance. Taller boxes were within
-    4 points of the best Epoch Capabilities Index (ECI) score at their launch, and a crown marks a model that topped every earlier model when it launched.
-    Busy years get more horizontal room, so gridline spacing varies. Switch to <b>Capability</b> to lift every
-    model to its score. Arrows show documented lineage (fine-tuned or distilled from). Hover any model to trace its lineage and see its lifespan; hovering lights up its lab's band.</p>
+  <p class="sub">Every frontier language model since 2018, one box each, placed at its first public release. Hover a model to trace its lineage.</p>
   <div class="controls">
     <span>View</span>
     <button id="btn-lanes" aria-pressed="true">Lanes</button>
     <button id="btn-cap" aria-pressed="false">Capability</button>
+    <div class="legend" id="legend"></div>
   </div>
-  <div class="legend" id="legend"></div>
   <div class="scroller"><svg id="chart"></svg></div>
 </div>
 <script src="../site/data.js"></script>
@@ -607,17 +604,10 @@ document.querySelector('.scroller').addEventListener('wheel', e => {
 
 // legend
 document.getElementById('legend').innerHTML =
-  data.labs.filter(l => sizes[l.id]).map(l => `<span><svg width="12" height="12"><rect width="12" height="12" rx="2" style="fill:${laneColor[l.id]}"/></svg>${l.name}</span>`).join('') +
-  `<span><svg width="26" height="18"><rect x="1" y="1" width="24" height="16" rx="3" fill="var(--box)" stroke="var(--border)"/></svg>near the frontier at launch</span>` +
-  `<span><svg width="26" height="14"><rect x="1" y="1" width="24" height="12" rx="3" fill="var(--box)" stroke="var(--border)"/><rect x="1" y="1" width="3" height="12" fill="var(--text-secondary)"/></svg>left edge = first public appearance</span>` +
   `<span><svg width="18" height="15" viewBox="0 0 24 20"><use href="#crown-gold"/></svg>new frontier at launch</span>` +
   `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-open" class="badge"/></svg>open weights</span>` +
   `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-key" class="badge"/></svg>not publicly available</span>` +
-  `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-tombstone" class="badge"/></svg>retired</span>` +
-  `<span><svg width="26" height="14"><rect x="1" y="1" width="24" height="12" rx="3" fill="var(--s3)" fill-opacity=".18" stroke="var(--s3)"/></svg>expected soon</span>` +
-  `<span><svg width="30" height="10"><path d="M2 5H24" class="edge"/><path d="M22 2L28 5L22 8z" fill="var(--muted)"/></svg>derived from (same lab)</span>` +
-  `<span><svg width="30" height="10"><path d="M2 5H24" class="edge cross"/><path d="M22 2L28 5L22 8z" fill="var(--text-primary)"/></svg>derived from another lab</span>` +
-  `<span><svg width="30" height="10"><path d="M2 5H28" class="edge soft"/></svg>lineage not yet verified</span>`;
+  `<span><svg width="14" height="14" viewBox="0 0 12 12"><use href="#i-tombstone" class="badge"/></svg>retired</span>`;
 
 // #model-id focuses a model; ?view=cap opens the capability view
 if (new URLSearchParams(location.search).get('view') === 'cap') { mode = 'cap'; layout(); }
