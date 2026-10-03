@@ -54,6 +54,8 @@ p.sub { margin: 0 0 12px; color: var(--text-secondary); font-size: 13px; max-wid
 .legend svg { vertical-align: middle; margin-right: 4px; }
 .scroller { overflow-x: auto; background: var(--surface-1); border: 1px solid var(--border); border-radius: 6px; }
 svg text { font-family: inherit; }
+.credits { margin: 8px 0 0; font-size: 11px; color: var(--muted); }
+.credits a { color: var(--text-secondary); }
 
 /* boxes */
 .box { transition: transform .9s cubic-bezier(.5,0,.2,1), opacity .4s; }
@@ -136,8 +138,13 @@ svg.focus .box.kin:not(.lit) { opacity: .5; }
     <div class="legend" id="legend"></div>
   </div>
   <div class="scroller"><svg id="chart"></svg></div>
+  <p class="credits">By <a href="https://kenan.schaefkofer.com">Kenan Schaefkofer</a>, <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a>
+    · Capability scores and frontier flags from <a href="https://epoch.ai/benchmarks/eci">Epoch AI</a>
+    · <a href="https://github.com/kenakofer/timeline">Data, sources and corrections on GitHub</a>
+    · <a href="archive/drawing.png">Original hand-drawn timeline</a>
+    · Lab logos are trademarks of their owners</p>
 </div>
-<script src="../site/data.js"></script>
+<script src="site/data.js"></script>
 <script src="logos/logos.js"></script>
 <script>
 const data = window.TIMELINE_DATA;
@@ -312,7 +319,7 @@ function layoutBands(pad, gap) {
 // between bands (cards keep their size) until it fits, up to a cap.
 let PAD = LANE_PAD, GAP = ROW_GAP;
 let bandLayout = layoutBands(PAD, GAP);
-{ const avail = window.innerHeight - document.querySelector('.scroller').getBoundingClientRect().top - 24;
+{ const avail = window.innerHeight - document.querySelector('.scroller').getBoundingClientRect().top - 48;
   const at = k => [LANE_PAD + k * 26, ROW_GAP + k * 10];
   if (avail > bandLayout.height) {
     let lo = 0, hi = 1;
@@ -609,10 +616,14 @@ svg.addEventListener('mouseover', e => {
 svg.addEventListener('mouseleave', () => glow(null));
 gBoxes.addEventListener('mouseleave', () => { svg.classList.remove('focus'); gHover.replaceChildren(); });
 
-// Shift+wheel scrolls the chart sideways (browsers disagree on doing this themselves)
-document.querySelector('.scroller').addEventListener('wheel', e => {
-  if (!e.shiftKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
-  e.currentTarget.scrollLeft += e.deltaY; e.preventDefault();
+// The wheel scrolls the chart sideways; sideways trackpad swipes and pinch-zoom (ctrl) stay
+// native, and at either end of the timeline the wheel falls through to scroll the page
+scroller.addEventListener('wheel', e => {
+  if (e.ctrlKey || Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+  const dy = e.deltaY * (e.deltaMode === 1 ? 40 : e.deltaMode === 2 ? scroller.clientWidth : 1);
+  const max = scroller.scrollWidth - scroller.clientWidth;
+  if (dy < 0 ? scroller.scrollLeft <= 0 : scroller.scrollLeft >= max - 1) return;
+  scroller.scrollLeft += dy; e.preventDefault();
 }, { passive: false });
 
 // legend

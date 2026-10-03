@@ -5,22 +5,21 @@ timeline generated from the curated dataset in `data/`, to be kept current by a 
 that proposes changes as PRs.
 
 **Status (2026-10-02):** v1 is live at
-[kenan.schaefkofer.com/LLMTimeline/prototype/boxes.html](https://kenan.schaefkofer.com/LLMTimeline/prototype/boxes.html),
-linked from [kenan.schaefkofer.com/timeline](https://kenan.schaefkofer.com/timeline).
-GitHub Pages serves `main` directly.
+[kenan.schaefkofer.com/timeline](https://kenan.schaefkofer.com/timeline/), served by GitHub
+Pages from `main` of this repo (`kenakofer/timeline`; `index.html` is the page).
 
 ## Decisions
 
 | | |
 |---|---|
-| Audience | Public explainer, linked from kenan.schaefkofer.com/timeline |
+| Audience | Public explainer at kenan.schaefkofer.com/timeline |
 | Scope | Frontier models + notable open-weight models, 2018 to now (226 models) |
 | Lanes | 11 labs (OpenAI, Anthropic, Google DeepMind, Meta, DeepSeek, Mistral, xAI, Alibaba/Qwen, Moonshot, Zhipu, MiniMax) + "Other" with `org` attribution |
 | Lines | Documented derivation only (fine-tune, distill, variant), from model cards and announcements. Unverified edges dashed; every edge cites a source. No inferred same-lab succession lines |
 | Capability | Epoch Capabilities Index (ECI), from 2023; Epoch's frontier flag before that |
 | Updates | Weekly agent (deferred). Opens a PR for review; nothing goes live unreviewed |
 
-## v1 design (as built in `prototype/boxes.html`)
+## v1 design (as built in `index.html`)
 
 - **One card per model**, its left edge on the model's first public appearance. Cards are
   20px, or 30px for models within 4 ECI points of the best at launch (Epoch frontier flag
@@ -34,7 +33,7 @@ GitHub Pages serves `main` directly.
   sticks to the left edge as the chart scrolls.
 - **Badges**: gold crown (new frontier at launch), download arrow (open weights), key (not
   publicly available), tombstone (retired); translucent card for `expected` models. Lab logo as
-  an oversized watermark (Simple Icons / Lobe Icons; see `prototype/logos/NOTICE.md`).
+  an oversized watermark (Simple Icons / Lobe Icons; see `logos/NOTICE.md`).
 - **Hover**: lineage (ancestors and descendants) highlighted, lifespan line and exact-date guide
   drawn above everything; the lab's other models stay half-lit.
 - **Capability view**: cards animate to dots at their ECI height, with a stepped frontier line.
@@ -50,10 +49,10 @@ See `data/SCHEMA.md`.
 226 models, 40 lineage edges, 156 ECI scores. Every pre-existing entry was re-checked against
 first-party sources. The pipeline is kept in `scripts/backfill/` (see its README).
 
-### 3. Renderer — v1 done as a prototype
+### 3. Renderer — v1 done
 Remaining:
-- Move `prototype/boxes.html` into `site/` as the real page (replacing the old bar chart),
-  split into modules, and retire `prototype/`.
+- Split `index.html` into modules and retire the old bar-chart page in `site/` (only its
+  `data.js`/`data.json` build output is still used).
 - Pan/zoom, with card density following the zoom level; re-fit layout live on resize.
 - Accessibility: a table view of the data; keyboard focus for cards; touch-friendly tap
   instead of hover; check the light theme.

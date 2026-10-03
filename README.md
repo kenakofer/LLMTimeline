@@ -4,7 +4,8 @@ When frontier large language models existed and were available, and where they c
 
 - `data/` — curated dataset (one YAML file per lab); see `data/SCHEMA.md`
 - `scripts/` — validation, link checking, and the build into `site/data.json`
-- `site/` — the generated interactive timeline
+- `index.html` — the interactive timeline, served at [kenan.schaefkofer.com/timeline](https://kenan.schaefkofer.com/timeline/)
+- `site/` — the generated data the page loads (`data.js`), plus the old bar-chart page
 - `archive/` — the original hand-drawn timeline (2023 – May 2025)
 - `PLAN.md` — roadmap for the interactive lineage timeline
 
