@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<title>Prototype — model boxes on a stretched timeline</title>
+<title>Frontier LLM Timeline</title>
 <style>
 .viz-root {
   color-scheme: light;
@@ -44,7 +44,7 @@
   --tint: 24%; --lane-tint: 7%;
 }
 body { margin: 0; background: var(--page); font-family: system-ui, -apple-system, "Segoe UI", sans-serif; }
-.viz-root { background: var(--page); color: var(--text-primary); padding: 16px 20px; }
+.viz-root { background: var(--page); color: var(--text-primary); padding: 16px 20px; min-height: 100vh; box-sizing: border-box; }
 h1 { font-size: 18px; margin: 0 0 4px; }
 p.sub { margin: 0 0 12px; color: var(--text-secondary); font-size: 13px; max-width: 78ch; }
 .controls { display: flex; gap: 8px; align-items: center; margin-bottom: 10px; font-size: 12px; color: var(--text-secondary); }
@@ -128,8 +128,7 @@ svg.focus .box.kin:not(.lit) { opacity: .5; }
 </head>
 <body>
 <div class="viz-root">
-  <h1>Prototype: one box per model, placed at release</h1>
-  <p class="sub">Every frontier language model since 2018, one box each, placed at its first public release. Hover a model to trace its lineage.</p>
+  <h1>Frontier LLM Timeline</h1>
   <div class="controls">
     <span>View</span>
     <button id="btn-lanes" aria-pressed="true">Lanes</button>
@@ -278,12 +277,12 @@ const smooth = a => {
     for (let i = 0; i < NS_; i++) { let s = 0, n = 0; for (let k = Math.max(0, i - h); k <= Math.min(NS_ - 1, i + h); k++) { s += src[k]; n++; } o[i] = s / n; } return o; };
   return blur(blur(d, r >> 1), r >> 1);
 };
-const curve = { top: {}, t: {}, bottom: null };
-{
+function layoutBands(pad, gap) {
+  const curve = { top: {}, t: {}, bottom: null };
   let upper = new Float64Array(NS_).fill(TOP);
   for (const L of laneMeta) {
     const id = L.lab.id;
-    const sky = upper.map(v => v + LANE_PAD);
+    const sky = upper.map(v => v + pad);
     const raw = upper.map(v => v + RIBBON);
     { // the founding pill is an obstacle like a card: the band opens for it and cards go below it
       // sit no higher than the lowest point of the band above between the pill and the lab's first
@@ -292,7 +291,7 @@ const curve = { top: {}, t: {}, bottom: null };
       const firstX = Math.min(...Object.values(placed).filter(p => p.m.lab === id).map(p => p.x));
       let y = -Infinity; for (let i = i0; i <= Math.max(i1, xi(firstX + BOX_W)); i++) y = Math.max(y, sky[i]);
       P.y = y;
-      for (let i = i0; i <= i1; i++) { sky[i] = y + PILL_H + ROW_GAP; raw[i] = Math.max(raw[i], y + PILL_H + LANE_PAD); }
+      for (let i = i0; i <= i1; i++) { sky[i] = y + PILL_H + gap; raw[i] = Math.max(raw[i], y + PILL_H + pad); }
     }
     const mine = Object.values(placed).filter(p => p.m.lab === id).sort((a, b) => a.row - b.row || a.x - b.x);
     for (const p of mine) {
@@ -300,15 +299,29 @@ const curve = { top: {}, t: {}, bottom: null };
       let y = -Infinity; for (let i = i0; i <= i1; i++) y = Math.max(y, sky[i]);
       if (frontierSetters.has(p.m.id)) y += 6;   // headroom for the crown
       p.yc = y;
-      for (let i = i0; i <= i1; i++) { sky[i] = y + p.h + ROW_GAP; raw[i] = Math.max(raw[i], y + p.h + LANE_PAD); }
+      for (let i = i0; i <= i1; i++) { sky[i] = y + p.h + gap; raw[i] = Math.max(raw[i], y + p.h + pad); }
     }
     const bottom = smooth(raw);
     curve.top[id] = upper; curve.t[id] = bottom.map((v, i) => v - upper[i]);
     upper = bottom;
   }
   curve.bottom = upper;
+  return { curve, height: Math.ceil(Math.max(...curve.bottom)) + 12 };
 }
-const HEIGHT_CURVED = Math.ceil(Math.max(...curve.bottom)) + 12;
+// Fill the window: when there is spare height below the chart, loosen the spacing inside and
+// between bands (cards keep their size) until it fits, up to a cap.
+let PAD = LANE_PAD, GAP = ROW_GAP;
+let bandLayout = layoutBands(PAD, GAP);
+{ const avail = window.innerHeight - document.querySelector('.scroller').getBoundingClientRect().top - 24;
+  const at = k => [LANE_PAD + k * 26, ROW_GAP + k * 10];
+  if (avail > bandLayout.height) {
+    let lo = 0, hi = 1;
+    if (layoutBands(...at(1)).height <= avail) lo = 1;
+    else for (let n = 0; n < 9; n++) { const mid = (lo + hi) / 2; if (layoutBands(...at(mid)).height <= avail) lo = mid; else hi = mid; }
+    [PAD, GAP] = at(lo);
+    bandLayout = layoutBands(PAD, GAP);
+  } }
+const curve = bandLayout.curve, HEIGHT_CURVED = bandLayout.height;
 
 // ── capability layout: y from ECI; unscored models in a strip at the bottom ──
 const CAP_TOP = TOP + 24, STRIP_H = 64, CAP_BOTTOM = HEIGHT - STRIP_H - 24;
@@ -436,7 +449,7 @@ const lanePath = (a, b) => {
   // same row with another box in between: arch over the row instead of running behind boxes
   if (a.m.lab === b.m.lab && a.row === b.row && byRow[`${a.m.lab}|${a.row}`].some(p => p.x > a.x && p.x < b.x)) {
     // run flat through the gap above the row: the lane padding for the top row, the row gap otherwise
-    const x1 = a.x + BOX_W - 14, x2 = b.x + 14, y = a.y, L = a.row === 0 ? LANE_PAD - 3 : ROW_GAP / 2;
+    const x1 = a.x + BOX_W - 14, x2 = b.x + 14, y = a.y, L = a.row === 0 ? PAD - 3 : GAP / 2;
     return `M${x1},${y} Q${x1},${y - L} ${x1 + L},${y - L} H${x2 - L} Q${x2},${y - L} ${x2},${y}`;
   }
   if (b.x - (a.x + BOX_W) >= 24) {
@@ -533,7 +546,7 @@ function placeLogos() {
   for (const { id, g, P } of stickies) {
     const home = P.x + 14, cx = Math.max(home, sx + 20);
     const k = Math.min(1, (cx - home) / 60);                 // ease from the pill onto the band's top edge
-    const ride = curve.top[id][xi(cx)] + LANE_PAD + PILL_H / 2;
+    const ride = curve.top[id][xi(cx)] + PAD + PILL_H / 2;
     g.setAttribute('transform', `translate(${cx},${(P.y + PILL_H / 2) * (1 - k) + ride * k})`);
   }
 }
