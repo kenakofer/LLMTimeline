@@ -82,6 +82,11 @@ svg.cap .box .date-edge { opacity: 0; }
 .edge.cross { stroke: var(--text-primary); }
 .edge.soft { stroke-dasharray: 4 3; }
 .lane-band { transition: opacity .6s; }
+.pill-body { fill: var(--surface-1); stroke-width: 1.2; }
+.pill-slot { fill: none; stroke: var(--border); stroke-dasharray: 2 2; }
+.sticky-logo .disc { fill: var(--surface-1); stroke-width: 1.2; }
+svg.cap .lane-pill, svg.cap .sticky-logos { opacity: 0; }
+.lane-pill, .sticky-logos { transition: opacity .6s; }
 .lane-label { font-size: 12px; font-weight: 700; fill: var(--text-primary); transition: opacity .6s; }
 .lane-count { font-size: 10.5px; fill: var(--muted); transition: opacity .6s; }
 .year { font-size: 11px; fill: var(--muted); font-variant-numeric: tabular-nums; }
@@ -99,6 +104,8 @@ svg.cap .box .date-edge { opacity: 0; }
 .band-glow.on { opacity: .2; }
 .band-hit { fill: transparent; pointer-events: all; }
 svg.cap .band-glow.on { opacity: 0; }
+/* first layout is instant: cards only animate when switching views */
+svg.no-anim .box, svg.no-anim .box rect.body { transition: none !important; }
 /* capability mode */
 svg.cap .lane-band, svg.cap .lane-label, svg.cap .lane-count { opacity: 0; }
 svg.cap .cap-only { opacity: 1; }
@@ -251,7 +258,19 @@ for (const p of Object.values(placed)) { p.ys = p.y; p.h = tall.has(p.m.id) ? BO
 // (row 0 first, so product lines keep priority and follow the curve). The band's bottom
 // hugs its boxes and pinches to a ribbon between busy periods; smoothing = dilate by R then
 // blur within R, so the curve never cuts into a box.
-const STEP = 4, R = +(new URLSearchParams(location.search).get('r') || 120), RIBBON = 10, LABEL_T = 42;
+const STEP = 4, R = +(new URLSearchParams(location.search).get('r') || 120), RIBBON = 10, PILL_H = 22;
+// founding pills: placed at the lab's founding date (labs founded before the chart starts sit at its left)
+const fmtFounded = l => !l.founded ? '' : l.founded_precision === 'year' ? l.founded.slice(0, 4) : fmt(l.founded);
+const measure = (() => { const c = document.createElement('canvas').getContext('2d');
+  return (text, font) => { c.font = font; return c.measureText(text).width; }; })();
+const PILL_FONT = '700 12px system-ui, -apple-system, "Segoe UI", sans-serif', PILL_SUB_FONT = '10.5px system-ui, -apple-system, "Segoe UI", sans-serif';
+const pills = {};
+for (const L of laneMeta) {
+  const l = L.lab, sub = l.founded ? `est. ${fmtFounded(l)}` : '';
+  const px = l.founded && l.founded >= '2018-01-01' ? x(l.founded) : 12;
+  const w = 30 + measure(l.name, PILL_FONT) + (sub ? 8 + measure(sub, PILL_SUB_FONT) : 0) + 12;
+  pills[l.id] = { x: px, w, sub };
+}
 const NS_ = Math.ceil(WIDTH / STEP) + 1;
 const xi = v => Math.max(0, Math.min(NS_ - 1, Math.round(v / STEP)));
 const smooth = a => {
@@ -269,7 +288,12 @@ const curve = { top: {}, t: {}, bottom: null };
     const id = L.lab.id;
     const sky = upper.map(v => v + LANE_PAD);
     const raw = upper.map(v => v + RIBBON);
-    for (let i = 0; i <= xi(LEFT); i++) raw[i] = upper[i] + LABEL_T;     // room for the label
+    { // the founding pill is an obstacle like a card: the band opens for it and cards go below it
+      const P = pills[id], i0 = xi(P.x), i1 = xi(P.x + P.w);
+      let y = -Infinity; for (let i = i0; i <= i1; i++) y = Math.max(y, sky[i]);
+      P.y = y;
+      for (let i = i0; i <= i1; i++) { sky[i] = y + PILL_H + ROW_GAP; raw[i] = Math.max(raw[i], y + PILL_H + LANE_PAD); }
+    }
     const mine = Object.values(placed).filter(p => p.m.lab === id).sort((a, b) => a.row - b.row || a.x - b.x);
     for (const p of mine) {
       const i0 = xi(p.x), i1 = xi(p.x + BOX_W);
@@ -306,12 +330,6 @@ const gCurved = el('g', { class: 'bands-curved' }, svg);
 const gGlow = el('g', { class: 'bands-curved glow-layer' }, gCurved);
 { const f = el('filter', { id: 'band-blur', x: '-2%', y: '-40%', width: '104%', height: '180%' }, el('defs', {}, svg));
   el('feGaussianBlur', { stdDeviation: 22 }, f); }
-const laneLabel = (g, id, y, n, name) => {
-  if (window.LAB_LOGOS?.[id]?.path) el('use', { href: '#logo-' + id, x: 10, y: y + 8, width: 14, height: 14, class: 'lane-band', style: `fill: ${laneColor[id]}` }, g);
-  else el('rect', { x: 12, y: y + 10, width: 10, height: 10, rx: 2, class: 'lane-band', style: `fill: ${laneColor[id]}` }, g);
-  el('text', { x: 28, y: y + 19, class: 'lane-label' }, g).textContent = name;
-  el('text', { x: 28, y: y + 34, class: 'lane-count' }, g).textContent = `${n} models`;
-};
 laneMeta.forEach(L => {
   // curved: a filled ribbon between this lane's top and bottom curves
   const top = curve.top[L.lab.id], t = curve.t[L.lab.id];
@@ -322,7 +340,14 @@ laneMeta.forEach(L => {
   // and an invisible copy catches the hover anywhere inside the band
   el('path', { d: d + 'Z', class: 'band-glow', 'data-lab': L.lab.id, style: `fill: ${laneColor[L.lab.id]}` }, gGlow);
   el('path', { d: d + 'Z', class: 'band-hit', 'data-lab': L.lab.id }, gCurved);
-  laneLabel(gCurved, L.lab.id, top[0], L.n, L.lab.name);
+  // founding pill; its logo slot empties as the sticky logo pulls away on scroll
+  const P = pills[L.lab.id], gp = el('g', { class: 'lane-pill', 'data-lab': L.lab.id }, gCurved);
+  el('rect', { x: P.x, y: P.y, width: P.w, height: PILL_H, rx: PILL_H / 2, class: 'pill-body', style: `stroke: color-mix(in oklab, ${laneColor[L.lab.id]} 55%, var(--surface-1))` }, gp);
+  el('circle', { cx: P.x + 14, cy: P.y + PILL_H / 2, r: 8, class: 'pill-slot' }, gp);
+  el('text', { x: P.x + 28, y: P.y + 15, class: 'lane-label' }, gp).textContent = L.lab.name;
+  if (P.sub) el('text', { x: P.x + 36 + measure(L.lab.name, PILL_FONT), y: P.y + 15, class: 'lane-count' }, gp).textContent = P.sub;
+  el('title', {}, gp).textContent = `${L.lab.name}${P.sub ? ' — ' + P.sub.replace('est.', 'founded') : ''}` +
+    `${L.lab.founded_note ? ' (' + L.lab.founded_note + ')' : ''}\n${L.n} models in this chart`;
 });
 // year gridlines + today
 for (let y = 2018; y <= 2026; y++) {
@@ -491,6 +516,33 @@ for (const t of svg.querySelectorAll('.box .name')) {
   t.dataset.fs = t.style.fontSize;
 }
 
+// ── sticky logos: each lab's mark starts in its founding pill and, as the chart scrolls right,
+// pulls off the pill to stay at the left edge, riding along its band ──
+const gLogos = el('g', { class: 'sticky-logos' });
+svg.insertBefore(gLogos, gHover);
+const stickies = laneMeta.map(L => {
+  const id = L.lab.id, g = el('g', { class: 'sticky-logo' }, gLogos);
+  el('circle', { r: 10, class: 'disc', style: `stroke: color-mix(in oklab, ${laneColor[id]} 55%, var(--surface-1))` }, g);
+  if (LOGOS[id]) el('use', { href: '#logo-' + id, x: -7, y: -7, width: 14, height: 14, style: `fill: ${laneColor[id]}` }, g);
+  else el('rect', { x: -5, y: -5, width: 10, height: 10, rx: 2, style: `fill: ${laneColor[id]}` }, g);
+  return { id, g, P: pills[id] };
+});
+const scroller = document.querySelector('.scroller');
+function placeLogos() {
+  const sx = scroller.scrollLeft;
+  for (const { id, g, P } of stickies) {
+    const home = P.x + 14, cx = Math.max(home, sx + 20);
+    const k = Math.min(1, (cx - home) / 60);                 // ease from the pill onto the band's top edge
+    const ride = curve.top[id][xi(cx)] + LANE_PAD + PILL_H / 2;
+    g.setAttribute('transform', `translate(${cx},${(P.y + PILL_H / 2) * (1 - k) + ride * k})`);
+  }
+}
+let rafPending = false;
+scroller.addEventListener('scroll', () => { if (!rafPending) { rafPending = true; requestAnimationFrame(() => { rafPending = false; placeLogos(); }); } }, { passive: true });
+placeLogos();
+// ?scroll=<px> opens the chart already scrolled (sharing a particular era)
+{ const sc = +new URLSearchParams(location.search).get('scroll'); if (sc) { scroller.scrollLeft = sc; placeLogos(); } }
+
 // ── view switching ──
 let mode = 'lanes';
 function layout() {
@@ -507,6 +559,8 @@ function layout() {
   document.getElementById('btn-lanes').setAttribute('aria-pressed', mode === 'lanes');
   document.getElementById('btn-cap').setAttribute('aria-pressed', mode === 'cap');
 }
+svg.classList.add('no-anim');
+requestAnimationFrame(() => requestAnimationFrame(() => svg.classList.remove('no-anim')));
 document.getElementById('btn-lanes').onclick = () => { mode = 'lanes'; layout(); };
 document.getElementById('btn-cap').onclick = () => { mode = 'cap'; layout(); };
 layout();

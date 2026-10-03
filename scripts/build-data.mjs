@@ -97,7 +97,7 @@ function build() {
     labs: labs
       .slice()
       .sort((a, b) => (a.order ?? 999) - (b.order ?? 999))
-      .map((l) => ordered(l, ['id', 'name', 'color', 'order', 'country', 'homepage'])),
+      .map((l) => ordered(l, ['id', 'name', 'color', 'order', 'country', 'homepage', 'founded', 'founded_precision', 'founded_note', 'founded_source'])),
     models,
     lineage: edges,
     scores: { eci },

@@ -78,6 +78,11 @@ function validateLabs(labs) {
       if (lab[k] === undefined || lab[k] === null) err(f, `lab ${lab.id || '?'} missing "${k}"`);
     }
     if (ids.has(lab.id)) err(f, `duplicate lab id "${lab.id}"`);
+    if (lab.founded !== undefined) {
+      if (!isValidDate(lab.founded)) err(f, `lab ${lab.id}: founded must be an ISO date`);
+      if (!PRECISIONS.includes(lab.founded_precision)) err(f, `lab ${lab.id}: founded_precision must be one of ${PRECISIONS.join('|')}`);
+      if (!lab.founded_source) err(f, `lab ${lab.id}: founded needs a founded_source`);
+    }
     ids.add(lab.id);
   }
   return ids;

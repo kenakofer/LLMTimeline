@@ -29,7 +29,10 @@ window.TIMELINE_DATA = {
       "color": "lab-1",
       "order": 1,
       "country": "US",
-      "homepage": "https://openai.com"
+      "homepage": "https://openai.com",
+      "founded": "2015-12-08",
+      "founded_precision": "day",
+      "founded_source": "https://en.wikipedia.org/wiki/OpenAI"
     },
     {
       "id": "anthropic",
@@ -37,7 +40,10 @@ window.TIMELINE_DATA = {
       "color": "lab-2",
       "order": 2,
       "country": "US",
-      "homepage": "https://www.anthropic.com"
+      "homepage": "https://www.anthropic.com",
+      "founded": "2021-01-26",
+      "founded_precision": "day",
+      "founded_source": "https://en.wikipedia.org/wiki/Anthropic"
     },
     {
       "id": "google",
@@ -45,7 +51,11 @@ window.TIMELINE_DATA = {
       "color": "lab-3",
       "order": 3,
       "country": "US",
-      "homepage": "https://deepmind.google"
+      "homepage": "https://deepmind.google",
+      "founded": "2010-09-23",
+      "founded_precision": "day",
+      "founded_note": "DeepMind incorporation; merged with Google Brain as Google DeepMind in April 2023",
+      "founded_source": "https://en.wikipedia.org/wiki/Google_DeepMind"
     },
     {
       "id": "meta",
@@ -53,7 +63,11 @@ window.TIMELINE_DATA = {
       "color": "lab-4",
       "order": 4,
       "country": "US",
-      "homepage": "https://ai.meta.com"
+      "homepage": "https://ai.meta.com",
+      "founded": "2013-07-01",
+      "founded_precision": "year",
+      "founded_note": "founded as Facebook AI Research (FAIR)",
+      "founded_source": "https://en.wikipedia.org/wiki/Meta_AI"
     },
     {
       "id": "deepseek",
@@ -61,7 +75,10 @@ window.TIMELINE_DATA = {
       "color": "lab-5",
       "order": 5,
       "country": "CN",
-      "homepage": "https://www.deepseek.com"
+      "homepage": "https://www.deepseek.com",
+      "founded": "2023-07-17",
+      "founded_precision": "day",
+      "founded_source": "https://en.wikipedia.org/wiki/DeepSeek"
     },
     {
       "id": "mistral",
@@ -69,7 +86,10 @@ window.TIMELINE_DATA = {
       "color": "lab-6",
       "order": 6,
       "country": "FR",
-      "homepage": "https://mistral.ai"
+      "homepage": "https://mistral.ai",
+      "founded": "2023-04-28",
+      "founded_precision": "day",
+      "founded_source": "https://en.wikipedia.org/wiki/Mistral_AI"
     },
     {
       "id": "xai",
@@ -77,7 +97,11 @@ window.TIMELINE_DATA = {
       "color": "lab-7",
       "order": 7,
       "country": "US",
-      "homepage": "https://x.ai"
+      "homepage": "https://x.ai",
+      "founded": "2023-03-09",
+      "founded_precision": "day",
+      "founded_note": "incorporated; announced 12 July 2023",
+      "founded_source": "https://en.wikipedia.org/wiki/SpaceXAI"
     },
     {
       "id": "alibaba",
@@ -85,7 +109,11 @@ window.TIMELINE_DATA = {
       "color": "lab-9",
       "order": 8,
       "country": "CN",
-      "homepage": "https://qwen.ai"
+      "homepage": "https://qwen.ai",
+      "founded": "2023-04-15",
+      "founded_precision": "month",
+      "founded_note": "first Qwen release (Tongyi Qianwen); Alibaba Group itself dates from 1999",
+      "founded_source": "https://en.wikipedia.org/wiki/Qwen"
     },
     {
       "id": "moonshot",
@@ -93,7 +121,10 @@ window.TIMELINE_DATA = {
       "color": "lab-10",
       "order": 9,
       "country": "CN",
-      "homepage": "https://www.moonshot.ai"
+      "homepage": "https://www.moonshot.ai",
+      "founded": "2023-03-15",
+      "founded_precision": "month",
+      "founded_source": "https://en.wikipedia.org/wiki/Moonshot_AI"
     },
     {
       "id": "zhipu",
@@ -101,7 +132,10 @@ window.TIMELINE_DATA = {
       "color": "lab-11",
       "order": 10,
       "country": "CN",
-      "homepage": "https://z.ai"
+      "homepage": "https://z.ai",
+      "founded": "2019-07-01",
+      "founded_precision": "year",
+      "founded_source": "https://en.wikipedia.org/wiki/Z.ai"
     },
     {
       "id": "minimax",
@@ -109,7 +143,10 @@ window.TIMELINE_DATA = {
       "color": "lab-12",
       "order": 11,
       "country": "CN",
-      "homepage": "https://www.minimax.io"
+      "homepage": "https://www.minimax.io",
+      "founded": "2021-12-15",
+      "founded_precision": "month",
+      "founded_source": "https://en.wikipedia.org/wiki/MiniMax_Group"
     },
     {
       "id": "other",
