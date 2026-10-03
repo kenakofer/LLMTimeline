@@ -1,0 +1,625 @@
+{
+ "gpt-2": {
+  "repo": "openai-community/gpt2-xl",
+  "base": null,
+  "licence": "mit",
+  "created": "2022-03-02",
+  "err": null
+ },
+ "gpt-oss-120b": {
+  "repo": "openai/gpt-oss-120b",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2025-08-04",
+  "err": null
+ },
+ "gpt-oss-20b": {
+  "repo": "openai/gpt-oss-20b",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2025-08-04",
+  "err": null
+ },
+ "bert": {
+  "repo": "google-bert/bert-large-uncased",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2022-03-02",
+  "err": null
+ },
+ "t5": {
+  "repo": "google-t5/t5-11b",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2022-03-02",
+  "err": null
+ },
+ "flan-t5": {
+  "repo": "google/flan-t5-xxl",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2022-10-21",
+  "err": null
+ },
+ "switch-transformer": {
+  "repo": "google/switch-c-2048",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2022-11-04",
+  "err": null
+ },
+ "gemma": {
+  "repo": "google/gemma-7b",
+  "base": null,
+  "licence": "gemma",
+  "created": "2024-02-08",
+  "err": null
+ },
+ "gemma-2": {
+  "repo": "google/gemma-2-27b",
+  "base": null,
+  "licence": "gemma",
+  "created": "2024-06-24",
+  "err": null
+ },
+ "gemma-3": {
+  "repo": "google/gemma-3-27b-it",
+  "base": "google/gemma-3-27b-pt",
+  "licence": "gemma",
+  "created": "2025-03-01",
+  "err": null
+ },
+ "gemma-4": {
+  "repo": "google/gemma-4-31B-it",
+  "base": [
+   "google/gemma-4-31B"
+  ],
+  "licence": "apache-2.0",
+  "created": "2026-03-11",
+  "err": null
+ },
+ "roberta": {
+  "repo": "FacebookAI/roberta-large",
+  "base": null,
+  "licence": "mit",
+  "created": "2022-03-02",
+  "err": null
+ },
+ "galactica": {
+  "repo": "facebook/galactica-120b",
+  "base": null,
+  "licence": "cc-by-nc-4.0",
+  "created": "2022-11-16",
+  "err": null
+ },
+ "llama-2": {
+  "repo": "meta-llama/Llama-2-70b-hf",
+  "base": null,
+  "licence": "llama2",
+  "created": "2023-07-11",
+  "err": null
+ },
+ "code-llama": {
+  "repo": "meta-llama/CodeLlama-34b-hf",
+  "base": null,
+  "licence": "llama2",
+  "created": "2024-03-14",
+  "err": null
+ },
+ "llama-3": {
+  "repo": "meta-llama/Meta-Llama-3-70B",
+  "base": null,
+  "licence": "llama3",
+  "created": "2024-04-17",
+  "err": null
+ },
+ "llama-3-1-405b": {
+  "repo": "meta-llama/Llama-3.1-405B",
+  "base": null,
+  "licence": "llama3.1",
+  "created": "2024-07-16",
+  "err": null
+ },
+ "llama-3-1-70b": {
+  "repo": "meta-llama/Llama-3.1-70B",
+  "base": null,
+  "licence": "llama3.1",
+  "created": "2024-07-14",
+  "err": null
+ },
+ "llama-3-1-8b": {
+  "repo": "meta-llama/Llama-3.1-8B",
+  "base": null,
+  "licence": "llama3.1",
+  "created": "2024-07-14",
+  "err": null
+ },
+ "llama-3-3-70b": {
+  "repo": "meta-llama/Llama-3.3-70B-Instruct",
+  "base": [
+   "meta-llama/Llama-3.1-70B"
+  ],
+  "licence": "llama3.3",
+  "created": "2024-11-26",
+  "err": null
+ },
+ "llama-4-scout": {
+  "repo": "meta-llama/Llama-4-Scout-17B-16E",
+  "base": null,
+  "licence": "other",
+  "created": "2025-04-02",
+  "err": null
+ },
+ "llama-4-maverick": {
+  "repo": "meta-llama/Llama-4-Maverick-17B-128E",
+  "base": null,
+  "licence": "other",
+  "created": "2025-04-02",
+  "err": null
+ },
+ "deepseek-coder": {
+  "repo": "deepseek-ai/deepseek-coder-33b-base",
+  "base": null,
+  "licence": "other",
+  "created": "2023-10-28",
+  "err": null
+ },
+ "deepseek-llm": {
+  "repo": "deepseek-ai/deepseek-llm-67b-base",
+  "base": null,
+  "licence": "other",
+  "created": "2023-11-29",
+  "err": null
+ },
+ "deepseek-v2": {
+  "repo": "deepseek-ai/DeepSeek-V2",
+  "base": null,
+  "licence": "other",
+  "created": "2024-04-22",
+  "err": null
+ },
+ "deepseek-coder-v2": {
+  "repo": "deepseek-ai/DeepSeek-Coder-V2-Instruct",
+  "base": "deepseek-ai/DeepSeek-Coder-V2-Base",
+  "licence": "other",
+  "created": "2024-06-14",
+  "err": null
+ },
+ "deepseek-v2-5": {
+  "repo": "deepseek-ai/DeepSeek-V2.5",
+  "base": null,
+  "licence": "other",
+  "created": "2024-09-05",
+  "err": null
+ },
+ "deepseek-v3": {
+  "repo": "deepseek-ai/DeepSeek-V3",
+  "base": null,
+  "licence": null,
+  "created": "2024-12-25",
+  "err": null
+ },
+ "deepseek-r1-zero": {
+  "repo": "deepseek-ai/DeepSeek-R1-Zero",
+  "base": null,
+  "licence": "mit",
+  "created": "2025-01-20",
+  "err": null
+ },
+ "deepseek-r1": {
+  "repo": "deepseek-ai/DeepSeek-R1",
+  "base": null,
+  "licence": "mit",
+  "created": "2025-01-20",
+  "err": null
+ },
+ "deepseek-r1-distill-qwen-32b": {
+  "repo": "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B",
+  "base": null,
+  "licence": "mit",
+  "created": "2025-01-20",
+  "err": null
+ },
+ "deepseek-r1-distill-llama-70b": {
+  "repo": "deepseek-ai/DeepSeek-R1-Distill-Llama-70B",
+  "base": null,
+  "licence": "mit",
+  "created": "2025-01-20",
+  "err": null
+ },
+ "deepseek-v3-1": {
+  "repo": "deepseek-ai/DeepSeek-V3.1",
+  "base": [
+   "deepseek-ai/DeepSeek-V3.1-Base"
+  ],
+  "licence": "mit",
+  "created": "2025-08-21",
+  "err": null
+ },
+ "deepseek-v3-2-exp": {
+  "repo": "deepseek-ai/DeepSeek-V3.2-Exp",
+  "base": [
+   "deepseek-ai/DeepSeek-V3.2-Exp-Base"
+  ],
+  "licence": "mit",
+  "created": "2025-09-29",
+  "err": null
+ },
+ "deepseek-v3-2": {
+  "repo": "deepseek-ai/DeepSeek-V3.2",
+  "base": [
+   "deepseek-ai/DeepSeek-V3.2-Exp-Base"
+  ],
+  "licence": "mit",
+  "created": "2025-12-01",
+  "err": null
+ },
+ "deepseek-v4": {
+  "repo": "deepseek-ai/DeepSeek-V4-Pro",
+  "base": null,
+  "licence": "mit",
+  "created": "2026-04-22",
+  "err": null
+ },
+ "deepseek-v4-flash": {
+  "repo": "deepseek-ai/DeepSeek-V4-Flash",
+  "base": null,
+  "licence": "mit",
+  "created": "2026-04-22",
+  "err": null
+ },
+ "deepseek-v4-1-flash": {
+  "repo": "deepseek-ai/DeepSeek-V4.1-Flash",
+  "base": null,
+  "licence": "mit",
+  "created": "2026-09-10",
+  "err": null
+ },
+ "mistral-7b": {
+  "repo": "mistralai/Mistral-7B-v0.1",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2023-09-20",
+  "err": null
+ },
+ "mixtral-8x7b": {
+  "repo": "mistralai/Mixtral-8x7B-v0.1",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2023-12-01",
+  "err": null
+ },
+ "mixtral-8x22b": {
+  "repo": "mistralai/Mixtral-8x22B-v0.1",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2024-04-16",
+  "err": null
+ },
+ "mistral-nemo": {
+  "repo": "mistralai/Mistral-Nemo-Base-2407",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2024-07-18",
+  "err": null
+ },
+ "mistral-large-2": {
+  "repo": "mistralai/Mistral-Large-Instruct-2407",
+  "base": null,
+  "licence": "other",
+  "created": "2024-07-24",
+  "err": null
+ },
+ "mistral-small-3": {
+  "repo": "mistralai/Mistral-Small-24B-Base-2501",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2025-01-23",
+  "err": null
+ },
+ "magistral-small": {
+  "repo": "mistralai/Magistral-Small-2506",
+  "base": [
+   "mistralai/Mistral-Small-3.1-24B-Instruct-2503"
+  ],
+  "licence": "apache-2.0",
+  "created": "2025-06-04",
+  "err": null
+ },
+ "mistral-medium-3-5": {
+  "repo": "mistralai/Mistral-Medium-3.5-128B",
+  "base": null,
+  "licence": "other",
+  "created": "2026-03-31",
+  "err": null
+ },
+ "grok-1": {
+  "repo": "xai-org/grok-1",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2024-03-17",
+  "err": null
+ },
+ "qwen": {
+  "repo": "Qwen/Qwen-14B",
+  "base": null,
+  "licence": null,
+  "created": "2023-09-24",
+  "err": null
+ },
+ "qwen1-5": {
+  "repo": "Qwen/Qwen1.5-72B",
+  "base": null,
+  "licence": "other",
+  "created": "2024-01-23",
+  "err": null
+ },
+ "qwen2": {
+  "repo": "Qwen/Qwen2-72B",
+  "base": null,
+  "licence": "other",
+  "created": "2024-05-22",
+  "err": null
+ },
+ "qwen2-5-72b": {
+  "repo": "Qwen/Qwen2.5-72B",
+  "base": null,
+  "licence": "other",
+  "created": "2024-09-15",
+  "err": null
+ },
+ "qwen2-5-32b": {
+  "repo": "Qwen/Qwen2.5-32B",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2024-09-15",
+  "err": null
+ },
+ "qwen2-5-coder-32b": {
+  "repo": "Qwen/Qwen2.5-Coder-32B",
+  "base": [
+   "Qwen/Qwen2.5-32B"
+  ],
+  "licence": "apache-2.0",
+  "created": "2024-11-08",
+  "err": null
+ },
+ "qwq-32b": {
+  "repo": "Qwen/QwQ-32B",
+  "base": "Qwen/Qwen2.5-32B",
+  "licence": "apache-2.0",
+  "created": "2025-03-05",
+  "err": null
+ },
+ "qwen3-235b-a22b": {
+  "repo": "Qwen/Qwen3-235B-A22B",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2025-04-27",
+  "err": null
+ },
+ "qwen3-coder": {
+  "repo": "Qwen/Qwen3-Coder-480B-A35B-Instruct",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2025-07-22",
+  "err": null
+ },
+ "qwen3-5": {
+  "repo": "Qwen/Qwen3.5-397B-A17B",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2026-02-16",
+  "err": null
+ },
+ "qwen3-8-2-4t": {
+  "repo": "Qwen/Qwen3.8-2.4T-A95B",
+  "base": null,
+  "licence": "other",
+  "created": "2026-08-08",
+  "err": null
+ },
+ "kimi-k2": {
+  "repo": "moonshotai/Kimi-K2-Instruct",
+  "base": null,
+  "licence": "other",
+  "created": "2025-07-11",
+  "err": null
+ },
+ "kimi-k2-thinking": {
+  "repo": "moonshotai/Kimi-K2-Thinking",
+  "base": null,
+  "licence": "other",
+  "created": "2025-11-04",
+  "err": null
+ },
+ "kimi-k2-5": {
+  "repo": "moonshotai/Kimi-K2.5",
+  "base": null,
+  "licence": "other",
+  "created": "2026-01-01",
+  "err": null
+ },
+ "kimi-k2-6": {
+  "repo": "moonshotai/Kimi-K2.6",
+  "base": null,
+  "licence": "other",
+  "created": "2026-04-14",
+  "err": null
+ },
+ "kimi-k3": {
+  "repo": "moonshotai/Kimi-K3",
+  "base": null,
+  "licence": "other",
+  "created": "2026-06-13",
+  "err": null
+ },
+ "glm-130b": {
+  "repo": null,
+  "base": null,
+  "licence": null,
+  "created": null,
+  "err": "HTTP Error 401: Unauthorized"
+ },
+ "glm-4-5": {
+  "repo": "zai-org/GLM-4.5",
+  "base": null,
+  "licence": "mit",
+  "created": "2025-07-20",
+  "err": null
+ },
+ "glm-4-6": {
+  "repo": "zai-org/GLM-4.6",
+  "base": null,
+  "licence": "mit",
+  "created": "2025-09-29",
+  "err": null
+ },
+ "glm-4-7": {
+  "repo": "zai-org/GLM-4.7",
+  "base": null,
+  "licence": "mit",
+  "created": "2025-12-22",
+  "err": null
+ },
+ "glm-5": {
+  "repo": "zai-org/GLM-5",
+  "base": null,
+  "licence": "mit",
+  "created": "2026-02-11",
+  "err": null
+ },
+ "glm-5-1": {
+  "repo": "zai-org/GLM-5.1",
+  "base": null,
+  "licence": "mit",
+  "created": "2026-04-03",
+  "err": null
+ },
+ "glm-5-2": {
+  "repo": "zai-org/GLM-5.2",
+  "base": null,
+  "licence": "mit",
+  "created": "2026-06-16",
+  "err": null
+ },
+ "minimax-text-01": {
+  "repo": "MiniMaxAI/MiniMax-Text-01",
+  "base": null,
+  "licence": null,
+  "created": "2025-01-12",
+  "err": null
+ },
+ "minimax-m1": {
+  "repo": "MiniMaxAI/MiniMax-M1-80k",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2025-06-13",
+  "err": null
+ },
+ "minimax-m2": {
+  "repo": "MiniMaxAI/MiniMax-M2",
+  "base": null,
+  "licence": "other",
+  "created": "2025-10-22",
+  "err": null
+ },
+ "minimax-m2-1": {
+  "repo": "MiniMaxAI/MiniMax-M2.1",
+  "base": null,
+  "licence": "other",
+  "created": "2025-12-20",
+  "err": null
+ },
+ "minimax-m2-5": {
+  "repo": "MiniMaxAI/MiniMax-M2.5",
+  "base": null,
+  "licence": "other",
+  "created": "2026-02-12",
+  "err": null
+ },
+ "minimax-m2-7": {
+  "repo": "MiniMaxAI/MiniMax-M2.7",
+  "base": null,
+  "licence": "other",
+  "created": "2026-04-09",
+  "err": null
+ },
+ "minimax-m3": {
+  "repo": "MiniMaxAI/MiniMax-M3",
+  "base": null,
+  "licence": "other",
+  "created": "2026-06-02",
+  "err": null
+ },
+ "gpt-j": {
+  "repo": "EleutherAI/gpt-j-6b",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2022-03-02",
+  "err": null
+ },
+ "gpt-neox-20b": {
+  "repo": "EleutherAI/gpt-neox-20b",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2022-04-07",
+  "err": null
+ },
+ "bloom": {
+  "repo": "bigscience/bloom",
+  "base": null,
+  "licence": "bigscience-bloom-rail-1.0",
+  "created": "2022-05-19",
+  "err": null
+ },
+ "falcon-180b": {
+  "repo": "tiiuae/falcon-180B",
+  "base": null,
+  "licence": "unknown",
+  "created": "2023-08-28",
+  "err": null
+ },
+ "yi-34b": {
+  "repo": "01-ai/Yi-34B",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2023-11-01",
+  "err": null
+ },
+ "command-r-plus": {
+  "repo": "CohereLabs/c4ai-command-r-plus",
+  "base": null,
+  "licence": "cc-by-nc-4.0",
+  "created": "2024-04-03",
+  "err": null
+ },
+ "nemotron-4-340b": {
+  "repo": "nvidia/Nemotron-4-340B-Base",
+  "base": null,
+  "licence": "other",
+  "created": "2024-06-14",
+  "err": null
+ },
+ "llama-3-1-nemotron-70b": {
+  "repo": "nvidia/Llama-3.1-Nemotron-70B-Instruct-HF",
+  "base": "meta-llama/Llama-3.1-70B-Instruct",
+  "licence": "llama3.1",
+  "created": "2024-10-12",
+  "err": null
+ },
+ "phi-4": {
+  "repo": "microsoft/phi-4",
+  "base": null,
+  "licence": "mit",
+  "created": "2024-12-11",
+  "err": null
+ },
+ "olmo-2": {
+  "repo": "allenai/OLMo-2-0325-32B",
+  "base": null,
+  "licence": "apache-2.0",
+  "created": "2025-02-23",
+  "err": null
+ }
+}

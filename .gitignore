@@ -4,3 +4,7 @@
 # OS cruft
 .DS_Store
 Thumbs.db
+
+# Backfill inputs (large Epoch AI downloads)
+scripts/backfill/cache/
+__pycache__/
